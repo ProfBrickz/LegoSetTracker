@@ -2,9 +2,11 @@ import axios from 'axios'
 import * as excel from 'excel4node'
 import fs from 'fs'
 import inquirer from 'inquirer'
+// import data from './settings.json' assert { type: "json" }
 
-const API_KEY = 'ApiKey'
-const LIMIT = 1000 // max 1000
+let settings = JSON.parse(fs.readFileSync('settings.json'))
+const apiKey = settings.apiKey
+const limit = settings.limit
 
 let spreadsheet = [[
 	'Done',
@@ -74,7 +76,7 @@ do {
 		message: 'What lego set do you want to find? (the set number)',
 	})
 	try {
-		let response = await axios.get(`https://rebrickable.com/api/v3/lego/sets/${answers.set}/?key=${API_KEY}`)
+		let response = await axios.get(`https://rebrickable.com/api/v3/lego/sets/${answers.set}/?key=${apiKey}`)
 		if (response.data) {
 			set = answers.set
 			name = response.data.name
@@ -89,7 +91,7 @@ if (!fs.existsSync('images/')) {
 }
 
 try {
-	let response = await axios.get(`https://rebrickable.com/api/v3/lego/sets/${set}/parts?key=${API_KEY}&page_size=${LIMIT}`)
+	let response = await axios.get(`https://rebrickable.com/api/v3/lego/sets/${set}/parts?key=${apiKey}&page_size=${limit}`)
 	let results = response.data.results
 	for (let result of results) {
 		if (!result.is_spare) {
