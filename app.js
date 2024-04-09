@@ -83,6 +83,9 @@ function getParts(rows) {
 }
 
 // Main
+if (!fs.existsSync('images')) fs.mkdirSync('images')
+if (!fs.existsSync('sets')) fs.mkdirSync('sets')
+
 try {
 	let setId = await inquirer.input({
 		message: 'What lego set do you want to find? (the set number)',
