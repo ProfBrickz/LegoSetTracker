@@ -198,7 +198,7 @@ for (let part of set.parts) {
 	if (!part.imgPath) continue
 
 	while (!fs.existsSync(part.imgPath)) {
-		console.log(`downloading ${part.imgUrl}`);
+		console.log(`downloading ${part.brickLinkId} Image`);
 
 		let response = await axios.get(
 			part.imgUrl,
