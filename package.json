@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@inquirer/prompts": "^4.3.2",
     "axios": "^1.4.0",
-    "excel4node": "^1.8.2",
-    "inquirer": "^9.2.7"
+    "jsdom": "^24.0.0"
   }
 }
