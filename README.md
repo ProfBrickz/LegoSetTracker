@@ -7,6 +7,7 @@ This program will make an Excel spreadsheet so you can keep track of the parts y
 ## Installation
 - Install the .Net SDK from [Microsoft](https://dotnet.microsoft.com/en-us/)
 - Download this repository
+- Google Chrome or Windows Defender might think it is a virus, if this happens try downloading it with a different browser such as Firefox
 
 ## Usage
 Start the program
