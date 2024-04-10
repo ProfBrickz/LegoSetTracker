@@ -7,7 +7,8 @@ This program will make an Excel spreadsheet so you can keep track of the parts y
 ## Installation
 - Install the .Net SDK from [Microsoft](https://dotnet.microsoft.com/en-us/)
 - Download this repository
-- Google Chrome or Windows Defender might think it is a virus
+- Before running it download the modules with `npm i`, copy the `settings-template.json` file, and name the copy `settings.json`.
+- Google Chrome or Windows Defender may think the app.js file is a virus from the zip file. If this happens try having Windows Defender ignore the app.js file, temporarily turning off Windows Defender and turning it back on after the download, or downloading it with git bash instead.
 
 ## Usage
 Start the program
