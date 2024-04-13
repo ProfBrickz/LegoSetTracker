@@ -13,9 +13,10 @@ Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
 	lastRow = setSheet.Cells(Rows.Count, "C").End(xlUp).Row
 
 	' Define sort type
-	' 0: Sort by All found, then by Amount Left, then by Set Order
-	' 1: Sort by Set Order
-	' 2: Sort by Part Name
+	' 1: Sort by Incomplete, then by Amount Left, then by Set Order
+	' 2: Sort by Incomplete, then by Set Order
+	' 3: Sort by Set Order
+	' 4: Sort by Part Name
 	Dim sortType As Integer
 	sortType = settingsSheet.Range("A6").Value
 
@@ -23,12 +24,12 @@ Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
 	If Target.Count > 1 Then Exit Sub
 
 	If sortType = 1 Then
-		' Sort by All found, then by Amount Left, then by Set Order
+		' Sort by Incomplete, then by Amount Left, then by Set Order
 		setSheet.Range("A2:I" & lastRow).Sort Key1:=setSheet.Range("I2"), Order1:=xlAscending, _
 			Key2:=setSheet.Range("C2"), Order2:=xlAscending, Key3:=setSheet.Range("H2"), Order3:=xlAscending, _
 			Header:=xlNo, OrderCustom:=1, MatchCase:=False, Orientation:=xlTopToBottom
 	ElseIf sortType = 2 Then
-		' Sort by All found, then by Set Order
+		' Sort by Incomplete, then by Set Order
 		setSheet.Range("A2:I" & lastRow).Sort Key1:=setSheet.Range("I2"), Order1:=xlAscending, _
 			Key2:=setSheet.Range("H2"), Order2:=xlAscending, _
 			Header:=xlNo, OrderCustom:=1, MatchCase:=False, Orientation:=xlTopToBottom

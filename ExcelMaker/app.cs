@@ -151,7 +151,7 @@ class Program
 		setSheet.Cells[1, 6].Value = "Image";
 		setSheet.Cells[1, 7].Value = "Name";
 		setSheet.Cells[1, 8].Value = "Order";
-		setSheet.Cells[1, 9].Value = "Helper Column";
+		setSheet.Cells[1, 9].Value = "Complete";
 
 		setSheet.Cells[$"E2:E{set.Parts.Length + 1}"].Style.Numberformat.Format = "@";
 
@@ -220,8 +220,8 @@ class Program
 		settingsSheet.Cells["A6"].StyleName = "found";
 
 		settingsSheet.Cells["A1"].Value = "Sort Type";
-		settingsSheet.Cells["A2"].Value = "1: Sort by All found, then by Amount Left, then by Set Order";
-		settingsSheet.Cells["A3"].Value = "2: Sort by All found, then by Set Order";
+		settingsSheet.Cells["A2"].Value = "1: Sort by Incomplete, then by Amount Left, then by Set Order";
+		settingsSheet.Cells["A3"].Value = "2: Sort by Incomplete, then by Set Order";
 		settingsSheet.Cells["A4"].Value = "3: Sort by Set Order";
 		settingsSheet.Cells["A5"].Value = "4: Sort by Part Name";
 		settingsSheet.Cells["A6"].Value = 2;
