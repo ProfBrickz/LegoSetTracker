@@ -3,6 +3,6 @@
 	"include": {
 		"stickerSheet": false,
 		"stickerParts": true,
-		"minifigures": false
+		"minifigures": true
 	}
 }

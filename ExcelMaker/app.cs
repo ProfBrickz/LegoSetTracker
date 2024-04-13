@@ -211,19 +211,20 @@ class Program
 		}
 
 		settingsSheet.Columns[1].Width = 20;
-		settingsSheet.Rows[2].Height = 55;
 		settingsSheet.Rows[1].Height = 48;
-		settingsSheet.Rows[3, 5].Height = 48;
+		settingsSheet.Rows[2].Height = 55;
+		settingsSheet.Rows[3, 6].Height = 48;
 
 		settingsSheet.Cells["A1"].StyleName = "header";
-		settingsSheet.Cells["A2:A4"].StyleName = "info";
-		settingsSheet.Cells["A5"].StyleName = "found";
+		settingsSheet.Cells["A2:A5"].StyleName = "info";
+		settingsSheet.Cells["A6"].StyleName = "found";
 
 		settingsSheet.Cells["A1"].Value = "Sort Type";
 		settingsSheet.Cells["A2"].Value = "1: Sort by All found, then by Amount Left, then by Set Order";
-		settingsSheet.Cells["A3"].Value = "2: Sort by Set Order";
-		settingsSheet.Cells["A4"].Value = "3: Sort by Part Name";
-		settingsSheet.Cells["A5"].Value = 1;
+		settingsSheet.Cells["A3"].Value = "2: Sort by All found, then by Set Order";
+		settingsSheet.Cells["A4"].Value = "3: Sort by Set Order";
+		settingsSheet.Cells["A5"].Value = "4: Sort by Part Name";
+		settingsSheet.Cells["A6"].Value = 2;
 
 		settingsSheet.Rows[2].Height = 55;
 
