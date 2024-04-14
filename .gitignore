@@ -4,3 +4,4 @@ sets/*
 settings.json
 excelMaker/bin
 excelMaker/obj
+.vscode
