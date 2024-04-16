@@ -34,34 +34,34 @@ class Part {
 
 // Functions
 function getSection(section) {
-    let categoryStartIndex = null
-    let categoryEndIndex = null
+	let categoryStartIndex = null
+	let categoryEndIndex = null
 
-    for (let category of catagories) {
-        let index = rows.indexOf(category)
+	for (let category of catagories) {
+		let index = rows.indexOf(category)
 
-        if (category.textContent == section) {
-            categoryStartIndex = index + 1
-            continue
-        }
+		if (category.textContent == section) {
+			categoryStartIndex = index + 1
+			continue
+		}
 
-        if (categoryStartIndex) {
-            if (category.textContent == 'Parts:') {
-                categoryStartIndex = index + 1
-                continue
-            }
+		if (categoryStartIndex) {
+			if (category.textContent == 'Parts:') {
+				categoryStartIndex = index + 1
+				continue
+			}
 
-            categoryEndIndex = index
+			categoryEndIndex = index
 
-            break
-        }
-    }
+			break
+		}
+	}
 
-    if (categoryStartIndex && !categoryEndIndex) categoryEndIndex = rows.length - 1
+	if (categoryStartIndex && !categoryEndIndex) categoryEndIndex = rows.length - 1
 
-    let categoryRows = rows.slice(categoryStartIndex, categoryEndIndex)
+	let categoryRows = rows.slice(categoryStartIndex, categoryEndIndex)
 
-    return getParts(categoryRows)
+	return getParts(categoryRows)
 }
 
 function getParts(rows) {
@@ -220,4 +220,4 @@ for (let part of set.parts) {
 
 fs.writeFileSync('set.json', JSON.stringify(set))
 
-childProcess.execSync('C:\\Users\\Rstevenson\\dotnet\\dotnet.exe run excelMaker/app.cs --project ./excelMaker/')
+childProcess.execSync('dotnet run excelMaker/app.cs --project ./excelMaker/')
