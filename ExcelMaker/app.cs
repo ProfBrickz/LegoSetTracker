@@ -67,10 +67,13 @@ class Program
 		setSheet.DefaultColWidth = 16;
 		setSheet.DefaultRowHeight = 48;
 		setSheet.Columns[7].Width = 48;
+		setSheet.View.FreezePanes(2, 1);
 
 		var settingsSheet = workbook.Worksheets.Add("Settings");
 		settingsSheet.DefaultColWidth = 16;
 		settingsSheet.DefaultRowHeight = 48;
+		settingsSheet.View.FreezePanes(2, 1);
+
 
 		// Styles
 		var normalStyle = workbook.Styles.NamedStyles[0];
