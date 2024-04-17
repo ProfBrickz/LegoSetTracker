@@ -60,6 +60,30 @@ class Program
 
 		var excel = new ExcelPackage();
 
+		if (File.Exists($"{directoryPath}..\\sets\\{set.Name}.xlsm"))
+		{
+			var existingExcel = new ExcelPackage(new FileInfo($"{directoryPath}..\\sets\\{set.Name}.xlsm"));
+			var existingSetSheet = existingExcel.Workbook.Worksheets[0];
+
+			for (int index = 2; index < existingSetSheet.Rows.Count() + 1; index++)
+			{
+				string name = existingSetSheet.Cells[index, 7].Value.ToString() ?? "";
+				int found = int.Parse(existingSetSheet.Cells[index, 2].Value.ToString() ?? "0");
+
+				// find if there is a part with the same name and if so set the found value of the part to the one from the spreedsheet
+				if (found != 0)
+				{
+					foreach (var part in set.Parts)
+					{
+						if (name == part.Name)
+						{
+							part.AmountFound = found;
+						}
+					}
+				}
+			}
+		}
+
 		excel.Settings.ImageSettings.PrimaryImageHandler = new SystemDrawingImageHandler();
 
 		var workbook = excel.Workbook;
