@@ -67,10 +67,12 @@ class Program
 
 			for (int index = 2; index < existingSetSheet.Rows.Count() + 1; index++)
 			{
-				string name = existingSetSheet.Cells[index, 7].Value.ToString() ?? "";
-				int found = int.Parse(existingSetSheet.Cells[index, 2].Value.ToString() ?? "0");
+				string name = existingSetSheet.Cells[index, 7].Value?.ToString() ?? "";
+				if (name == "") continue;
 
-				// find if there is a part with the same name and if so set the found value of the part to the one from the spreedsheet
+				int found = int.Parse(existingSetSheet.Cells[index, 2]?.Value.ToString() ?? "0");
+
+				// find if there is a part with the same name and if so set the found value of the part to the one from the spreadsheet
 				if (found != 0)
 				{
 					foreach (var part in set.Parts)
@@ -204,22 +206,21 @@ class Program
 					if (imageFile.Extension.ToLower() == ".jpg")
 					{
 						int dpi = 96;
-						int rowHeight = (int)(setSheet.Rows[rowIndex].Height * dpi / 72);
-						int columnWidth = (int)(setSheet.Columns[6].Width * 8 * dpi / 72);
+						decimal rowHeight = (decimal)(setSheet.Rows[rowIndex].Height * dpi / 72);
+						decimal columnWidth = (decimal)(setSheet.Columns[6].Width * 8 * dpi / 72);
 
 						var image = setSheet.Drawings.AddPicture($"{partIndex}", imageFile);
-						int aspectRatio = (int)(image.Size.Width / image.Size.Height);
+						// decimal aspectRatio = (decimal)(image.Size.Width) / (decimal)(image.Size.Height);
+						decimal aspectRatio = (decimal)image.Size.Width / (decimal)image.Size.Height;
+
 						int imageHeightDifference = 1;
-						int imageHeight = rowHeight - imageHeightDifference;
+						int imageHeight = (int)(rowHeight - imageHeightDifference);
 						int imageWidth = (int)(imageHeight * aspectRatio);
 
-						image.LockAspectRatio = true;
-						image.ChangeCellAnchor(eEditAs.TwoCell);
+						image.ChangeCellAnchor(eEditAs.OneCell);
 						image.SetSize(imageWidth, imageHeight);
 
-						image.SetPosition(rowIndex - 1, imageHeightDifference, 5, columnWidth / 2 - imageWidth / 2);
-
-						image.Locked = true;
+						image.SetPosition(rowIndex - 1, imageHeightDifference, 5, (int)(columnWidth / 2 - imageWidth / 2));
 					}
 					else
 					{

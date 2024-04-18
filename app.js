@@ -16,6 +16,7 @@ let set = {
 }
 let sections = {}
 let document = null
+let tbody
 
 // Classes
 class Part {
@@ -107,8 +108,10 @@ try {
 				})).window.document
 
 				let setNameElement = document.querySelector('tbody center font b')
+				tbody = document.querySelector('form > table tbody')
 
 				if (!setNameElement) return 'Set not found.'
+				if (!tbody) return 'Set does not have inventory yet.'
 
 				set.id = input
 				set.name = setNameElement.textContent.trim()
@@ -162,7 +165,6 @@ try {
 fs.writeFileSync('settings.json', JSON.stringify(settings))
 
 
-let tbody = document.querySelector('form > table tbody')
 let rows = Array.prototype.slice.call(tbody.children)
 let catagories = document.querySelectorAll('form > table tr[BGCOLOR="#000000"], form > table tr[BGCOLOR="#C0C0C0"]')
 
