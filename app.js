@@ -20,13 +20,17 @@ let tbody
 
 // Classes
 class Part {
-	constructor(brickLinkId, name, color, imgUrl, amountNeeded, amountFound = 0) {
+	constructor(brickLinkId, name, imgUrl, amountNeeded, amountFound = 0) {
 		this.brickLinkId = brickLinkId
 		this.name = name
 		this.imgUrl = imgUrl || ''
 
 		this.imgPath = ''
-		if (this.imgUrl) this.imgPath = `images/${brickLinkId}.${imgUrl.split('.').at(-1)}`
+		if (this.imgUrl) {
+			let fileName = name.replace(/[\(\)\\/]/g, '').replace('  ', ' ')
+
+			this.imgPath = `images/${fileName}.${imgUrl.split('.').at(-1)}`
+		}
 
 		this.amountNeeded = amountNeeded
 		this.amountFound = amountFound
@@ -77,7 +81,7 @@ function getParts(rows) {
 
 		let amountNeeded = Number.parseInt(row.querySelector('td:nth-of-type(2)').textContent)
 
-		parts.push(new Part(brickLinkId, name, null, imageUrl, amountNeeded, 0))
+		parts.push(new Part(brickLinkId, name, imageUrl, amountNeeded, 0))
 	}
 
 	return parts

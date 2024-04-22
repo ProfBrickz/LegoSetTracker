@@ -70,7 +70,11 @@ class Program
 				string name = existingSetSheet.Cells[index, 7].Value?.ToString() ?? "";
 				if (name == "") continue;
 
-				int found = int.Parse(existingSetSheet.Cells[index, 2]?.Value.ToString() ?? "0");
+				int found = 0;
+				if (int.TryParse(existingSetSheet.Cells[index, 2]?.Value.ToString(), out int result))
+				{
+					found = result;
+				}
 
 				// find if there is a part with the same name and if so set the found value of the part to the one from the spreadsheet
 				if (found != 0)
