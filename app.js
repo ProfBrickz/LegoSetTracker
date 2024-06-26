@@ -11,6 +11,7 @@ const settings = JSON.parse(fs.readFileSync('settings.json'))
 // Variables
 let set = {
 	name: null,
+	amount: null,
 	id: null,
 	parts: []
 }
@@ -81,7 +82,7 @@ function getParts(rows) {
 
 		let amountNeeded = Number.parseInt(row.querySelector('td:nth-of-type(2)').textContent)
 
-		parts.push(new Part(brickLinkId, name, imageUrl, amountNeeded, 0))
+		parts.push(new Part(brickLinkId, name, imageUrl, amountNeeded * set.amount, 0))
 	}
 
 	return parts
@@ -131,6 +132,16 @@ try {
 
 	settings.lastSet = setId
 
+	let setAmount = await inquirer.input({
+		message: 'How many of this set do you want to find?',
+		default: 1,
+		validate: (input) => {
+			if (Number.isInteger(Number(input))) return true
+			return 'Enter an integer'
+		}
+	})
+
+	set.amount = Number(setAmount)
 
 	let changeSettings = await inquirer.select({
 		message: 'Do you want to go to change settings?',

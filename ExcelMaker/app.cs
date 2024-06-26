@@ -41,6 +41,9 @@ class Program
 		[JsonPropertyName("id")]
 		public string Id { get; set; } = "";
 
+		[JsonPropertyName("amount")]
+		public int Amount { get; set; } = 1;
+
 		[JsonPropertyName("parts")]
 		public List<Part> Parts { get; set; } = new List<Part>();
 	}
@@ -263,6 +266,13 @@ class Program
 
 		workbook.CodeModule.Code = vbaFile.ReadToEnd();
 
-		excel.SaveAs($"{directoryPath}../sets/{set.Name}.xlsm");
+		string fileName = set.Name;
+
+		if (set.Amount > 1)
+		{
+			fileName += $" x {set.Amount}";
+		}
+
+		excel.SaveAs($"{directoryPath}../sets/{fileName}.xlsm");
 	}
 }
