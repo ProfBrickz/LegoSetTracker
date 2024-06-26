@@ -1,10 +1,13 @@
 ﻿using System.Drawing;
+using System.Net;
+using System.Linq;
 using System.Text.Json.Serialization;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.SystemDrawing.Image;
 using System.Reflection;
+using System.Data.SqlTypes;
 
 
 class Program
@@ -39,7 +42,7 @@ class Program
 		public string Id { get; set; } = "";
 
 		[JsonPropertyName("parts")]
-		public Part[] Parts { get; set; } = new Part[] { };
+		public List<Part> Parts { get; set; } = new List<Part>();
 	}
 
 	static void Main(string[] args)
@@ -65,27 +68,17 @@ class Program
 			var existingExcel = new ExcelPackage(new FileInfo($"{directoryPath}..\\sets\\{set.Name}.xlsm"));
 			var existingSetSheet = existingExcel.Workbook.Worksheets[0];
 
-			for (int index = 2; index < existingSetSheet.Rows.Count() + 1; index++)
+			for (int index = 2; index < existingSetSheet.Dimension.End.Row + 1; index++)
 			{
-				string name = existingSetSheet.Cells[index, 7].Value?.ToString() ?? "";
+				string name = (string)existingSetSheet.Cells[index, 7].Value;
 				if (name == "") continue;
 
-				int found = 0;
-				if (int.TryParse(existingSetSheet.Cells[index, 2]?.Value.ToString(), out int result))
-				{
-					found = result;
-				}
+				int found = Convert.ToInt32(existingSetSheet.Cells[index, 2].Value);
 
-				// find if there is a part with the same name and if so set the found value of the part to the one from the spreadsheet
-				if (found != 0)
+				var partExists = set.Parts.FirstOrDefault(p => p.Name == name);
+				if (partExists != null)
 				{
-					foreach (var part in set.Parts)
-					{
-						if (name == part.Name)
-						{
-							part.AmountFound = found;
-						}
-					}
+					partExists.AmountFound = found;
 				}
 			}
 		}
@@ -145,15 +138,15 @@ class Program
 		helperStyle.Style.Fill.PatternType = ExcelFillStyle.Solid;
 		helperStyle.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#e5d994"));
 
-		var totalRows = set.Parts.Length + 1;
+		var totalRows = set.Parts.Count + 1;
 
 		// apply styles
-		setSheet.Cells[$"A1:I1"].StyleName = "header";
+		setSheet.Cells[$"A1:K1"].StyleName = "header";
 		setSheet.Cells[$"B2:B{totalRows}"].StyleName = "found";
 		setSheet.Cells[$"C2:E{totalRows}"].StyleName = "info";
 		setSheet.Cells[$"G2:G{totalRows}"].StyleName = "info";
-		setSheet.Cells[$"H2:I{totalRows}"].StyleName = "helper";
-		setSheet.Columns[8, 9].Hidden = true;
+		setSheet.Cells[$"H2:K{totalRows}"].StyleName = "helper";
+		setSheet.Columns[8, 11].Hidden = true;
 
 		// conditional formatting
 		var zeroFormat = setSheet.ConditionalFormatting.AddExpression($"A2:A{totalRows}");
@@ -185,10 +178,12 @@ class Program
 		setSheet.Cells[1, 7].Value = "Name";
 		setSheet.Cells[1, 8].Value = "Order";
 		setSheet.Cells[1, 9].Value = "Complete";
+		setSheet.Cells[1, 10].Value = "Image URL";
+		setSheet.Cells[1, 11].Value = "Image Path";
 
-		setSheet.Cells[$"E2:E{set.Parts.Length + 1}"].Style.Numberformat.Format = "@";
+		setSheet.Cells[$"E2:E{set.Parts.Count + 1}"].Style.Numberformat.Format = "@";
 
-		for (int partIndex = 0; partIndex < set.Parts.Length; partIndex++)
+		for (int partIndex = 0; partIndex < set.Parts.Count; partIndex++)
 		{
 			var part = set.Parts[partIndex];
 			int rowIndex = partIndex + 2;
@@ -240,6 +235,8 @@ class Program
 			setSheet.Cells[rowIndex, 7].Value = part.Name;
 			setSheet.Cells[rowIndex, 8].Value = partIndex + 1;
 			setSheet.Cells[rowIndex, 9].Formula = $"=IF(C{rowIndex}<=0, 1, 0)";
+			setSheet.Cells[rowIndex, 10].Value = part.ImgUrl;
+			setSheet.Cells[rowIndex, 11].Value = part.ImgPath;
 		}
 
 		settingsSheet.Columns[1].Width = 20;
@@ -266,7 +263,6 @@ class Program
 
 		workbook.CodeModule.Code = vbaFile.ReadToEnd();
 
-		// excel.SaveAs($"../{set.Name}.xlsx");
 		excel.SaveAs($"{directoryPath}../sets/{set.Name}.xlsm");
 	}
 }

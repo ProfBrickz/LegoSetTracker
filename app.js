@@ -192,6 +192,21 @@ if (settings.include.stickerParts) {
 	stickerParts = stickerParts.filter((part) => part.brickLinkId.includes('pb'))
 
 	set.parts = set.parts.concat(stickerParts)
+
+	for (let stickerPart of stickerParts) {
+		let baseId = stickerPart.brickLinkId.split('pb')[0]
+		let regularPart = set.parts.find(part =>
+			part.brickLinkId === baseId ||
+			part.brickLinkId === baseId + 'b'
+		)
+		if (!regularPart) continue
+
+		if (regularPart) regularPart.amountNeeded -= stickerPart.amountNeeded
+
+		if (regularPart.amountNeeded === 0) {
+			set.parts = set.parts.filter(part => part.brickLinkId !== baseId)
+		}
+	}
 }
 
 if (settings.include.minifigures) {
@@ -204,7 +219,7 @@ for (let part of set.parts) {
 	if (!part.imgPath) continue
 
 	while (!fs.existsSync(part.imgPath)) {
-		console.log(`downloading ${part.brickLinkId} Image`);
+		console.log(`downloading ${part.Name} Image`);
 
 		let response = await axios.get(
 			part.imgUrl,
