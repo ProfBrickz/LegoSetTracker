@@ -2,8 +2,12 @@
 import axios from 'axios'
 import * as inquirer from '@inquirer/prompts'
 import fs from 'fs'
-import { JSDOM } from "jsdom"
-import * as childProcess from "child_process";
+import { JSDOM } from 'jsdom'
+import * as childProcess from 'child_process'
+import { promisify } from 'util'
+import { finished } from 'stream'
+
+const finishedPromise = promisify(finished);
 
 // Settings
 const settings = JSON.parse(fs.readFileSync('settings.json'))
@@ -230,7 +234,7 @@ for (let part of set.parts) {
 	if (!part.imgPath) continue
 
 	while (!fs.existsSync(part.imgPath)) {
-		console.log(`downloading ${part.Name} Image`);
+		console.log(`downloading ${part.name} Image`);
 
 		let response = await axios.get(
 			part.imgUrl,
@@ -242,14 +246,14 @@ for (let part of set.parts) {
 			}
 		)
 
-		response.data.pipe(
-			fs.createWriteStream(
-				part.imgPath
-			)
-		)
+		const writeStream = fs.createWriteStream(part.imgPath)
+		response.data.pipe(writeStream)
+
+		await finishedPromise(writeStream);
 	}
 }
 
 fs.writeFileSync('set.json', JSON.stringify(set))
 
+console.log('Creating Excel File...');
 childProcess.execSync('dotnet run excelMaker/app.cs --project ./excelMaker/')
