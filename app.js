@@ -125,6 +125,8 @@ try {
 				set.id = input
 				set.name = setNameElement.textContent.trim()
 
+				console.log(`Found set: ${set.name} (${set.id})`);
+
 				return true
 			} catch (error) {
 				return error.message
