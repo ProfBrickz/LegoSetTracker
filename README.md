@@ -2,23 +2,33 @@
 Have you ever taken a bunch of Lego sets apart and put them in the same bin?
 Do you want to rebuild one of the sets?
 
-This program will make an Excel spreadsheet so you can keep track of the parts you found and what parts are left to find.
+This Electron application helps you track your Lego sets and pieces with an easy-to-use desktop interface.
 
 ## Installation
-- Install the .Net SDK from [Microsoft](https://dotnet.microsoft.com/en-us/)
-- Download this repository
-- Before running it download the modules with `npm i`, copy the `settings-template.json` file, and name the copy `settings.json`.
-- Google Chrome or Windows Defender may think the app.js file is a virus from the zip file. If this happens try having Windows Defender ignore the app.js file, temporarily turning off Windows Defender and turning it back on after the download, downloading it with git bash instead, or you could just fork it.
+Download the latest release from the [Releases page](https://github.com/username/LegoSetTracker/releases) and:
+- Run the installer (`.exe` or `.msi` file) for Windows
+- Extract the archive (`.zip`, `.7z`, or `.tar.gz` file) and run the executable
 
 ## Usage
-Start the program
-- Open the terminal
-- Run the following command `node app.js`
+Start the application:
+- Open the terminal in the project directory
+- Run the following command: `npm start` or `electron .`
 
-When the program runs you are prompted for the set number of the set you want to find.
-After inputting a set number you can change some of the settings for the Excel file it makes.
+For development:
+- Install [Node.js](https://nodejs.org/) from the official website
+- Download this repository
+- Install dependencies:
+  - For npm use `npm install`
+  - For pnpm use `pnpm install`
 
-In the Excel file, you should only change the green cells.
+The application will open in a desktop window where you can:
+- Navigate between different pages using the top navigation
+- Manage your Lego sets
+- Track total pieces
+- Configure settings
 
-There is a second worksheet for settings.
-You can change how it sorts the rows with the sort setting.
+## Development
+This is an Electron application with the following structure:
+- `src/main.js` - Main Electron process
+- `src/views/` - HTML templates and pages
+- `src/static/` - CSS styles and JavaScript files
