@@ -7,7 +7,7 @@
 
 ## Windows
 
-<table></table>
+<table>
   <tr>
     <td rowspan="2">Universal</td>
     <td>.exe Installer</td>
