@@ -16,6 +16,7 @@
     <td>.exe Portable</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_Portable.exe">Lego_Set_Tracker_@@VERSION@@_Windows_Portable.exe</a></td>
   </tr>
+
   <tr>
     <td rowspan="3">x86 64-Bit</td>
     <td>.zip</td>
@@ -29,6 +30,7 @@
     <td>.tar.gz</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86_64.tar.gz">Lego_Set_Tracker_@@VERSION@@_Windows_x86_64.tar.gz</a></td>
   </tr>
+
   <tr>
     <td rowspan="3">ARM 64-Bit</td>
     <td>.zip</td>
@@ -42,18 +44,19 @@
     <td>.tar.gz</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_arm64.tar.gz">Lego_Set_Tracker_@@VERSION@@_Windows_arm64.tar.gz</a></td>
   </tr>
+
   <tr>
     <td rowspan="3">x86 32-Bit</td>
     <td>.zip</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86.zip">Lego_Set_Tracker_@@VERSION@@_Windows_x86.zip</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.zip">Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.zip</a></td>
   </tr>
   <tr>
     <td>.7z</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86.7z">Lego_Set_Tracker_@@VERSION@@_Windows_x86.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.7z">Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.7z</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86.tar.gz">Lego_Set_Tracker_@@VERSION@@_Windows_x86.tar.gz</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.tar.gz">Lego_Set_Tracker_@@VERSION@@_Windows_x86_32.tar.gz</a></td>
   </tr>
 </table>
 
@@ -101,83 +104,85 @@
     <td>.tar.gz</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_x86_64.tar.gz">Lego_Set_Tracker_@@VERSION@@_Linux_x86_64.tar.gz</a></td>
   </tr>
+
   <tr>
     <td rowspan="10">ARM 64-Bit</td>
     <td>Flatpak</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.flatpak">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.flatpak</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.flatpak">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.flatpak</a></td>
   </tr>
   <tr>
     <td>AppImage</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.AppImage">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.AppImage</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.AppImage">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.AppImage</a></td>
   </tr>
   <tr>
     <td>.deb</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.deb">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.deb</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.deb">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.deb</a></td>
   </tr>
   <tr>
     <td>.rpm</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.rpm">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.rpm</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.rpm">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.rpm</a></td>
   </tr>
   <tr>
     <td>.pacman</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.7z">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.7z">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.7z</a></td>
   </tr>
   <tr>
     <td>.freebsd</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.freebsd">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.freebsd</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.freebsd">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.freebsd</a></td>
   </tr>
   <tr>
     <td>.apk</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.apk">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.apk</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.apk">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.apk</a></td>
   </tr>
   <tr>
     <td>.zip</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.zip">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.zip</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.zip">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.zip</a></td>
   </tr>
   <tr>
     <td>.7z</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.7z">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.7z">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.7z</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.tar.gz">Lego_Set_Tracker_@@VERSION@@_Linux_arm_64-Bit.tar.gz</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm64.tar.gz">Lego_Set_Tracker_@@VERSION@@_Linux_arm64.tar.gz</a></td>
   </tr>
+
   <tr>
     <td rowspan="10">ARM 32-Bit</td>
     <td>AppImage</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.AppImage">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.AppImage</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.AppImage">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.AppImage</a></td>
   </tr>
   <tr>
     <td>.deb</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.deb">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.deb</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.deb">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.deb</a></td>
   </tr>
   <tr>
     <td>.rpm</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.rpm">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.rpm</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.rpm">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.rpm</a></td>
   </tr>
   <tr>
     <td>.pacman</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.pacman">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.pacman</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.pacman">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.pacman</a></td>
   </tr>
   <tr>
     <td>.freebsd</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.freebsd">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.freebsd</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.freebsd">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.freebsd</a></td>
   </tr>
   <tr>
     <td>.apk</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.apk">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.apk</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.apk">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.apk</a></td>
   </tr>
   <tr>
     <td>.zip</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.zip">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.zip</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.zip">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.zip</a></td>
   </tr>
   <tr>
     <td>.7z</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.7z">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.7z">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.7z</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.tar.gz">Lego_Set_Tracker_@@VERSION@@_Linux_arm_32-Bit.tar.gz</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/@@VERSION@@/Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.tar.gz">Lego_Set_Tracker_@@VERSION@@_Linux_armv7l.tar.gz</a></td>
   </tr>
 </table>
 
