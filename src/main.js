@@ -1,7 +1,7 @@
 // Imports
 // import { app, BrowserWindow } from "electron";
 const { app, BrowserWindow } = require("electron");
-const { IS_DEV_MODE } = require('./constaints.js');
+const { IS_DEV_MODE } = require('./constants.js');
 
 
 // Variables

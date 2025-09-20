@@ -1,0 +1,10 @@
+const fs = require('fs');
+
+const PackageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const version = PackageJson.version;
+
+let releaseNotes = fs.readFileSync('scripts/releaseNotes-template.md', 'utf8');
+releaseNotes = releaseNotes.replace(/@@VERSION@@/g, version);
+
+fs.writeFileSync('RELEASE_NOTES.md', releaseNotes);
+console.log(`Release notes for version ${version} generated in RELEASE_NOTES.md`);

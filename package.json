@@ -19,7 +19,8 @@
   "scripts": {
     "start": "electron .",
     "dev": "nodemon",
-    "build": "electron-builder --windows --linux"
+    "build": "electron-builder --windows --linux",
+    "build-release-notes": "node ./scripts/buildReleaseNotes.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0"

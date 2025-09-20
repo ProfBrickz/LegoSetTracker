@@ -1,0 +1,16 @@
+armv
+autoremove
+Brickz
+electronjs
+electronuserland
+ERRORLEVEL
+findstr
+flathub
+joshwcomeau
+nsis
+pacman
+piccalil
+seccomp
+tailwindlabs
+textareas
+winstaller

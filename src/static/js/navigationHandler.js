@@ -1,6 +1,6 @@
 // Imports
 const fs = require("fs");
-const { IS_DEV_MODE } = require("../constaints.js");
+const { IS_DEV_MODE } = require("../constants.js");
 
 
 // Elements

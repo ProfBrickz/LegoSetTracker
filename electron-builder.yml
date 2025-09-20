@@ -8,7 +8,7 @@ files:
   - package.json
 
 win:
-  artifactName: "${productName} ${version} Windows ${arch}.${ext}"
+  artifactName: "${productName}_${version}_Windows_${arch}.${ext}"
   icon: assets/logo.ico
   target:
     - target: nsis
@@ -26,21 +26,21 @@ win:
     - target: tar.gz
       arch: [x64, ia32, arm64]
 nsis:
-  artifactName: "${productName} ${version} Windows Installer.exe"
+  artifactName: "${productName}_${version}_Windows_Installer.exe"
   oneClick: false
   installerIcon: assets/logo.ico
   uninstallerIcon: assets/logo.ico
   license: LICENSE
   allowToChangeInstallationDirectory: true
 nsisWeb:
-  artifactName: "${productName} ${version} Windows Web Installer.exe"
+  artifactName: "${productName}_${version}_Windows_Web_Installer.exe"
 portable:
-  artifactName: "${productName} ${version} Windows Portable.exe"
+  artifactName: "${productName}_${version}_Windows_Portable.exe"
 msi:
-  artifactName: "${productName} ${version} Windows Installer ${arch}.${ext}"
+  artifactName: "${productName}_${version}_Windows_Installer_${arch}.${ext}"
 
 linux:
-  artifactName: "${productName} ${version} Linux ${arch}.${ext}"
+  artifactName: "${productName}_${version}_Linux_${arch}.${ext}"
   category: Utility
   icon: assets/512x512.png
   target:
