@@ -3,5 +3,8 @@
       "./src/**/*"
    ],
    "ext": "html,css,js",
-   "exec": "electron ."
+   "exec": "electron .",
+   "env": {
+      "NODE_ENV": "development"
+   }
 }

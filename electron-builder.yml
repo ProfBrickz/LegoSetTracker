@@ -1,0 +1,80 @@
+appId: com.electron.lego_set_tracker
+productName: Lego Set Tracker
+afterAllArtifactBuild: ./scripts/afterAllArtifactBuild.js
+publish: null
+files:
+  - src/**/*
+  - node_modules/**/*
+  - package.json
+
+win:
+  artifactName: "${productName} ${version} Windows ${arch}.${ext}"
+  icon: assets/logo.ico
+  target:
+    - target: nsis
+      arch: [x64, ia32, arm64]
+    - target: portable
+      arch: [x64, ia32, arm64]
+    #! does not work in container
+    # - target: msi
+    #   arch: [x64, ia32, arm64]
+    #!
+    - target: 7z
+      arch: [x64, ia32, arm64]
+    - target: zip
+      arch: [x64, ia32, arm64]
+    - target: tar.gz
+      arch: [x64, ia32, arm64]
+nsis:
+  artifactName: "${productName} ${version} Windows Installer.exe"
+  oneClick: false
+  installerIcon: assets/logo.ico
+  uninstallerIcon: assets/logo.ico
+  license: LICENSE
+  allowToChangeInstallationDirectory: true
+nsisWeb:
+  artifactName: "${productName} ${version} Windows Web Installer.exe"
+portable:
+  artifactName: "${productName} ${version} Windows Portable.exe"
+msi:
+  artifactName: "${productName} ${version} Windows Installer ${arch}.${ext}"
+
+linux:
+  artifactName: "${productName} ${version} Linux ${arch}.${ext}"
+  category: Utility
+  icon: assets/512x512.png
+  target:
+    - target: AppImage
+      arch: [x64, arm64, armv7l]
+    - target: flatpak
+      arch: [x64, arm64]
+    #! does not work in container
+    # - target: snap
+    #   arch: [x64, arm64, armv7l]
+    #!
+    - target: deb
+      arch: [x64, arm64, armv7l]
+    - target: rpm
+      arch: [x64, arm64, armv7l]
+    - target: freebsd
+      arch: [x64, arm64, armv7l]
+    - target: pacman
+      arch: [x64, arm64, armv7l]
+    #! does not work in container
+    # - target: p5p
+    #   arch: [x64, arm64, armv7l]
+    #!
+    - target: apk
+      arch: [x64, arm64, armv7l]
+    - target: 7z
+      arch: [x64, arm64, armv7l]
+    - target: zip
+      arch: [x64, arm64, armv7l]
+    - target: tar.gz
+      arch: [x64, arm64, armv7l]
+flatpak:
+  runtime: org.freedesktop.Platform
+  runtimeVersion: 24.08
+  sdk: org.freedesktop.Sdk
+  base: org.electronjs.Electron2.BaseApp
+  baseVersion: 24.08

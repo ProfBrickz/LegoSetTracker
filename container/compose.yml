@@ -1,0 +1,17 @@
+services:
+  builder:
+    container_name: LegoSetTracker-builder
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/project:rw,Z
+    working_dir: /project
+    privileged: true
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - DOCKER_CLI_EXPERIMENTAL=enabled
+      - CI=true

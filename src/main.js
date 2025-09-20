@@ -1,5 +1,7 @@
 // Imports
-import { app, BrowserWindow } from "electron";
+// import { app, BrowserWindow } from "electron";
+const { app, BrowserWindow } = require("electron");
+const { IS_DEV_MODE } = require('./constaints.js');
 
 
 // Variables
@@ -13,7 +15,8 @@ function createWindow() {
       height: 540,
       webPreferences: {
          nodeIntegration: true,
-         contextIsolation: false
+         contextIsolation: false,
+         devTools: IS_DEV_MODE,
       }
    });
 
