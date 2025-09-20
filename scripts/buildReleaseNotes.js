@@ -3,7 +3,7 @@ const fs = require('fs');
 const PackageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const version = PackageJson.version;
 
-let releaseNotes = fs.readFileSync('scripts/releaseNotes-template.md', 'utf8');
+let releaseNotes = fs.readFileSync('scripts/RELEASE_NOTES-template.md', 'utf8');
 releaseNotes = releaseNotes.replace(/@@VERSION@@/g, version);
 
 fs.writeFileSync('RELEASE_NOTES.md', releaseNotes);
