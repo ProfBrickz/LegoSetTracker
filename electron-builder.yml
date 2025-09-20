@@ -1,5 +1,5 @@
 appId: com.electron.lego_set_tracker
-productName: Lego Set Tracker
+productName: Lego_Set_Tracker
 afterAllArtifactBuild: ./scripts/afterAllArtifactBuild.js
 publish: null
 files:
