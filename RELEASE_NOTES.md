@@ -71,7 +71,7 @@
   </tr>
   <tr>
     <td>.pacman</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_x86_64.7z">Lego_Set_Tracker_0.1.0_Linux_x86_64.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_x86_64.pacman">Lego_Set_Tracker_0.1.0_Linux_x86_64.pacman</a></td>
   </tr>
   <tr>
     <td>.freebsd</td>
@@ -113,7 +113,7 @@
   </tr>
   <tr>
     <td>.pacman</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_arm64.7z">Lego_Set_Tracker_0.1.0_Linux_arm64.7z</a></td>
+    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_arm64.pacman">Lego_Set_Tracker_0.1.0_Linux_arm64.pacman</a></td>
   </tr>
   <tr>
     <td>.freebsd</td>
