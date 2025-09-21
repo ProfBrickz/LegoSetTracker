@@ -1,9 +1,9 @@
 <!-- based on https://github.com/VSCodium/vscodium/blob/master/release_notes.md?plain=1 -->
 
+## Release Notes - 0.1.0
+
 - Set up basic app #16
 - Set up electron builder #17
-
-## Release Notes - 0.1.0
 
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/0.1.0>
 
