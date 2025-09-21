@@ -47,20 +47,6 @@
     <td>.tar.gz</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Windows_arm64.tar.gz">Lego_Set_Tracker_0.1.0_Windows_arm64.tar.gz</a></td>
   </tr>
-
-  <tr>
-    <td rowspan="3">x86 32-Bit</td>
-    <td>.zip</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Windows_x86_32.zip">Lego_Set_Tracker_0.1.0_Windows_x86_32.zip</a></td>
-  </tr>
-  <tr>
-    <td>.7z</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Windows_x86_32.7z">Lego_Set_Tracker_0.1.0_Windows_x86_32.7z</a></td>
-  </tr>
-  <tr>
-    <td>.tar.gz</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Windows_x86_32.tar.gz">Lego_Set_Tracker_0.1.0_Windows_x86_32.tar.gz</a></td>
-  </tr>
 </table>
 
 ## Linux
@@ -148,44 +134,6 @@
   <tr>
     <td>.tar.gz</td>
     <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_arm64.tar.gz">Lego_Set_Tracker_0.1.0_Linux_arm64.tar.gz</a></td>
-  </tr>
-
-  <tr>
-    <td rowspan="10">ARM 32-Bit</td>
-    <td>AppImage</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.AppImage">Lego_Set_Tracker_0.1.0_Linux_armv7l.AppImage</a></td>
-  </tr>
-  <tr>
-    <td>.deb</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.deb">Lego_Set_Tracker_0.1.0_Linux_armv7l.deb</a></td>
-  </tr>
-  <tr>
-    <td>.rpm</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.rpm">Lego_Set_Tracker_0.1.0_Linux_armv7l.rpm</a></td>
-  </tr>
-  <tr>
-    <td>.pacman</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.pacman">Lego_Set_Tracker_0.1.0_Linux_armv7l.pacman</a></td>
-  </tr>
-  <tr>
-    <td>.freebsd</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.freebsd">Lego_Set_Tracker_0.1.0_Linux_armv7l.freebsd</a></td>
-  </tr>
-  <tr>
-    <td>.apk</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.apk">Lego_Set_Tracker_0.1.0_Linux_armv7l.apk</a></td>
-  </tr>
-  <tr>
-    <td>.zip</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.zip">Lego_Set_Tracker_0.1.0_Linux_armv7l.zip</a></td>
-  </tr>
-  <tr>
-    <td>.7z</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.7z">Lego_Set_Tracker_0.1.0_Linux_armv7l.7z</a></td>
-  </tr>
-  <tr>
-    <td>.tar.gz</td>
-    <td><a href="https://github.com/ProfBrickz/LegoSetTracker/releases/download/0.1.0/Lego_Set_Tracker_0.1.0_Linux_armv7l.tar.gz">Lego_Set_Tracker_0.1.0_Linux_armv7l.tar.gz</a></td>
   </tr>
 </table>
 
