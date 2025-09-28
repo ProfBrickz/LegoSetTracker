@@ -5,6 +5,9 @@ const { IS_DEV_MODE } = require('./constants.js');
 
 
 // Variables
+/**
+ * @type {Electron.BrowserWindow | null}
+ */
 let mainWindow;
 
 

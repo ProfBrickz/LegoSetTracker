@@ -1,6 +1,11 @@
 // Imports
 const fs = require("fs");
-const { IS_DEV_MODE } = require("../constants.js");
+const path = require("path");
+
+
+// Constants
+const FILE_PATH = path.dirname(__filename);
+const { IS_DEV_MODE } = require(path.resolve(FILE_PATH, "../constants.js"));
 
 
 // Elements
@@ -8,7 +13,7 @@ let contentElement = document.getElementById("content");
 
 
 // Variables
-let pagesFolderPath;
+let pagesFolderPath = "";
 if (IS_DEV_MODE) {
    pagesFolderPath = "src/views/pages/";
 } else {
@@ -44,7 +49,8 @@ function loadPage(page) {
 // Add event listeners to navigation links
 document.querySelectorAll("nav a").forEach(link => {
    link.addEventListener("click", function () {
-      const page = this.getAttribute("data-page");
+
+      const page = link.getAttribute("data-page") || "";
       loadPage(page);
    });
 });
