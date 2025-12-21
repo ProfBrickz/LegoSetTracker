@@ -15,15 +15,17 @@
     "url": "git+https://github.com/ProfBrickz/LegoSetTracker.git"
   },
   "main": "src/main.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "dev": "nodemon",
     "build": "electron-builder --windows --linux",
-    "build-release-notes": "node ./scripts/buildReleaseNotes.js"
+    "build-release-notes": "node ./scripts/buildReleaseNotes.js",
+    "test": "node ./src/webscraper.js"
   },
   "dependencies": {
-    "better-sqlite3": "^12.2.0"
+    "better-sqlite3": "^12.2.0",
+    "jsdom": "^27.3.0"
   },
   "devDependencies": {
     "@types/electron": "^1.4.38",

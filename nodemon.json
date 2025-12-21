@@ -1,10 +1,10 @@
 {
-   "watch": [
-      "./src/**/*"
-   ],
-   "ext": "html,css,js",
-   "exec": "electron .",
-   "env": {
-      "NODE_ENV": "development"
-   }
+	"watch": [
+		"./src/**/*"
+	],
+	"ext": "html,css,js",
+	"exec": "electron .",
+	"env": {
+		"NODE_ENV": "development"
+	}
 }
