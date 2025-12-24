@@ -1,6 +1,7 @@
 // Imports
-import * as fs from "fs";
-import * as path from "path";
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
 
 
 // Constants
@@ -15,6 +16,16 @@ const ARCHITECTURE_RENAME_MAP = {
 	"aarch64": "arm64"
 };
 
+
+// Functions
+/**
+ * @param {Buffer} data
+ * @param {string} algorithm 
+ */
+function calculateChecksum(data, algorithm) {
+	const hash = crypto.hash(algorithm, data);
+	return hash;
+}
 
 /**
  * Moves a file to a new folder with updated naming conventions.
@@ -50,6 +61,14 @@ function moveFile(oldFilePath) {
 
 	// Move the file to the new folder
 	fs.renameSync(oldFilePath, newFilePath);
+
+	// Generate sha1 and sha256 checksums
+	let data = fs.readFileSync(newFilePath);
+	let sha1Hash = calculateChecksum(data, "sha1");
+	let sha256Hash = calculateChecksum(data, "sha256");
+
+	fs.writeFileSync(`${newFilePath}.sha1`, sha1Hash);
+	fs.writeFileSync(`${newFilePath}.sha256`, sha256Hash);
 
 	return;
 }
