@@ -1,10 +1,10 @@
 // Imports
-const fs = require("fs");
-const path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
 
 // Constants
-const BUILD_FOLDER = path.join(__dirname, "../builds");
+const BUILD_FOLDER = path.join(import.meta.dirname, "../builds");
 const ARCHIVE_EXTENSIONS = [".7z", ".zip", ".tar.gz"];
 const OPERATING_SYSTEMS = ["Windows", "Linux", "Mac"];
 const ARCHITECTURES = ["x86_64", "x86_32", "arm64", "armv7l"];
@@ -17,7 +17,9 @@ const ARCHITECTURE_RENAME_MAP = {
 
 
 /**
- * @param {string} oldFilePath - The path of the file
+ * Moves a file to a new folder with updated naming conventions.
+ * 
+ * @param {string} oldFilePath - The path of the file to move.
  */
 function moveFile(oldFilePath) {
 	// Skip nsis.7z files
@@ -53,10 +55,10 @@ function moveFile(oldFilePath) {
 }
 
 /**
- * Handles post-packaging file operations for Electron Builder
- * @param {import("electron-builder").BuildResult} result - The build result object from Electron Builder.
- * @returns {Promise<void>}
-*/
+ * Handles the completion of artifact builds by creating necessary folder structures and moving artifacts.
+ * 
+ * @param {import("electron-builder").BuildResult} result The result object containing `artifactPaths`.
+ */
 async function artifactBuildCompleted(result) {
 	// Create the build folder structure.
 	if (!fs.existsSync(BUILD_FOLDER)) fs.mkdirSync(BUILD_FOLDER);
@@ -91,4 +93,4 @@ async function artifactBuildCompleted(result) {
 
 
 // Export the function as the default export
-exports.default = artifactBuildCompleted;
+export default artifactBuildCompleted;

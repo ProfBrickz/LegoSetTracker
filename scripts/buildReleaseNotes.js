@@ -1,4 +1,6 @@
-const fs = require('fs');
+// Imports
+import fs from 'fs';
+
 
 const PackageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const version = PackageJson.version;

@@ -1,11 +1,6 @@
 // Imports
-const fs = require("fs");
-const path = require("path");
-
-
-// Constants
-const FILE_PATH = path.dirname(__filename);
-const { IS_DEV_MODE } = require(path.resolve(FILE_PATH, "../constants.js"));
+const fs = require('fs');
+const { IS_DEV_MODE } = require('../constants.js');
 
 
 // Elements
@@ -24,7 +19,8 @@ if (IS_DEV_MODE) {
 // Functions
 /**
  * Loads the specified page into the content element.
- * @param {string} page - The name of the page to load (without extension).
+ * 
+ * @param {string} page The name of the page to load (without extension)
  * @returns {void}
  */
 function loadPage(page) {

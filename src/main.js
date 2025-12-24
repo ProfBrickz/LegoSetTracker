@@ -1,17 +1,19 @@
 // Imports
-// import { app, BrowserWindow } from "electron";
-const { app, BrowserWindow } = require("electron");
-const { IS_DEV_MODE } = require('./constants.js');
+import { app, BrowserWindow } from "electron";
+import { IS_DEV_MODE } from "./constants.js";
 
 
 // Variables
 /**
- * @type {Electron.BrowserWindow | null}
+ * @type {BrowserWindow | null}
  */
 let mainWindow;
 
 
 // Functions
+/**
+ * Creates a new BrowserWindow instance and loads the main application view.
+ */
 function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 960,

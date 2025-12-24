@@ -8,26 +8,15 @@ This Electron application helps you track your Lego sets and pieces with an easy
 ## Installation
 Download the latest release from the [Releases page](https://github.com/username/LegoSetTracker/releases) and:
 - Run the installer (`.exe` or `.msi` file) for Windows
-- Extract the archive (`.zip`, `.7z`, or `.tar.gz` file) and run the executable
-
-
-## Usage
-Start the application:
-- Open the terminal in the project directory
-- Run the following command: `npm start` or `electron .`
+- Extract the archive (`.zip`, `.7z`, or `.tar.gz` file) and run the application
 
 For development:
 - Install [Node.js](https://nodejs.org/) from the official website
-- Download this repository
+- Download or clone this repository
 - Install dependencies:
   - For npm use `npm install`
   - For pnpm use `pnpm install`
-
-The application will open in a desktop window where you can:
-- Navigate between different pages using the top navigation
-- Manage your Lego sets
-- Track total pieces
-- Configure settings
+- Start the application using `npm start` or `electron .`
 
 
 ## Development
@@ -37,8 +26,21 @@ This is an Electron application with the following structure:
 - `src/static/` - CSS styles and JavaScript files
 
 
-## License
+## Versioning
+This project uses a **custom versioning system** based on the `Major.Minor.Patch` format, with the following definitions:
 
+- **Major**: Incremented for **large-scale changes**, **core feature additions**, **reaching a milestone** (e.g., `0.X.X` → `1.0.0`), or when **changes from a series of Minor versions accumulate into a significant update**.
+
+- **Minor**: Incremented for **new features**, **major bug fixes**, or **refactoring** that may require changes to existing functionality. **Breaking changes** (e.g., API changes or removal of features) are allowed in Minor versions, which differs from standard Semantic Versioning (SemVer).
+
+- **Patch**: Incremented for **small bug fixes**, **quality-of-life improvements**, or **minor feature additions** that probably do not break compatibility or require significant changes to the system.
+
+> **Note**: This versioning system is tailored for this project and may differ from standard Semantic Versioning (SemVer), which prohibits breaking changes in Minor versions. This approach allows for more flexibility during development and feature additions.
+
+> **Note**: I will try to mention in the patch notes which updates have breaking changes and what they are. If you find any breaking changes, please make an issue for it.
+
+
+## License
 This project is licensed under the [GNU General Public License v2.0 only](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
 
 > [!IMPORTANT]

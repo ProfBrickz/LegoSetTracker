@@ -21,3 +21,4 @@ seccomp
 tailwindlabs
 textareas
 winstaller
+webscraper

@@ -39,7 +39,7 @@
  * @typedef SetPiece
  * @type {Object}
  * @property {Piece} piece The LEGO piece that is part of the set
- * @property {SetPieceType} type 
+ * @property {SetPieceType} type
  * @property {number} amountNeeded The number of that piece needed to complete the set
 */
 
