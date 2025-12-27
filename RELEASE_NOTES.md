@@ -1,6 +1,6 @@
 <!-- based on https://github.com/VSCodium/vscodium/blob/master/release_notes.md?plain=1 -->
 
-## Release Notes - 0.2.1
+## Release Notes - v0.2.1
 
 - Build script now makes SHA1 and SHA256 checksums
 - Release notes generator now uses a file for the custom notes
