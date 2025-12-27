@@ -1,6 +1,6 @@
 <!-- based on https://github.com/VSCodium/vscodium/blob/master/release_notes.md?plain=1 -->
 
-## Release Notes - @@VERSION@@
+## Release Notes - v@@VERSION@@
 
 @@NOTES@@
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/@@VERSION@@>
