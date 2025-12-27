@@ -29,7 +29,7 @@ This is an Electron application with the following structure:
 ## Versioning
 This project uses a **custom versioning system** based on the `Major.Minor.Patch` format, with the following definitions:
 
-- **Major**: Incremented for **large-scale changes**, **core feature additions**, **reaching a milestone** (e.g., `0.X.X` → `1.0.0`), or when **changes from a series of Minor versions accumulate into a significant update**.
+- **Major**: Incremented for **large-scale changes**, **core feature additions**, **reaching a milestone** (e.g., `v0.X.X` → `v1.0.0`), or when **changes from a series of Minor versions accumulate into a significant update**.
 
 - **Minor**: Incremented for **new features**, **major bug fixes**, or **refactoring** that may require changes to existing functionality. **Breaking changes** (e.g., API changes or removal of features) are allowed in Minor versions, which differs from standard Semantic Versioning (SemVer).
 

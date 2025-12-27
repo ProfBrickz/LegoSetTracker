@@ -5,7 +5,6 @@
 @@NOTES@@
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/@@VERSION@@>
 
-
 ## Windows
 
 <table>
