@@ -1,7 +1,8 @@
 // Imports
 import { execSync } from "child_process";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
+;
 
 
 // Types
@@ -46,7 +47,7 @@ function checkContainerExists() {
 	try {
 		return execSync(
 			`${containerRuntime} ps -a --format="{{.Names}}"`,
-			{ encoding: "utf-8", stdio: "inherit" }
+			{ encoding: "utf8", stdio: "inherit" }
 		).split("\n").includes("LegoSetTracker-builder");
 	} catch (error) {
 		return false;
@@ -81,7 +82,7 @@ function manageContainer() {
 
 	let containerFolder = execSync(
 		`${containerRuntime} inspect ${CONTAINER_NAME} --format="{{range .Mounts}}{{.Source}}\n{{end}}"`,
-		{ encoding: "utf-8", stdio: "inherit" }
+		{ encoding: "utf8", stdio: "inherit" }
 	).trim();
 
 	if (currentFolder !== containerFolder) {
@@ -139,7 +140,7 @@ try {
 
 // Run build
 console.log("Running electron-builder...");
-execSync(`${containerRuntime} exec --env CI=true LegoSetTracker-builder pnpm electron-builder --windows --linux`, { stdio: "inherit" });
+execSync(`${containerRuntime} exec --env CI=true LegoSetTracker-builder pnpm run electron-build`, { stdio: "inherit" });
 
 // Stop container
 execSync(`${containerRuntime} stop LegoSetTracker-builder`, { stdio: "inherit" });

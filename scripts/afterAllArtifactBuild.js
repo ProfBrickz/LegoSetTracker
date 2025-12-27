@@ -51,24 +51,19 @@ function moveFile(oldFilePath) {
 		fileName = fileName.replace(" Installer", "");
 	}
 
-	// Get the operating system and architecture from the file name
-	let operatingSystem = OPERATING_SYSTEMS.find(os => fileName.includes(os)) || "";
-	let architecture = ARCHITECTURES.find(arch => fileName.includes(arch)) || "";
-	let folder = path.join(BUILD_FOLDER, operatingSystem, architecture);
-
 	// Find the folder to move the file to
-	let newFilePath = path.join(folder, fileName);
+	let newFilePath = path.join(BUILD_FOLDER, fileName);
 
 	// Move the file to the new folder
 	fs.renameSync(oldFilePath, newFilePath);
 
-	// Generate sha1 and sha256 checksums
+	// Generate SHA1 and SHA256 checksums
 	let data = fs.readFileSync(newFilePath);
-	let sha1Hash = calculateChecksum(data, "sha1");
-	let sha256Hash = calculateChecksum(data, "sha256");
+	let sha1Checksum = calculateChecksum(data, "sha1");
+	let sha256Checksum = calculateChecksum(data, "sha256");
 
-	fs.writeFileSync(`${newFilePath}.sha1`, sha1Hash);
-	fs.writeFileSync(`${newFilePath}.sha256`, sha256Hash);
+	fs.writeFileSync(`${newFilePath}.sha1`, sha1Checksum);
+	fs.writeFileSync(`${newFilePath}.sha256`, sha256Checksum);
 
 	return;
 }

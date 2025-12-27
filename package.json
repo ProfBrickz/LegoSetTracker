@@ -19,6 +19,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "nodemon",
+    "electron-build": "electron-builder --windows --linux",
     "build": "node ./scripts/build.js",
     "build-release-notes": "node ./scripts/buildReleaseNotes.js"
   },

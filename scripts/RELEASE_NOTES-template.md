@@ -2,6 +2,7 @@
 
 ## Release Notes - @@VERSION@@
 
+@@NOTES@@
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/@@VERSION@@>
 
 
