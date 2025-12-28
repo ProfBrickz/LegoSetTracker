@@ -7,23 +7,25 @@ settings:
 importers:
 
   .:
-    dependencies:
-      better-sqlite3:
-        specifier: ^12.2.0
-        version: 12.5.0
-      jsdom:
-        specifier: ^27.3.0
-        version: 27.3.0
     devDependencies:
       '@types/electron':
         specifier: ^1.4.38
         version: 1.6.12
+      better-sqlite3:
+        specifier: ^12.2.0
+        version: 12.5.0
+      ejs:
+        specifier: ^3.1.10
+        version: 3.1.10
       electron:
-        specifier: ^37.2.1
-        version: 37.10.3
+        specifier: ^39.2.7
+        version: 39.2.7
       electron-builder:
         specifier: ^26.0.12
         version: 26.0.12(electron-builder-squirrel-windows@26.0.12)
+      jsdom:
+        specifier: ^27.3.0
+        version: 27.3.0
       nodemon:
         specifier: ^3.1.10
         version: 3.1.11
@@ -567,8 +569,8 @@ packages:
     resolution: {integrity: sha512-bO3y10YikuUwUuDUQRM4KfwNkKhnpVO7IPdbsrejwN9/AABJzzTQ4GeHwyzNSrVO+tEH3/Np255a3sVZpZDjvg==}
     engines: {node: '>=8.0.0'}
 
-  electron@37.10.3:
-    resolution: {integrity: sha512-3IjCGSjQmH50IbW2PFveaTzK+KwcFX9PEhE7KXb9v5IT8cLAiryAN7qezm/XzODhDRlLu0xKG1j8xWBtZ/bx/g==}
+  electron@39.2.7:
+    resolution: {integrity: sha512-KU0uFS6LSTh4aOIC3miolcbizOFP7N1M46VTYVfqIgFiuA2ilfNaOHLDS9tCMvwwHRowAsvqBrh9NgMXcTOHCQ==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
 
@@ -1825,7 +1827,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 22.19.3
+      '@types/node': 25.0.3
       '@types/responselike': 1.0.3
 
   '@types/debug@4.1.12':
@@ -1834,7 +1836,7 @@ snapshots:
 
   '@types/electron@1.6.12':
     dependencies:
-      electron: 37.10.3
+      electron: 39.2.7
     transitivePeerDependencies:
       - supports-color
 
@@ -1846,7 +1848,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.19.3
+      '@types/node': 25.0.3
 
   '@types/ms@2.1.0': {}
 
@@ -1866,14 +1868,14 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.19.3
+      '@types/node': 25.0.3
 
   '@types/verror@1.10.11':
     optional: true
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.19.3
+      '@types/node': 25.0.3
     optional: true
 
   '@xmldom/xmldom@0.8.11': {}
@@ -2352,7 +2354,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron@37.10.3:
+  electron@39.2.7:
     dependencies:
       '@electron/get': 2.0.3
       '@types/node': 22.19.3

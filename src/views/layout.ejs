@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Hello from Electron renderer!</title>
+
+	<link rel="stylesheet" href="../static/css/reset.css" />
+	<link rel="stylesheet" href="../static/css/style.css" />
+</head>
+
+<body>
+	<nav>
+		<a onclick="electronAPI.navigate('home')">Home</a>
+		<br>
+		<br>
+		<a onclick="electronAPI.navigate('sets')">Sets</a>
+		<br>
+		<br>
+		<a onclick="electronAPI.navigate('total-pieces')">Total Pieces</a>
+		<br>
+		<br>
+		<a onclick="electronAPI.navigate('settings')">Setting</a>
+		<br>
+		<br>
+		<a onclick="(() => {
+			let textElement = /** @type {HTMLInputElement} */ (document.getElementById('text'));
+
+			electronAPI.navigate('test', { text: textElement.value || textElement.placeholder });
+		})()">Test</a>
+	</nav>
+
+	<br>
+	<br>
+	<input type="text" id="text" placeholder="hi">
+	<main>
+		<%- include(body) %>
+	</main>
+
+</body>
+
+</html>

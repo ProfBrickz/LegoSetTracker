@@ -1,16 +1,55 @@
 // Imports
-import { app, BrowserWindow } from "electron";
-import { IS_DEV_MODE } from "./constants.js";
+import ejs from 'ejs';
+import { app, BrowserWindow, ipcMain } from "electron";
+import fs from 'fs';
+import path from 'path';
+import { DIR_NAME, IS_DEV_MODE } from "./constants.js";
 
 
+// Constants
+const VIEWS_PATH = path.join(DIR_NAME, "views");
+
+// Constants
 // Variables
-/**
- * @type {BrowserWindow | null}
- */
+/** @type {BrowserWindow | null} */
 let mainWindow;
 
 
 // Functions
+/**
+ * Renders an EJS template with the given parameters.
+ * 
+ * @param {string} page The name of the EJS template file to render.
+ * @param {Object} [params] The parameters to pass to the EJS template.
+ * @returns {string} The rendered HTML.
+ */
+function renderPage(page, params = {}) {
+	let layoutPath = path.join(VIEWS_PATH, "layout.ejs");
+	let pagePath = path.join(VIEWS_PATH, "pages", `${page}.ejs`);
+
+	let layoutEJS = fs.readFileSync(layoutPath, "utf8");
+
+	let html = ejs.render(layoutEJS, { ...params, body: pagePath });
+
+	return html;
+}
+
+/**
+ * Loads the specified page into the main window.
+ * 
+ * @param {string} page The name of the page to load.
+ * @param {Object} [params] The parameters to pass to the page.
+ * @returns {void}
+ */
+function loadPage(page, params = {}) {
+	if (!mainWindow) return;
+
+	let html = renderPage(page, params);
+	mainWindow.loadURL(
+		"data:text/html;charset=UTF-8," + encodeURIComponent(html)
+	);
+}
+
 /**
  * Creates a new BrowserWindow instance and loads the main application view.
  */
@@ -19,13 +58,13 @@ function createWindow() {
 		width: 960,
 		height: 540,
 		webPreferences: {
-			nodeIntegration: true,
-			contextIsolation: false,
+			contextIsolation: true,
 			devTools: IS_DEV_MODE,
+			preload: path.join(DIR_NAME, "preload.js")
 		}
 	});
 
-	mainWindow.loadFile("src/views/layout.html");
+	loadPage("home");
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;
@@ -52,3 +91,18 @@ app.on("window-all-closed", () => {
 		app.quit();
 	}
 });
+
+
+// IPC
+ipcMain.on("navigate",
+	/**
+	 * @param {Electron.IpcMainEvent} event 
+	 * @param {Object} data 
+	 * @param {string} data.page The page to navigate to.
+	 * @param {Object} data.params The parameters for the page.
+	 * @returns {void}
+	 */
+	(event, { page, params }) => {
+		loadPage(page, params);
+	}
+);

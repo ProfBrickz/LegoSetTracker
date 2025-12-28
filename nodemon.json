@@ -2,7 +2,7 @@
 	"watch": [
 		"./src/**/*"
 	],
-	"ext": "html,css,js",
+	"ext": "ejs,css,js",
 	"exec": "electron .",
 	"env": {
 		"NODE_ENV": "development"
