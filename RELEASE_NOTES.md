@@ -5,7 +5,6 @@
 - Switched from using javascript to change pages, to using EJS
 - Disabled nodeIntegration, and enabled contextIsolation for security reasons
 - Added ipc and a preload script for communication between the main process and renderer process
-- Changed better-sqlite3 and jsdom to dev dependencies
 - Added test page to test parameters with pages
 
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/0.2.2>
