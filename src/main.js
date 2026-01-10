@@ -18,7 +18,7 @@ let mainWindow;
 // Functions
 /**
  * Renders an EJS template with the given parameters.
- * 
+ *
  * @param {string} page The name of the EJS template file to render.
  * @param {Object} [params] The parameters to pass to the EJS template.
  * @returns {string} The rendered HTML.
@@ -36,7 +36,7 @@ function renderPage(page, params = {}) {
 
 /**
  * Loads the specified page into the main window.
- * 
+ *
  * @param {string} page The name of the page to load.
  * @param {Object} [params] The parameters to pass to the page.
  * @returns {void}
@@ -96,8 +96,8 @@ app.on("window-all-closed", () => {
 // IPC
 ipcMain.on("navigate",
 	/**
-	 * @param {Electron.IpcMainEvent} event 
-	 * @param {Object} data 
+	 * @param {Electron.IpcMainEvent} event
+	 * @param {Object} data
 	 * @param {string} data.page The page to navigate to.
 	 * @param {Object} data.params The parameters for the page.
 	 * @returns {void}

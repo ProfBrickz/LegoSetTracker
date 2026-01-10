@@ -7,7 +7,7 @@ import "./types.js";
 // Functions
 /**
  * Fetches and parses the HTML content of a webpage from the given URL, returning the parsed Document object.
- * 
+ *
  * @param {string} url The URL of the webpage to fetch and parse.
  * @returns {Promise<Document>} A Promise that resolves to the parsed Document object once the request is successful.
  * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
@@ -26,10 +26,10 @@ async function getWebpage(url) {
 
 /**
  * Fetches and parses LEGO set information from BrickLink's website.
- * 
- * This function retrieves detailed information about a LEGO set (name, number, theme, year, 
+ *
+ * This function retrieves detailed information about a LEGO set (name, number, theme, year,
  * piece count, and minifigure count) by querying BrickLink's catalog and parsing the HTML response.
- * 
+ *
  * @param {string} setNumberInput The LEGO set number (e.g., "8699-1") used to construct the query URL.
  * @returns {Promise<SetInfo>} A Promise that resolves to an object containing the parsed set information.
  * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
@@ -77,12 +77,12 @@ async function getSetInfo(setNumberInput) {
 
 /**
  * Fetches and parses LEGO set pieces information from BrickLink's catalog.
- * 
- * This function retrieves detailed information about all items in a LEGO set, 
+ *
+ * This function retrieves detailed information about all items in a LEGO set,
  * categorized into "Regular Items", "Minifigures", "Extra Items", and "Counterparts".
  * It parses the HTML table structure from BrickLink's inventory page to extract
  * the relevant data for each category.
- * 
+ *
  * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
  * @returns {Promise<SetPieceInfo>} A Promise that resolves to an object containing categorized piece data.
  * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
@@ -103,11 +103,11 @@ async function getSetPieces(setNumber) {
 
 /**
  * Extracts rows corresponding to a specific section from a table.
- * 
+ *
  * This function identifies the rows in a table that belong to a specific section
  * (e.g., "Regular Items", "Minifigures") by matching the section name in the category rows.
  * It then slices the relevant rows and processes them to extract piece data.
- * 
+ *
  * @param {string} section The name of the section to extract (e.g., "Regular Items:").
  * @param {HTMLTableRowElement[]} rows An array of table rows to search through.
  * @param {NodeListOf<HTMLTableRowElement>} categories A list of category rows used to identify section boundaries.
@@ -150,12 +150,12 @@ function getSection(section, rows, categories) {
 
 /**
  * Extracts piece data from an array of table rows.
- * 
+ *
  * This function processes each row to extract detailed information about a LEGO piece,
  * including its bricklink ID, image URL, name, color, category, quantity needed, and
  * color mapping from a predefined color list. It constructs and returns an array of
  * `SetPiece` objects representing the extracted data.
- * 
+ *
  * @param {HTMLTableRowElement[]} categoryRows An array of table rows containing piece details.
  * @returns {SetPiece[]} An array of `SetPiece` objects representing the extracted piece data.
  */
@@ -209,12 +209,12 @@ function getSectionPieces(categoryRows) {
 
 /**
  * Fetches and processes color data from BrickLink's color guide page.
- * 
+ *
  * This function retrieves the color guide page from BrickLink's website, parses the HTML
  * to extract color information, and returns an array of color objects containing
  * BrickLink and LEGO-specific identifiers and names. It relies on a specific HTML structure
  * for element selection.
- * 
+ *
  * @returns {Promise<Color[]>} A promise that resolves to an array of `Color` objects.
  * @throws {Error} If the DOM structure is invalid or required elements are missing.
  */
@@ -246,7 +246,7 @@ async function getColors() {
 
 /**
  * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
- * 
+ *
  * @param {string} minifigId The BrickLink ID of the minifig (e.g., "3523").
  * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
  */
@@ -261,7 +261,7 @@ async function getMinifigPieces(minifigId) {
 
 /**
  * Fetches composite piece data for a specific LEGO part in a given color from BrickLink's catalog.
- * 
+ *
  * @param {string} pieceId The BrickLink ID of the LEGO piece (e.g., "3003").
  * @param {Color} color A color object containing the `bricklinkId` of the desired color.
  * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the piece in the specified color.
@@ -285,7 +285,7 @@ async function getCompositePiece(pieceId, color) {
 
 /**
  * Downloads an image from the specified URL to the given download path.
- * 
+ *
  * @param {string} url The URL of the image to download.
  * @param {string} downloadPath The file path where the image will be saved.
  * @returns {Promise<void>} A promise that resolves when the image is successfully downloaded or if the target path already exists.
@@ -312,7 +312,7 @@ async function downloadImage(url, downloadPath) {
 
 /**
  * Downloads the set image from BrickLink for the specified set number.
- * 
+ *
  * @param {string} setNumber The set number (e.g., "10179-1").
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
@@ -323,7 +323,7 @@ async function downloadSetImage(setNumber) {
 
 /**
  * Downloads the piece image from BrickLink for the specified piece ID and color ID.
- * 
+ *
  * @param {string} pieceId The piece ID (e.g., "3003").
  * @param {number} colorId The color ID (e.g., 11 for red).
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
@@ -335,7 +335,7 @@ async function downloadPieceImage(pieceId, colorId) {
 
 /**
  * Downloads the minifig image from BrickLink for the specified minifig ID.
- * 
+ *
  * @param {string} minifigId The minifig ID (e.g., "10179-1").
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
@@ -346,7 +346,7 @@ async function downloadMinifigImage(minifigId) {
 
 /**
  * Retrieves a LEGO set's information by combining set details and its pieces.
- * 
+ *
  * @param {string} setNumber The LEGO set number (e.g., "10179-1").
  * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
  * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
@@ -363,7 +363,7 @@ async function getLegoSet(setNumber) {
 
 /**
  * Downloads all images associated with a LEGO set, including set image, pieces, and minifigs.
- * 
+ *
  * @param {LegoSet} legoSet The LEGO set object containing set details, pieces, and minifigs.
  * @returns {Promise<void>} A promise that resolves when all images are downloaded or if no new images are needed.
  * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
