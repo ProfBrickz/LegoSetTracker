@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Hello from Electron renderer!</title>
+
+	<link rel="stylesheet" href="../../static/css/reset.css" />
+	<link rel="stylesheet" href="../../static/css/themes.css" />
+	<link rel="stylesheet" href="../../static/css/style.css" />
+
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			window.electronAPI.loadPage('home');
+		});
+	</script>
+</head>
+
+<body data-theme="light">
+	<nav>
+		<a onclick="electronAPI.loadPage('home')">Home</a>
+		<a onclick="electronAPI.loadPage('sets')">Sets</a>
+		<a onclick="electronAPI.loadPage('total-pieces')">Total Pieces</a>
+		<a onclick="electronAPI.loadPage('settings')">Setting</a>
+	</nav>
+
+	<main id="main">
+		<!-- Rendered page content will appear here -->
+	</main>
+
+</body>
+
+</html>

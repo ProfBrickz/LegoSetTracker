@@ -8,6 +8,9 @@ import { DIR_NAME, IS_DEV_MODE } from "./constants.js";
 
 // Constants
 const VIEWS_PATH = path.join(DIR_NAME, "views");
+const PAGES_PATH = path.join(VIEWS_PATH, "pages");
+const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
+
 
 // Constants
 // Variables
@@ -24,30 +27,39 @@ let mainWindow;
  * @returns {string} The rendered HTML.
  */
 function renderPage(page, params = {}) {
-	let layoutPath = path.join(VIEWS_PATH, "layout.ejs");
-	let pagePath = path.join(VIEWS_PATH, "pages", `${page}.ejs`);
+	let pagePath = path.join(PAGES_PATH, `${page}.ejs`);
+	let pageEJS = fs.readFileSync(pagePath, 'utf-8');
 
-	let layoutEJS = fs.readFileSync(layoutPath, "utf8");
-
-	let html = ejs.render(layoutEJS, { ...params, body: pagePath });
+	let html = ejs.render(pageEJS, params);
 
 	return html;
 }
+
 
 /**
  * Loads the specified page into the main window.
  *
  * @param {string} page The name of the page to load.
  * @param {Object} [params] The parameters to pass to the page.
- * @returns {void}
+ * @returns {string}
  */
 function loadPage(page, params = {}) {
-	if (!mainWindow) return;
+	if (!mainWindow) return "";
 
 	let html = renderPage(page, params);
-	mainWindow.loadURL(
-		"data:text/html;charset=UTF-8," + encodeURIComponent(html)
-	);
+	return html;
+}
+
+/**
+ * Loads a layout HTML file into the main window.
+ *
+ * @param {string} layout The name of the layout to load.
+ * @returns {void}
+ */
+function loadLayout(layout) {
+	if (!mainWindow) return;
+
+	mainWindow.loadFile(path.join(LAYOUTS_PATH, `${layout}.html`));
 }
 
 /**
@@ -64,7 +76,7 @@ function createWindow() {
 		}
 	});
 
-	loadPage("home");
+	loadLayout("main");
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;
@@ -94,7 +106,7 @@ app.on("window-all-closed", () => {
 
 
 // IPC
-ipcMain.on("navigate",
+ipcMain.on("loadPage",
 	/**
 	 * @param {Electron.IpcMainEvent} event
 	 * @param {Object} data
@@ -103,6 +115,10 @@ ipcMain.on("navigate",
 	 * @returns {void}
 	 */
 	(event, { page, params }) => {
-		loadPage(page, params);
+		if (!mainWindow) return;
+
+		let html = loadPage(page, params);
+
+		mainWindow.webContents.send("pageLoaded", { html });
 	}
 );

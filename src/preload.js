@@ -1,5 +1,6 @@
-// import { contextBridge, ipcRenderer } from 'electron';
+// Imports
 const { contextBridge, ipcRenderer } = require('electron');
+
 
 contextBridge.exposeInMainWorld("electronAPI", {
 	/**
@@ -7,7 +8,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	 * @param {Object} params The parameters for the page.
 	 * @returns {void}
 	 */
-	navigate: (page, params = {}) => {
-		ipcRenderer.send("navigate", { page, params });
+	loadPage: (page, params = {}) => {
+		ipcRenderer.send("loadPage", { page, params });
 	}
+});
+
+ipcRenderer.on("pageLoaded", (event, { html }) => {
+	const mainElement = document.getElementById("main");
+	if (!mainElement) return;
+
+	mainElement.innerHTML = html;
 });
