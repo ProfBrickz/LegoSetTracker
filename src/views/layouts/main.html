@@ -3,38 +3,55 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>Hello from Electron renderer!</title>
+	<title>Lego Set Tracker</title>
 
 	<link rel="stylesheet" href="../../static/css/reset.css" />
 	<link rel="stylesheet" href="../../static/css/themes.css" />
-	<link rel="stylesheet" href="../../static/css/style.css" />
+	<link rel="stylesheet" href="../../static/css/styles.css" />
 
-	<!-- <script type="module" src="../../static/js/lucide.js"></script> -->
 	<script type="module">
-		import { createIcons, Menu, House, ToyBrick, BarChart, Settings } from "../../../node_modules/lucide/dist/esm/lucide.js";
+		import { createIcons, Menu, House, ToyBrick, BarChart, Settings, Sun, Moon, Monitor } from "../../../node_modules/lucide/dist/esm/lucide.js";
 
+		const iconsConfig = {
+			icons: {
+				Menu, House, ToyBrick, BarChart, Settings, Sun, Moon, Monitor
+			}
+		};
+
+		// Initial icon creation
 		document.addEventListener("DOMContentLoaded", () => {
 			electronAPI.loadPage('home');
+			createIcons(iconsConfig);
+		});
 
-			createIcons({
-				icons: {
-					Menu, House, ToyBrick, BarChart, Settings
-				}
-			});
+		// Recreate icons on page change
+		document.addEventListener('pageChanged', () => {
+			createIcons(iconsConfig);
 		});
 	</script>
 </head>
 
 <body data-theme="light">
-	<nav>
-		<button><i data-lucide="menu"></i></button>
-		<a onclick="electronAPI.loadPage('home')"><i data-lucide="house"></i> <span>Home</span></a>
-		<a onclick="electronAPI.loadPage('sets')"><i data-lucide="toy-brick"></i> <span>Sets</span></a>
-		<a onclick="electronAPI.loadPage('total-pieces')"><i data-lucide="bar-chart"></i> <span>Total Pieces</span></a>
-		<a onclick="electronAPI.loadPage('settings')"><i data-lucide="settings"></i> <span>Settings</span></a>
-	</nav>
+	<header>
+		<nav class="navbar">
+			<div class="menu-section">
+				<button class="menu-btn"><i data-lucide="menu"></i></button>
+			</div>
+			<div class="nav-links-section">
+				<button class="nav-link" onclick="electronAPI.loadPage('home')"><i data-lucide="house"></i>
+					<span>Home</span></button>
+				<button class="nav-link" onclick="electronAPI.loadPage('sets')"><i data-lucide="toy-brick"></i>
+					<span>Sets</span></button>
+				<button class="nav-link" onclick="electronAPI.loadPage('total-pieces')"><i data-lucide="bar-chart"></i>
+					<span>Total
+						Pieces</span></button>
+				<button class="nav-link" onclick="electronAPI.loadPage('settings')"><i data-lucide="settings"></i>
+					<span>Settings</span></button>
+			</div>
+		</nav>
+	</header>
 
-	<main id="main">
+	<main id="main" class="main-content">
 		<!-- Rendered page content will appear here -->
 	</main>
 

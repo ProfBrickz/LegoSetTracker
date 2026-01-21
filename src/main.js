@@ -119,6 +119,6 @@ ipcMain.on("loadPage",
 
 		let html = loadPage(page, params);
 
-		mainWindow.webContents.send("pageLoaded", { html });
+		mainWindow.webContents.send("pageLoaded", { page, html });
 	}
 );

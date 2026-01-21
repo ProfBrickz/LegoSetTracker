@@ -26,6 +26,10 @@ This is an Electron application with the following structure:
 - `src/static/` - CSS styles and JavaScript files
 
 
+> [!Note]
+> Most of the UI design and styling has been developed with the assistance of AI. The application leverages AI-powered design tools to create an intuitive and visually appealing user interface.
+
+
 ## Versioning
 This project uses a **custom versioning system** based on the `Major.Minor.Patch` format, with the following definitions:
 
