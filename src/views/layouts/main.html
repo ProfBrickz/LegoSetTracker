@@ -9,19 +9,29 @@
 	<link rel="stylesheet" href="../../static/css/themes.css" />
 	<link rel="stylesheet" href="../../static/css/style.css" />
 
-	<script>
+	<!-- <script type="module" src="../../static/js/lucide.js"></script> -->
+	<script type="module">
+		import { createIcons, Menu, House, ToyBrick, BarChart, Settings } from "../../../node_modules/lucide/dist/esm/lucide.js";
+
 		document.addEventListener("DOMContentLoaded", () => {
-			window.electronAPI.loadPage('home');
+			electronAPI.loadPage('home');
+
+			createIcons({
+				icons: {
+					Menu, House, ToyBrick, BarChart, Settings
+				}
+			});
 		});
 	</script>
 </head>
 
 <body data-theme="light">
 	<nav>
-		<a onclick="electronAPI.loadPage('home')">Home</a>
-		<a onclick="electronAPI.loadPage('sets')">Sets</a>
-		<a onclick="electronAPI.loadPage('total-pieces')">Total Pieces</a>
-		<a onclick="electronAPI.loadPage('settings')">Setting</a>
+		<button><i data-lucide="menu"></i></button>
+		<a onclick="electronAPI.loadPage('home')"><i data-lucide="house"></i> <span>Home</span></a>
+		<a onclick="electronAPI.loadPage('sets')"><i data-lucide="toy-brick"></i> <span>Sets</span></a>
+		<a onclick="electronAPI.loadPage('total-pieces')"><i data-lucide="bar-chart"></i> <span>Total Pieces</span></a>
+		<a onclick="electronAPI.loadPage('settings')"><i data-lucide="settings"></i> <span>Settings</span></a>
 	</nav>
 
 	<main id="main">
