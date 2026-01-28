@@ -13,6 +13,13 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	 */
 	loadPage: (page, params = {}) => {
 		ipcRenderer.send("loadPage", { page, params });
+	},
+	/**
+	 * @param {"light" | "dark" | "system"} theme The theme to set.
+	 * @returns {void}
+	 */
+	setTheme: (theme) => {
+		ipcRenderer.invoke("setTheme", theme);
 	}
 });
 

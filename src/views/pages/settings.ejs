@@ -5,15 +5,15 @@
    <p>Choose your preferred theme:</p>
 
    <div class="theme-buttons">
-      <button class="theme-btn" data-theme="light">
+      <button id="theme-light" class="theme-btn" onclick="electronAPI.setTheme('light')">
          <i data-lucide="sun"></i>
          <span>Light</span>
       </button>
-      <button class="theme-btn" data-theme="dark">
+      <button id="theme-dark" class="theme-btn" onclick="electronAPI.setTheme('dark')">
          <i data-lucide="moon"></i>
          <span>Dark</span>
       </button>
-      <button class="theme-btn" data-theme="system">
+      <button id="theme-system" class="theme-btn" onclick="electronAPI.setTheme('system')">
          <i data-lucide="monitor"></i>
          <span>System</span>
       </button>

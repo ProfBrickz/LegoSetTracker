@@ -1,6 +1,6 @@
 // Imports
 import ejs from "ejs";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
 import { DIR_NAME, IS_DEV_MODE } from "./constants.js";
@@ -119,5 +119,16 @@ ipcMain.on("loadPage",
 		let html = loadPage(page, params);
 
 		mainWindow.webContents.send("pageLoaded", { page, html });
+	}
+);
+
+ipcMain.handle("setTheme",
+	/**
+	 * @param {Electron.IpcMainInvokeEvent} event
+	 * @param {"light" | "dark" | "system"} theme The theme to set.
+	 * @returns {void}
+	 */
+	(event, theme) => {
+		nativeTheme.themeSource = theme;
 	}
 );
