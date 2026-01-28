@@ -1,5 +1,5 @@
 // Imports
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require("electron");
 
 // Cache for rendered pages to improve performance
 const pageCache = new Map();
@@ -24,17 +24,17 @@ ipcRenderer.on("pageLoaded", (event, { page, html }) => {
 	currentPage = page;
 
 	// Update active button
-	const navButtons = document.querySelectorAll('.nav-link');
+	const navButtons = document.querySelectorAll(".nav-link");
 	navButtons.forEach(button => {
-		button.classList.remove('active');
+		button.classList.remove("active");
 	});
 
 	// Add active class to current page button
-	const currentButton = document.querySelector(`.nav-link[onclick*="'${page}'"]`);
+	const currentButton = document.querySelector(`.nav-link[onclick*="${page}"]`);
 	if (currentButton) {
-		currentButton.classList.add('active');
+		currentButton.classList.add("active");
 	}
 
 	// Notify that page has changed so icons can be recreated
-	document.dispatchEvent(new CustomEvent('pageChanged'));
+	document.dispatchEvent(new CustomEvent("pageChanged"));
 });

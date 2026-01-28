@@ -1,8 +1,8 @@
 // Imports
-import ejs from 'ejs';
+import ejs from "ejs";
 import { app, BrowserWindow, ipcMain } from "electron";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 import { DIR_NAME, IS_DEV_MODE } from "./constants.js";
 
 
@@ -12,7 +12,6 @@ const PAGES_PATH = path.join(VIEWS_PATH, "pages");
 const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 
 
-// Constants
 // Variables
 /** @type {BrowserWindow | null} */
 let mainWindow;
@@ -28,7 +27,7 @@ let mainWindow;
  */
 function renderPage(page, params = {}) {
 	let pagePath = path.join(PAGES_PATH, `${page}.ejs`);
-	let pageEJS = fs.readFileSync(pagePath, 'utf-8');
+	let pageEJS = fs.readFileSync(pagePath, "utf-8");
 
 	let html = ejs.render(pageEJS, params);
 

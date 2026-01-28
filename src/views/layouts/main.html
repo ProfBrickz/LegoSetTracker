@@ -20,12 +20,12 @@
 
 		// Initial icon creation
 		document.addEventListener("DOMContentLoaded", () => {
-			electronAPI.loadPage('home');
+			electronAPI.loadPage("home");
 			createIcons(iconsConfig);
 		});
 
 		// Recreate icons on page change
-		document.addEventListener('pageChanged', () => {
+		document.addEventListener("pageChanged", () => {
 			createIcons(iconsConfig);
 		});
 	</script>
