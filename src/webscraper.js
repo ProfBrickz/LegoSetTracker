@@ -218,7 +218,7 @@ function getSectionPieces(categoryRows) {
  * @returns {Promise<Color[]>} A promise that resolves to an array of `Color` objects.
  * @throws {Error} If the DOM structure is invalid or required elements are missing.
  */
-async function getColors() {
+export async function getColors() {
 	let document = await getWebpage("https://v2.bricklink.com/en-us/catalog/color-guide");
 
 	let sections = /** @type {NodeListOf<HTMLTableSectionElement>} */ (document.querySelectorAll(".color-list-wide-viewport_hideMobileViewport__5OSVt tbody"));
