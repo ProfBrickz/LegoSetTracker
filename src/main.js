@@ -17,6 +17,9 @@ const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 let mainWindow;
 
 
+/** @type {Color[]} */
+let colors = [];
+
 // Functions
 /**
  * Renders an EJS template with the given parameters.

@@ -12,7 +12,7 @@ import "./types.js";
  * @returns {Promise<Document>} A Promise that resolves to the parsed Document object once the request is successful.
  * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
  */
-async function getWebpage(url) {
+export async function getWebpage(url) {
 	let response = await fetch(url);
 
 	if (!response.ok) {
@@ -250,7 +250,7 @@ async function getColors() {
  * @param {string} minifigId The BrickLink ID of the minifig (e.g., "3523").
  * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
  */
-async function getMinifigPieces(minifigId) {
+export async function getMinifigPieces(minifigId) {
 	let document = await getWebpage(`https://www.bricklink.com/catalogItemInv.asp?M=${minifigId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
 	let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 	let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.childNodes));
@@ -266,7 +266,7 @@ async function getMinifigPieces(minifigId) {
  * @param {Color} color A color object containing the `bricklinkId` of the desired color.
  * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the piece in the specified color.
  */
-async function getCompositePiece(pieceId, color) {
+export async function getCompositePiece(pieceId, color) {
 	let document = await getWebpage(`https://www.bricklink.com/catalogItemInv.asp?P=${pieceId}&C=${color.bricklinkId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
 	let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 	let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.childNodes));
@@ -291,7 +291,7 @@ async function getCompositePiece(pieceId, color) {
  * @returns {Promise<void>} A promise that resolves when the image is successfully downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
  */
-async function downloadImage(url, downloadPath) {
+export async function downloadImage(url, downloadPath) {
 	if (fs.existsSync(downloadPath)) return;
 
 	let response = await fetch(url);
@@ -317,7 +317,7 @@ async function downloadImage(url, downloadPath) {
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
  */
-async function downloadSetImage(setNumber) {
+export async function downloadSetImage(setNumber) {
 	downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, `./images/sets/${setNumber}.jpg`);
 }
 
@@ -329,7 +329,7 @@ async function downloadSetImage(setNumber) {
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
  */
-async function downloadPieceImage(pieceId, colorId) {
+export async function downloadPieceImage(pieceId, colorId) {
 	downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, `./images/pieces/${colorId}/${pieceId}.jpg`);
 }
 
@@ -340,7 +340,7 @@ async function downloadPieceImage(pieceId, colorId) {
  * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
  * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
  */
-async function downloadMinifigImage(minifigId) {
+export async function downloadMinifigImage(minifigId) {
 	downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, `./images/minifigs/${minifigId}.jpg`);
 }
 
@@ -351,7 +351,7 @@ async function downloadMinifigImage(minifigId) {
  * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
  * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
  */
-async function getLegoSet(setNumber) {
+export async function getLegoSet(setNumber) {
 	let setInfo = await getSetInfo(setNumber);
 	let setPieces = await getSetPieces(setNumber);
 
@@ -368,7 +368,7 @@ async function getLegoSet(setNumber) {
  * @returns {Promise<void>} A promise that resolves when all images are downloaded or if no new images are needed.
  * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
  */
-async function downloadSetImages(legoSet) {
+export async function downloadSetImages(legoSet) {
 	Promise.all([
 		downloadSetImage(legoSet.setNumber),
 		legoSet.normalPieces.map((setPiece) =>
@@ -380,22 +380,3 @@ async function downloadSetImages(legoSet) {
 		legoSet.minifigs.map((setPiece) => downloadMinifigImage(setPiece.piece.bricklinkId))
 	]);
 }
-
-
-
-// temp
-/** @type {Color[]} */
-let colors = [];
-
-export {
-	downloadImage,
-	downloadMinifigImage,
-	downloadPieceImage,
-	downloadSetImage,
-	downloadSetImages,
-	getCompositePiece,
-	getLegoSet,
-	getMinifigPieces,
-	getWebpage
-};
-
