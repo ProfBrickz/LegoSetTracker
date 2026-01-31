@@ -2,6 +2,7 @@
 import * as fs from "fs";
 import { JSDOM } from "jsdom";
 import "./types.js";
+import { log } from "console";
 
 
 // Functions
@@ -219,11 +220,12 @@ function getSectionPieces(categoryRows) {
  * @throws {Error} If the DOM structure is invalid or required elements are missing.
  */
 export async function getColors() {
-	let document = await getWebpage("https://v2.bricklink.com/en-us/catalog/color-guide");
-
-	let sections = /** @type {NodeListOf<HTMLTableSectionElement>} */ (document.querySelectorAll(".color-list-wide-viewport_hideMobileViewport__5OSVt tbody"));
 	/** @type {Color[]} */
 	let colors = [];
+
+	let document = await getWebpage("https://v2.bricklink.com/en-us/catalog/color-guide");
+
+	let sections = /** @type {NodeListOf<HTMLTableSectionElement>} */ (document.querySelectorAll("div table:nth-of-type(2) tbody"));
 
 	for (let section of sections) {
 		for (let tr of section.children) {
@@ -231,8 +233,15 @@ export async function getColors() {
 			let bricklinkName = bricklinkNameElement.textContent.trim();
 
 			let legoNameElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(2) span"));
-			let [legoName, legoIdStr] = legoNameElement.textContent.trim().slice(12).split(" - ");
+
+			let [legoName, legoIdStr] = legoNameElement.textContent
+				.replace("LEGO", "")
+				.replace("Color: ", "")
+				.trim()
+				.split(" - ");
 			let legoId = Number.parseInt(legoIdStr);
+			if (!Number.isInteger(legoId)) legoId = null;
+			if (legoName.length <= 0) legoName = null;
 
 			let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
 			let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);
