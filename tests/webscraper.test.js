@@ -1,34 +1,41 @@
 // Imports
-import { jest } from "@jest/globals";
-import { getWebpage, getColors } from "../src/webscraper.js";
+import { describe, beforeEach, afterEach, test, expect, jest } from "@jest/globals";
+import Webscraper from "../src/webscraper.js";
+import { loadFixture } from "./testFunctions.js";
+
+
+// Variables
+/** @type {Color[]} */
+let colors;
+/** @type {Webscraper} */
+let webscraper;
+
+/** @type {jest.MockedFunction<fetch>} */
+let fetchMock;
+
+// Each
+beforeEach(() => {
+	fetchMock = global.fetch =  /** @type {jest.MockedFunction<fetch>} */ (jest.fn());
+	colors = [];
+	webscraper = new Webscraper(colors);
+});
+
+afterEach(() => {
+	jest.resetAllMocks();
+});
 
 
 // Tests
 describe("getWebpage", () => {
-	beforeEach(() => {
-		global.fetch = jest.fn();
-	});
-
-	afterEach(() => {
-		jest.resetAllMocks();
-	});
-
 	test("fetches the URL and returns a document on success", async () => {
-		const html = `
-			<!doctype html>
-			<html>
-				<body>
-					<h1>Hello World!</h1>
-				</body>
-			</html>
-		`;
+		let html = loadFixture("./fixtures/getWebpage/success.html");
 
-		fetch.mockResolvedValue({
+		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
-			text: jest.fn().mockResolvedValue(html),
-		});
+			text: () => Promise.resolve(html)
+		}));
 
-		const document = await getWebpage("https://example.com");
+		let document = await webscraper.getWebpage("https://example.com");
 
 		expect(fetch).toHaveBeenCalledWith("https://example.com");
 		expect(document.constructor.name).toEqual("Document");
@@ -37,174 +44,28 @@ describe("getWebpage", () => {
 	});
 
 	test("throws error when the response is not ok", async () => {
-		fetch.mockResolvedValue({
+		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
 			status: 404,
 			statusText: "Not Found"
-		});
+		}));
 
-		await expect(getWebpage("https://example.com")).rejects.toThrow(
+		await expect(webscraper.getWebpage("https://example.com")).rejects.toThrow(
 			new Error("Failed to fetch https://example.com: 404 Not Found")
 		);
 	});
 });
 
 describe("getColors", () => {
-	beforeEach(() => {
-		global.fetch = jest.fn();
-	});
-
-	afterEach(() => {
-		jest.resetAllMocks();
-	});
-
 	test("returns an array of colors", async () => {
-		const html = `
-			<!doctype html>
-			<html>
-				<body>
-					<div>
-						<div>
-							<table></table>
-							<table>
-								<tbody>
-									<tr>
-										<td></td>
-										<td>
-											<p>White</p>
-											<span>
-												LEGO
-												Color: <!-- -->White - 1
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>1</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<p>Red</p>
-											<span>
-												LEGO
-												Color: <!-- -->Bright Red - 21
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>5</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<p>Sand Green</p>
-											<span>
-												LEGO
-												Color: <!-- -->Sand Green - 151
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>48</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div>
-							<table></table>
-							<table>
-								<tbody>
-									<tr>
-										<td></td>
-										<td>
-											<p>Trans-Clear</p>
-											<span>
-												LEGO
-												Color: <!-- -->Transparent - 40
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>12</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<p>Trans-Red</p>
-											<span>
-												LEGO
-												Color: <!-- -->Tr. Red - 41
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>17</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<p>Trans-Dark Blue</p>
-											<span>
-												LEGO
-												Color: <!-- -->Tr. Blue - 43
-											</span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>14</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div>
-							<table></table>
-							<table>
-								<tbody>
-									<tr>
-										<td></td>
-										<td>
-											<p>Chrome Black</p>
-											<span>LEGO Color: </span>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>122</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</body>
-			</html>
-		`;
+		let html = loadFixture("./fixtures/getColors/colors.html");
 
-		fetch.mockResolvedValue({
+		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
-			text: jest.fn().mockResolvedValue(html)
-		});
+			text: () => Promise.resolve(html)
+		}));
 
-		const colors = await getColors();
+		let colors = await webscraper.getColors();
 
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(7);
@@ -215,25 +76,19 @@ describe("getColors", () => {
 			{ bricklinkId: 12, bricklinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
 			{ bricklinkId: 17, bricklinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
 			{ bricklinkId: 14, bricklinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
-			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null },
+			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null }
 		]);
 	});
 
 	test("returns an empty array", async () => {
-		const html = `
-			<!doctype html>
-			<html>
-				<body>
-				</body>
-			</html>
-		`;
+		let html = loadFixture("./fixtures/getColors/empty.html");
 
-		fetch.mockResolvedValue({
+		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
-			text: jest.fn().mockResolvedValue(html)
-		});
+			text: () => Promise.resolve(html)
+		}));
 
-		const colors = await getColors();
+		let colors = await webscraper.getColors();
 
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(0);
@@ -241,12 +96,177 @@ describe("getColors", () => {
 	});
 
 	test("throws an error", async () => {
-		fetch.mockResolvedValue({
+		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
 			status: 404,
 			statusText: "Not Found"
-		});
+		}));
 
-		await expect(getColors()).rejects.toThrow("Failed to fetch https://v2.bricklink.com/en-us/catalog/color-guide: 404 Not Found");
+		await expect(webscraper.getColors()).rejects.toThrow("Failed to fetch https://v2.bricklink.com/en-us/catalog/color-guide: 404 Not Found");
+	});
+});
+
+describe("getMinifigPieces", () => {
+	beforeEach(() => {
+		colors.push(
+			{ bricklinkId: 11, bricklinkName: "Black", legoId: 26, legoName: "Black" },
+			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
+			{ bricklinkId: 89, bricklinkName: "Dark Purple", legoId: 268, legoName: "Medium Lilac" }
+		);
+	});
+
+	test("returns an array of minifig pieces", async () => {
+		let html = loadFixture("./fixtures/getMinifigPieces/minifig.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		/** @type {SetPiece[]} */
+		let result = [
+			{
+				piece: {
+					bricklinkId: "970c00",
+					name: "Hips and Legs Plain",
+					color: {
+						bricklinkId: 11,
+						bricklinkName: "Black",
+						legoId: 26,
+						legoName: "Black"
+					},
+					category: "Minifigure, Legs",
+					parentId: null,
+					children: []
+				},
+				type: "counterpart",
+				amountNeeded: 1
+			},
+			{
+				piece: {
+					bricklinkId: "973c000",
+					name: "Torso Plain / (Same Color) Arms / (Same Color) Hands",
+					color: {
+						bricklinkId: 5,
+						bricklinkName: "Red",
+						legoId: 21,
+						legoName: "Bright Red"
+					},
+					category: "Minifigure, Torso Assembly",
+					parentId: null,
+					children: []
+				},
+				type: "counterpart",
+				amountNeeded: 1
+			},
+			{
+				piece: {
+					bricklinkId: "3626",
+					name: "Minifigure, Head (Plain)",
+					color: {
+						bricklinkId: 89,
+						bricklinkName: "Dark Purple",
+						legoId: 268,
+						legoName: "Medium Lilac"
+					},
+					category: "Minifigure, Head",
+					parentId: null,
+					children: []
+				},
+				type: "counterpart",
+				amountNeeded: 1
+			}
+		];
+
+		let pieces = await webscraper.getMinifigPieces();
+
+		expect(pieces).toEqual(result);
+	});
+
+	test("returns an empty array of minifig pieces", async () => {
+		let html = loadFixture("./fixtures/getMinifigPieces/empty.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		/** @type {SetPiece[]} */
+		let result = [];
+
+		let pieces = await webscraper.getMinifigPieces();
+
+		expect(pieces).toEqual(result);
+	});
+
+	test("missing color", async () => {
+		let html = loadFixture("./fixtures/getMinifigPieces/missing-color.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		/** @type {SetPiece[]} */
+		let result = [{
+			piece: {
+				bricklinkId: "970c00",
+				name: "Hips and Legs Plain",
+				color: null,
+				category: "Minifigure, Legs",
+				parentId: null,
+				children: []
+			},
+			type: "counterpart",
+			amountNeeded: 1
+		},];
+
+		let pieces = await webscraper.getMinifigPieces();
+
+		expect(pieces).toEqual(result);
+	});
+
+	test("missing parts sections", async () => {
+		let html = loadFixture("./fixtures/getMinifigPieces/missing-parts-section.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		/** @type {SetPiece[]} */
+		let result = [{
+			piece: {
+				bricklinkId: "970c00",
+				name: "Hips and Legs Plain",
+				color: {
+					bricklinkId: 11,
+					bricklinkName: "Black",
+					legoId: 26,
+					legoName: "Black"
+				},
+				category: "Minifigure, Legs",
+				parentId: null,
+				children: []
+			},
+			type: "counterpart",
+			amountNeeded: 1
+		}];
+
+		expect(await webscraper.getMinifigPieces()).toEqual(result);
+	});
+
+	test("missing regular items section", async () => {
+		let html = loadFixture("./fixtures/getMinifigPieces/missing-regular-items-section.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		/** @type {SetPiece[]} */
+		let result = [];
+
+		await expect(webscraper.getMinifigPieces()).rejects.toThrow("Could not find Regular Items: in categories");
 	});
 });

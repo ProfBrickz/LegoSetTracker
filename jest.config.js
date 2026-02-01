@@ -2,4 +2,5 @@
 export default {
 	testEnvironment: "node",
 	verbose: true,
+	injectGlobals: true
 };

@@ -3,11 +3,11 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { DIR_NAME, IS_DEV_MODE } from "./constants.js";
+import { SRC_DIRECTORY, IS_DEV_MODE } from "./constants.js";
 
 
 // Constants
-const VIEWS_PATH = path.join(DIR_NAME, "views");
+const VIEWS_PATH = path.join(SRC_DIRECTORY, "views");
 const PAGES_PATH = path.join(VIEWS_PATH, "pages");
 const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 
@@ -74,7 +74,7 @@ function createWindow() {
 		webPreferences: {
 			contextIsolation: true,
 			devTools: IS_DEV_MODE,
-			preload: path.join(DIR_NAME, "preload.js")
+			preload: path.join(SRC_DIRECTORY, "preload.js")
 		}
 	});
 
