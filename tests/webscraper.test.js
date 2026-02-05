@@ -1,5 +1,9 @@
 // Imports
-import { describe, beforeEach, afterEach, test, expect, jest } from "@jest/globals";
+import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
+import fs from "fs";
+import fsPromises from "fs/promises";
+import path from "path";
+import { TEST_DIRECTORY } from "../src/constants.js";
 import Webscraper from "../src/webscraper.js";
 import { loadFixture } from "./testFunctions.js";
 
@@ -13,7 +17,8 @@ let webscraper;
 /** @type {jest.MockedFunction<fetch>} */
 let fetchMock;
 
-// Each
+
+// Setup / Teardown
 beforeEach(() => {
 	fetchMock = global.fetch =  /** @type {jest.MockedFunction<fetch>} */ (jest.fn());
 	colors = [];
@@ -29,15 +34,16 @@ afterEach(() => {
 describe("getWebpage", () => {
 	test("fetches the URL and returns a document on success", async () => {
 		let html = loadFixture("./fixtures/getWebpage/success.html");
+		let url = "https://example.com";
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
 			text: () => Promise.resolve(html)
 		}));
 
-		let document = await webscraper.getWebpage("https://example.com");
+		let document = await webscraper.getWebpage(url);
 
-		expect(fetch).toHaveBeenCalledWith("https://example.com");
+		expect(fetch).toHaveBeenCalledWith(url);
 		expect(document.constructor.name).toEqual("Document");
 		expect(document.documentElement.tagName).toEqual("HTML");
 		expect(document.querySelector("h1").textContent).toBe("Hello World!");
@@ -268,5 +274,84 @@ describe("getMinifigPieces", () => {
 		let result = [];
 
 		await expect(webscraper.getMinifigPieces()).rejects.toThrow("Could not find Regular Items: in categories");
+	});
+});
+
+describe("downloadImage", () => {
+	let filePath = "./fixtures/downloadImage/image.png";
+	let downloadPath = path.join(TEST_DIRECTORY, "image.png");
+
+	afterEach(() => {
+		fs.rmSync(downloadPath, { force: true });
+	});
+
+	test("downloads image", async () => {
+		let buffer = loadFixture(filePath, null);
+		let imageData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+		let url = "https://example.com/image.png";
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			arrayBuffer: () => Promise.resolve(imageData)
+		}));
+
+		expect(fs.existsSync(downloadPath)).toEqual(false);
+
+		await webscraper.downloadImage(url, downloadPath);
+
+		expect(fetch).toHaveBeenCalledWith(url);
+		expect(fs.existsSync(downloadPath)).toEqual(true);
+	});
+
+	test("does not download image if already exists", async () => {
+		fs.writeFileSync(downloadPath, "");
+
+		let buffer = loadFixture("./fixtures/downloadImage/image.png", null);
+		let imageData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+		let url = "https://example.com/image.png";
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			arrayBuffer: () => Promise.resolve(imageData)
+		}));
+
+		expect(fs.existsSync(downloadPath)).toEqual(true);
+		await webscraper.downloadImage(url, downloadPath);
+
+		expect(fetch).not.toHaveBeenCalledWith(url);
+		expect(fs.existsSync(downloadPath)).toEqual(true);
+	});
+
+	test("throws error when the response is not ok", async () => {
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: false,
+			status: 404,
+			statusText: "Not Found"
+		}));
+
+		await expect(webscraper.downloadImage("https://example.com/image.png", downloadPath)).rejects.toThrow(
+			new Error("Failed to fetch https://example.com/image.png: 404 Not Found")
+		);
+	});
+
+	test("throws error when write fails", async () => {
+		let buffer = loadFixture("./fixtures/downloadImage/image.png", null);
+		let imageData = buffer.buffer.slice(
+			buffer.byteOffset,
+			buffer.byteOffset + buffer.byteLength
+		);
+		let url = "https://example.com/image.png";
+
+		fetchMock.mockResolvedValue({
+			ok: true,
+			arrayBuffer: () => Promise.resolve(imageData),
+		});
+
+		let writeFileMock = jest.spyOn(fsPromises, "writeFile");
+		writeFileMock.mockImplementation(() => {
+			throw new Error("Write failed");
+		});
+
+		await expect(() => webscraper.downloadImage(url, downloadPath)).rejects.toThrow("Write failed");
 	});
 });

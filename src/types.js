@@ -15,8 +15,6 @@
  * @property {Color | null} color The color of the piece
  * @property {string} name The name of the piece
  * @property {string} category The type of LEGO part (e.g. "Brick", "Plate")
- * @property {number | null} parentId The unique identifier for the
- * @property {Piece[]} children The child pieces that make up this piece
 */
 
 /**

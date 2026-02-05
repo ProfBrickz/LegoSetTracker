@@ -1,5 +1,6 @@
 // Imports
-import * as fs from "fs";
+import fs from "fs";
+import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
 import "./types.js";
 
@@ -7,6 +8,7 @@ import "./types.js";
 // Functions
 export default class Webscraper {
 	/**
+	 * @public
 	 * @param {Color[]} colors An array of colors
 	 */
 	constructor(colors) {
@@ -17,6 +19,7 @@ export default class Webscraper {
 	/**
 	 * Fetches and parses the HTML content of a webpage from the given URL, returning the parsed Document object.
 	 *
+	 * @public
 	 * @param {string} url The URL of the webpage to fetch and parse.
 	 * @returns {Promise<Document>} A Promise that resolves to the parsed Document object once the request is successful.
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
@@ -221,6 +224,7 @@ export default class Webscraper {
 	 * BrickLink and LEGO-specific identifiers and names. It relies on a specific HTML structure
 	 * for element selection.
 	 *
+	 * @public
 	 * @returns {Promise<Color[]>} A promise that resolves to an array of `Color` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
@@ -261,6 +265,7 @@ export default class Webscraper {
 	/**
 	 * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
 	 *
+	 * @public
 	 * @param {string} minifigId The BrickLink ID of the minifig (e.g., "3523").
 	 * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
 	 */
@@ -276,30 +281,26 @@ export default class Webscraper {
 	/**
 	 * Fetches composite piece data for a specific LEGO part in a given color from BrickLink's catalog.
 	 *
-	 * @param {string} pieceId The BrickLink ID of the LEGO piece (e.g., "3003").
-	 * @param {Color} color A color object containing the `bricklinkId` of the desired color.
-	 * @returns {Promise<SetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the piece in the specified color.
+	 * @todo
+	 * @public
+	 * @param {Piece} piece The piece object containing the `bricklinkId` and `color` properties.
+	 * @returns {Promise<Piece>} A promise that resolves to a `SetPiece` object representing the piece in the specified color.
 	 */
-	async getCompositePiece(pieceId, color) {
-		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?P=${pieceId}&C=${color.bricklinkId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
+	async getCompositePiece(piece) {
+		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?P=${piece.bricklinkId}&C=${piece.color.bricklinkId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
 		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.childNodes));
 		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (document.querySelectorAll("form > table tr[bgcolor='#000000'], form > table tr[bgcolor='#C0C0C0']"));
 
 		let setPieces = this.getSection("Regular Items:", rows, categories);
 
-		for (let setPiece of setPieces) {
-			if (!setPiece.piece.color) {
-				setPiece.piece.color = color;
-			}
-		}
-
-		return pieces;
+		throw new Error("TODO");
 	}
 
 	/**
 	 * Downloads an image from the specified URL to the given download path.
 	 *
+	 * @public
 	 * @param {string} url The URL of the image to download.
 	 * @param {string} downloadPath The file path where the image will be saved.
 	 * @returns {Promise<void>} A promise that resolves when the image is successfully downloaded or if the target path already exists.
@@ -314,19 +315,15 @@ export default class Webscraper {
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 
-		let arrayBuffer = await response.arrayBuffer();
+		let imageData = await response.arrayBuffer();
 
-		fs.writeFile(downloadPath, Buffer.from(arrayBuffer), {}, (error) => {
-			if (error) {
-				console.error("Error writing file: ", error);
-				return;
-			}
-		});
+		fsPromises.writeFile(downloadPath, Buffer.from(imageData));
 	}
 
 	/**
 	 * Downloads the set image from BrickLink for the specified set number.
 	 *
+	 * @public
 	 * @param {string} setNumber The set number (e.g., "10179-1").
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
@@ -338,6 +335,7 @@ export default class Webscraper {
 	/**
 	 * Downloads the piece image from BrickLink for the specified piece ID and color ID.
 	 *
+	 * @public
 	 * @param {string} pieceId The piece ID (e.g., "3003").
 	 * @param {number} colorId The color ID (e.g., 11 for red).
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
@@ -350,6 +348,7 @@ export default class Webscraper {
 	/**
 	 * Downloads the minifig image from BrickLink for the specified minifig ID.
 	 *
+	 * @public
 	 * @param {string} minifigId The minifig ID (e.g., "10179-1").
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
@@ -361,6 +360,7 @@ export default class Webscraper {
 	/**
 	 * Retrieves a LEGO set's information by combining set details and its pieces.
 	 *
+	 * @public
 	 * @param {string} setNumber The LEGO set number (e.g., "10179-1").
 	 * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
 	 * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
@@ -378,6 +378,7 @@ export default class Webscraper {
 	/**
 	 * Downloads all images associated with a LEGO set, including set image, pieces, and minifigs.
 	 *
+	 * @public
 	 * @param {LegoSet} legoSet The LEGO set object containing set details, pieces, and minifigs.
 	 * @returns {Promise<void>} A promise that resolves when all images are downloaded or if no new images are needed.
 	 * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
