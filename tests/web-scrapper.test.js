@@ -4,7 +4,7 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import path from "path";
 import { TEST_DIRECTORY } from "../src/constants.js";
-import Webscraper from "../src/webscraper.js";
+import Webscraper from "../src/web-scrapper.js";
 import { loadFixture } from "./testFunctions.js";
 
 
@@ -36,6 +36,7 @@ describe("getWebpage", () => {
 		let html = loadFixture("./fixtures/getWebpage/success.html");
 		let url = "https://example.com";
 
+		// Mock fetch to return a successful response with HTML content
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
 			text: () => Promise.resolve(html)
@@ -44,18 +45,21 @@ describe("getWebpage", () => {
 		let document = await webscraper.getWebpage(url);
 
 		expect(fetch).toHaveBeenCalledWith(url);
+		// Verify that the document is a valid HTML document and contains
 		expect(document.constructor.name).toEqual("Document");
 		expect(document.documentElement.tagName).toEqual("HTML");
 		expect(document.querySelector("h1").textContent).toBe("Hello World!");
 	});
 
 	test("throws error when the response is not ok", async () => {
+		// Mock fetch to return a failed response
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
 			status: 404,
 			statusText: "Not Found"
 		}));
 
+		// Expect an error to be thrown when the response is
 		await expect(webscraper.getWebpage("https://example.com")).rejects.toThrow(
 			new Error("Failed to fetch https://example.com: 404 Not Found")
 		);
@@ -66,6 +70,7 @@ describe("getColors", () => {
 	test("returns an array of colors", async () => {
 		let html = loadFixture("./fixtures/getColors/colors.html");
 
+		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
 			text: () => Promise.resolve(html)
@@ -73,6 +78,7 @@ describe("getColors", () => {
 
 		let colors = await webscraper.getColors();
 
+		// Verify that the returned value is the correct array of colors
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(7);
 		expect(colors).toEqual([
@@ -86,9 +92,24 @@ describe("getColors", () => {
 		]);
 	});
 
+	test("throws an error", async () => {
+		// Mock the fetch function to simulate a network error
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: false,
+			status: 404,
+			statusText: "Not Found"
+		}));
+
+		// Expect an error to be thrown when calling getColors
+		await expect(webscraper.getColors()).rejects.toThrow(
+			"Failed to fetch https://v2.bricklink.com/en-us/catalog/color-guide: 404 Not Found"
+		);
+	});
+
 	test("returns an empty array", async () => {
 		let html = loadFixture("./fixtures/getColors/empty.html");
 
+		// Mock the fetch function to return a response with the
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
 			text: () => Promise.resolve(html)
@@ -96,23 +117,15 @@ describe("getColors", () => {
 
 		let colors = await webscraper.getColors();
 
+		// Verify that the function returns an empty array
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(0);
 		expect(colors).toEqual([]);
 	});
-
-	test("throws an error", async () => {
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: false,
-			status: 404,
-			statusText: "Not Found"
-		}));
-
-		await expect(webscraper.getColors()).rejects.toThrow("Failed to fetch https://v2.bricklink.com/en-us/catalog/color-guide: 404 Not Found");
-	});
 });
 
 describe("getMinifigPieces", () => {
+	// Setup the mock colors before each test
 	beforeEach(() => {
 		colors.push(
 			{ bricklinkId: 11, bricklinkName: "Black", legoId: 26, legoName: "Black" },
@@ -295,10 +308,12 @@ describe("downloadImage", () => {
 			arrayBuffer: () => Promise.resolve(imageData)
 		}));
 
+		// Verify that the file does not exist before downloading it
 		expect(fs.existsSync(downloadPath)).toEqual(false);
 
 		await webscraper.downloadImage(url, downloadPath);
 
+		// Verify that the file was downloaded
 		expect(fetch).toHaveBeenCalledWith(url);
 		expect(fs.existsSync(downloadPath)).toEqual(true);
 	});
@@ -315,9 +330,11 @@ describe("downloadImage", () => {
 			arrayBuffer: () => Promise.resolve(imageData)
 		}));
 
+		// Check if file exists before downloading
 		expect(fs.existsSync(downloadPath)).toEqual(true);
 		await webscraper.downloadImage(url, downloadPath);
 
+		// Check if file still exists after attempting to download again
 		expect(fetch).not.toHaveBeenCalledWith(url);
 		expect(fs.existsSync(downloadPath)).toEqual(true);
 	});
@@ -347,11 +364,12 @@ describe("downloadImage", () => {
 			arrayBuffer: () => Promise.resolve(imageData),
 		});
 
+		// Mock fsPromises.writeFile to simulate a write failure
 		let writeFileMock = jest.spyOn(fsPromises, "writeFile");
 		writeFileMock.mockImplementation(() => {
 			throw new Error("Write failed");
 		});
 
-		await expect(() => webscraper.downloadImage(url, downloadPath)).rejects.toThrow("Write failed");
+		await expect(webscraper.downloadImage(url, downloadPath)).rejects.toThrow("Write failed");
 	});
 });
