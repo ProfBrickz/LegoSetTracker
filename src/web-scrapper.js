@@ -60,7 +60,8 @@ export default class Webscraper {
 		let theme = themeElement.textContent.trim();
 
 		// Extracting the name from the document
-		let nameElement = /** @type {HTMLElement} */ (document.querySelector("#id_divBlock_Main table:first-of-type tr:first-of-type td:first-of-type h1"));
+		// let nameElement = /** @type {HTMLElement} */ (document.querySelector("#id_divBlock_Main table:first-of-type tr:first-of-type td:first-of-type h1"));
+		let nameElement = /** @type {HTMLElement} */ (document.querySelector("#item-name-title"));
 		let name = nameElement.textContent.trim();
 
 		// Extracting the set number from the document

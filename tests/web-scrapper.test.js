@@ -2,10 +2,8 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import fs from "fs";
 import fsPromises from "fs/promises";
-import path from "path";
-import { TEST_DIRECTORY } from "../src/constants.js";
 import Webscraper from "../src/web-scrapper.js";
-import { readTextFile, readBufferFile, getRelativeFilePath } from "./testFunctions.js";
+import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 
 
 // Variables
@@ -33,7 +31,7 @@ afterEach(() => {
 
 // Tests
 describe("getWebpage", () => {
-	test("fetches the URL and returns a document on success", async () => {
+	test("Fetches the URL and returns a document on success", async () => {
 		let html = readTextFile("./fixtures/getWebpage/success.html");
 		let url = "https://example.com";
 
@@ -52,7 +50,7 @@ describe("getWebpage", () => {
 		expect(document.querySelector("h1").textContent).toBe("Hello World!");
 	});
 
-	test("throws error when the response is not ok", async () => {
+	test("Throws error when the response is not ok", async () => {
 		// Mock fetch to return a failed response
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
@@ -68,7 +66,7 @@ describe("getWebpage", () => {
 });
 
 describe("getColors", () => {
-	test("returns an array of colors", async () => {
+	test("Returns an array of colors", async () => {
 		let html = readTextFile("./fixtures/getColors/colors.html");
 
 		// Mock fetch to return the HTML content of the fixture
@@ -93,7 +91,7 @@ describe("getColors", () => {
 		]);
 	});
 
-	test("throws an error", async () => {
+	test("Throws an error", async () => {
 		// Mock the fetch function to simulate a network error
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
@@ -107,7 +105,7 @@ describe("getColors", () => {
 		);
 	});
 
-	test("returns an empty array", async () => {
+	test("Returns an empty array", async () => {
 		let html = readTextFile("./fixtures/getColors/empty.html");
 
 		// Mock the fetch function to return a response with the
@@ -135,7 +133,7 @@ describe("getMinifigPieces", () => {
 		);
 	});
 
-	test("returns an array of minifig pieces", async () => {
+	test("Returns an array of minifig pieces", async () => {
 		let html = readTextFile("./fixtures/getMinifigPieces/minifig.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -203,7 +201,7 @@ describe("getMinifigPieces", () => {
 		expect(pieces).toEqual(result);
 	});
 
-	test("returns an empty array of minifig pieces", async () => {
+	test("Returns an empty array of minifig pieces", async () => {
 		let html = readTextFile("./fixtures/getMinifigPieces/empty.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -219,7 +217,7 @@ describe("getMinifigPieces", () => {
 		expect(pieces).toEqual(result);
 	});
 
-	test("missing color", async () => {
+	test("Missing color", async () => {
 		let html = readTextFile("./fixtures/getMinifigPieces/missing-color.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -246,7 +244,7 @@ describe("getMinifigPieces", () => {
 		expect(pieces).toEqual(result);
 	});
 
-	test("missing parts sections", async () => {
+	test("Missing parts sections", async () => {
 		let html = readTextFile("./fixtures/getMinifigPieces/missing-parts-section.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -276,7 +274,7 @@ describe("getMinifigPieces", () => {
 		expect(await webscraper.getMinifigPieces()).toEqual(result);
 	});
 
-	test("missing regular items section", async () => {
+	test("Missing regular items section", async () => {
 		let html = readTextFile("./fixtures/getMinifigPieces/missing-regular-items-section.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -291,6 +289,34 @@ describe("getMinifigPieces", () => {
 	});
 });
 
+describe("getCompositePiece", () => {
+	test.todo("Implement after MVP");
+});
+
+describe("getSetInfo", () => {
+	test("Successfully fetch Lego set info", async () => {
+		let result = {
+			name: 'Haunted House',
+			setNumber: '10228-1',
+			theme: 'Monster Fighters',
+			year: 2012,
+			pieceCount: 2037,
+			minifigCount: 6
+		};
+
+		let html = readTextFile("./fixtures/getSetInfo/success.html");
+
+		fetchMock.mockResolvedValue(/** @type {Response} */({
+			ok: true,
+			text: () => Promise.resolve(html)
+		}));
+
+		let setInfo = await webscraper.getSetInfo("10228-1");
+
+		expect(setInfo).toEqual(result);
+	});
+});
+
 describe("downloadImage", () => {
 	let sourceFile = getRelativeFilePath("./fixtures/downloadImage/image.jpg");
 	let downloadFile = getRelativeFilePath("./image.jpg");
@@ -301,7 +327,7 @@ describe("downloadImage", () => {
 		fs.rmSync(downloadFile, { force: true });
 	});
 
-	test("downloads image", async () => {
+	test("Downloads image", async () => {
 		console.log(fs.readdirSync("."));
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -320,7 +346,7 @@ describe("downloadImage", () => {
 		expect(fs.readFileSync(downloadFile)).toEqual(fs.readFileSync(sourceFile));
 	});
 
-	test("does not download image if already exists", async () => {
+	test("Does not download image if already exists", async () => {
 		fs.writeFileSync(downloadFile, imageData);
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -337,7 +363,7 @@ describe("downloadImage", () => {
 		expect(fs.existsSync(downloadFile)).toEqual(true);
 	});
 
-	test("throws error when the response is not ok", async () => {
+	test("Throws error when the response is not ok", async () => {
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: false,
 			status: 404,
@@ -349,7 +375,7 @@ describe("downloadImage", () => {
 		);
 	});
 
-	test("throws error when write fails", async () => {
+	test("Throws error when write fails", async () => {
 		fetchMock.mockResolvedValue({
 			ok: true,
 			arrayBuffer: () => Promise.resolve(imageData),
