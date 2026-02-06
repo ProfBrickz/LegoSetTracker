@@ -5,7 +5,7 @@ import fsPromises from "fs/promises";
 import path from "path";
 import { TEST_DIRECTORY } from "../src/constants.js";
 import Webscraper from "../src/web-scrapper.js";
-import { loadFixture } from "./testFunctions.js";
+import { readTextFile, readBufferFile, getRelativeFilePath } from "./testFunctions.js";
 
 
 // Variables
@@ -20,20 +20,21 @@ let fetchMock;
 
 // Setup / Teardown
 beforeEach(() => {
-	fetchMock = global.fetch =  /** @type {jest.MockedFunction<fetch>} */ (jest.fn());
+	fetchMock = jest.spyOn(global, "fetch");
 	colors = [];
 	webscraper = new Webscraper(colors);
 });
 
 afterEach(() => {
 	jest.resetAllMocks();
+	jest.restoreAllMocks();
 });
 
 
 // Tests
 describe("getWebpage", () => {
 	test("fetches the URL and returns a document on success", async () => {
-		let html = loadFixture("./fixtures/getWebpage/success.html");
+		let html = readTextFile("./fixtures/getWebpage/success.html");
 		let url = "https://example.com";
 
 		// Mock fetch to return a successful response with HTML content
@@ -68,7 +69,7 @@ describe("getWebpage", () => {
 
 describe("getColors", () => {
 	test("returns an array of colors", async () => {
-		let html = loadFixture("./fixtures/getColors/colors.html");
+		let html = readTextFile("./fixtures/getColors/colors.html");
 
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -107,7 +108,7 @@ describe("getColors", () => {
 	});
 
 	test("returns an empty array", async () => {
-		let html = loadFixture("./fixtures/getColors/empty.html");
+		let html = readTextFile("./fixtures/getColors/empty.html");
 
 		// Mock the fetch function to return a response with the
 		fetchMock.mockResolvedValue(/** @type {Response} */({
@@ -135,7 +136,7 @@ describe("getMinifigPieces", () => {
 	});
 
 	test("returns an array of minifig pieces", async () => {
-		let html = loadFixture("./fixtures/getMinifigPieces/minifig.html");
+		let html = readTextFile("./fixtures/getMinifigPieces/minifig.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -203,7 +204,7 @@ describe("getMinifigPieces", () => {
 	});
 
 	test("returns an empty array of minifig pieces", async () => {
-		let html = loadFixture("./fixtures/getMinifigPieces/empty.html");
+		let html = readTextFile("./fixtures/getMinifigPieces/empty.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -219,7 +220,7 @@ describe("getMinifigPieces", () => {
 	});
 
 	test("missing color", async () => {
-		let html = loadFixture("./fixtures/getMinifigPieces/missing-color.html");
+		let html = readTextFile("./fixtures/getMinifigPieces/missing-color.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -246,7 +247,7 @@ describe("getMinifigPieces", () => {
 	});
 
 	test("missing parts sections", async () => {
-		let html = loadFixture("./fixtures/getMinifigPieces/missing-parts-section.html");
+		let html = readTextFile("./fixtures/getMinifigPieces/missing-parts-section.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -276,7 +277,7 @@ describe("getMinifigPieces", () => {
 	});
 
 	test("missing regular items section", async () => {
-		let html = loadFixture("./fixtures/getMinifigPieces/missing-regular-items-section.html");
+		let html = readTextFile("./fixtures/getMinifigPieces/missing-regular-items-section.html");
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -291,17 +292,17 @@ describe("getMinifigPieces", () => {
 });
 
 describe("downloadImage", () => {
-	let filePath = "./fixtures/downloadImage/image.png";
-	let downloadPath = path.join(TEST_DIRECTORY, "image.png");
+	let sourceFile = getRelativeFilePath("./fixtures/downloadImage/image.jpg");
+	let downloadFile = getRelativeFilePath("./image.jpg");
+	let imageData = fs.readFileSync(sourceFile);
+	let url = "https://example.com/image.jpg";
 
 	afterEach(() => {
-		fs.rmSync(downloadPath, { force: true });
+		fs.rmSync(downloadFile, { force: true });
 	});
 
 	test("downloads image", async () => {
-		let buffer = loadFixture(filePath, null);
-		let imageData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-		let url = "https://example.com/image.png";
+		console.log(fs.readdirSync("."));
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -309,21 +310,18 @@ describe("downloadImage", () => {
 		}));
 
 		// Verify that the file does not exist before downloading it
-		expect(fs.existsSync(downloadPath)).toEqual(false);
+		expect(fs.existsSync(downloadFile)).toEqual(false);
 
-		await webscraper.downloadImage(url, downloadPath);
+		await webscraper.downloadImage(url, downloadFile);
 
 		// Verify that the file was downloaded
 		expect(fetch).toHaveBeenCalledWith(url);
-		expect(fs.existsSync(downloadPath)).toEqual(true);
+		expect(fs.existsSync(downloadFile)).toEqual(true);
+		expect(fs.readFileSync(downloadFile)).toEqual(fs.readFileSync(sourceFile));
 	});
 
 	test("does not download image if already exists", async () => {
-		fs.writeFileSync(downloadPath, "");
-
-		let buffer = loadFixture("./fixtures/downloadImage/image.png", null);
-		let imageData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-		let url = "https://example.com/image.png";
+		fs.writeFileSync(downloadFile, imageData);
 
 		fetchMock.mockResolvedValue(/** @type {Response} */({
 			ok: true,
@@ -331,12 +329,12 @@ describe("downloadImage", () => {
 		}));
 
 		// Check if file exists before downloading
-		expect(fs.existsSync(downloadPath)).toEqual(true);
-		await webscraper.downloadImage(url, downloadPath);
+		expect(fs.existsSync(downloadFile)).toEqual(true);
+		await webscraper.downloadImage(url, downloadFile);
 
 		// Check if file still exists after attempting to download again
 		expect(fetch).not.toHaveBeenCalledWith(url);
-		expect(fs.existsSync(downloadPath)).toEqual(true);
+		expect(fs.existsSync(downloadFile)).toEqual(true);
 	});
 
 	test("throws error when the response is not ok", async () => {
@@ -346,19 +344,12 @@ describe("downloadImage", () => {
 			statusText: "Not Found"
 		}));
 
-		await expect(webscraper.downloadImage("https://example.com/image.png", downloadPath)).rejects.toThrow(
-			new Error("Failed to fetch https://example.com/image.png: 404 Not Found")
+		await expect(webscraper.downloadImage("https://example.com/image.jpg", downloadFile)).rejects.toThrow(
+			new Error("Failed to fetch https://example.com/image.jpg: 404 Not Found")
 		);
 	});
 
 	test("throws error when write fails", async () => {
-		let buffer = loadFixture("./fixtures/downloadImage/image.png", null);
-		let imageData = buffer.buffer.slice(
-			buffer.byteOffset,
-			buffer.byteOffset + buffer.byteLength
-		);
-		let url = "https://example.com/image.png";
-
 		fetchMock.mockResolvedValue({
 			ok: true,
 			arrayBuffer: () => Promise.resolve(imageData),
@@ -370,6 +361,6 @@ describe("downloadImage", () => {
 			throw new Error("Write failed");
 		});
 
-		await expect(webscraper.downloadImage(url, downloadPath)).rejects.toThrow("Write failed");
+		await expect(webscraper.downloadImage(url, downloadFile)).rejects.toThrow("Write failed");
 	});
 });

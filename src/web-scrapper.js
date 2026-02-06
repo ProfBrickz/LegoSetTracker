@@ -317,7 +317,7 @@ export default class Webscraper {
 
 		let imageData = await response.arrayBuffer();
 
-		fsPromises.writeFile(downloadPath, Buffer.from(imageData));
+		await fsPromises.writeFile(downloadPath, Buffer.from(imageData));
 	}
 
 	/**
@@ -328,7 +328,7 @@ export default class Webscraper {
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
-	async downloadSetImage(setNumber) {
+	async downloadLegoSetImage(setNumber) {
 		this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, `./images/sets/${setNumber}.jpg`);
 	}
 
@@ -341,7 +341,7 @@ export default class Webscraper {
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
-	async downloadPieceImage(pieceId, colorId) {
+	async downloadLegoPieceImage(pieceId, colorId) {
 		this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, `./images/pieces/${colorId}/${pieceId}.jpg`);
 	}
 
@@ -383,14 +383,14 @@ export default class Webscraper {
 	 * @returns {Promise<void>} A promise that resolves when all images are downloaded or if no new images are needed.
 	 * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
 	 */
-	async downloadSetImages(legoSet) {
+	async downloadLegoSetImages(legoSet) {
 		Promise.all([
-			this.downloadSetImage(legoSet.setNumber),
+			this.downloadLegoSetImage(legoSet.setNumber),
 			legoSet.normalPieces.map((setPiece) =>
-				this.downloadPieceImage(setPiece.piece.bricklinkId, setPiece.piece.color?.bricklinkId || 0)
+				this.downloadLegoPieceImage(setPiece.piece.bricklinkId, setPiece.piece.color?.bricklinkId || 0)
 			),
 			legoSet.counterparts.map((setPiece) =>
-				this.downloadPieceImage(setPiece.piece.bricklinkId, setPiece.piece.color?.bricklinkId || 0)
+				this.downloadLegoPieceImage(setPiece.piece.bricklinkId, setPiece.piece.color?.bricklinkId || 0)
 			),
 			legoSet.minifigs.map((setPiece) => this.downloadMinifigImage(setPiece.piece.bricklinkId))
 		]);

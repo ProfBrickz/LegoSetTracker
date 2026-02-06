@@ -6,11 +6,31 @@ import { TEST_DIRECTORY } from "../src/constants.js";
 
 // Functions
 /**
- * Loads a fixture file from the test directory.
- * @param {string} fileName - The name of the fixture file.
- * @param {"utf8" | null} [encoding="utf8"] - The file encoding.
- * @returns {string | Buffer} The contents of the fixture file.
+ * Gets the relative file path of a file in the test directory
+ *
+ * @param {string} fileName The name of the file
+ * @returns {string}
  */
-export function loadFixture(fileName, encoding = "utf8") {
-	return fs.readFileSync(path.join(TEST_DIRECTORY, fileName), encoding);
+export function getRelativeFilePath(fileName) {
+	return path.join(TEST_DIRECTORY, fileName);
+}
+
+/**
+ * Reads a text file from the test directory (ex. txt, html)
+ *
+ * @param {string} fileName The name of the file
+ * @returns {string} The contents of the file
+ */
+export function readTextFile(fileName) {
+	return fs.readFileSync(getRelativeFilePath(fileName), "utf8");
+}
+
+/**
+ * Reads an buffer file from the test directory (ex. images)
+ *
+ * @param {string} fileName The name of the file
+ * @returns {ArrayBuffer} The contents of the file
+ */
+export function readBufferFile(fileName) {
+	return fs.readFileSync(getRelativeFilePath(fileName));
 }
