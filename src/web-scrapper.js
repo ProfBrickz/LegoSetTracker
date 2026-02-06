@@ -298,6 +298,24 @@ export default class Webscraper {
 	}
 
 	/**
+	 * Retrieves a LEGO set's information by combining set details and its pieces.
+	 *
+	 * @public
+	 * @param {string} setNumber The LEGO set number (e.g., "10179-1").
+	 * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
+	 * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
+	 */
+	async getLegoSet(setNumber) {
+		let setInfo = await this.getSetInfo(setNumber);
+		let setPieces = await this.getSetPieces(setNumber);
+
+		return {
+			...setInfo,
+			...setPieces
+		};
+	}
+
+	/**
 	 * Downloads an image from the specified URL to the given download path.
 	 *
 	 * @public
@@ -329,7 +347,7 @@ export default class Webscraper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
 	async downloadLegoSetImage(setNumber) {
-		this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, `./images/sets/${setNumber}.jpg`);
+		await this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, `./images/sets/${setNumber}.jpg`);
 	}
 
 	/**
@@ -342,7 +360,7 @@ export default class Webscraper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadLegoPieceImage(pieceId, colorId) {
-		this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, `./images/pieces/${colorId}/${pieceId}.jpg`);
+		await this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, `./images/pieces/${colorId}/${pieceId}.jpg`);
 	}
 
 	/**
@@ -354,25 +372,7 @@ export default class Webscraper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadMinifigImage(minifigId) {
-		this.downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, `./images/minifigs/${minifigId}.jpg`);
-	}
-
-	/**
-	 * Retrieves a LEGO set's information by combining set details and its pieces.
-	 *
-	 * @public
-	 * @param {string} setNumber The LEGO set number (e.g., "10179-1").
-	 * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
-	 * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
-	 */
-	async getLegoSet(setNumber) {
-		let setInfo = await this.getSetInfo(setNumber);
-		let setPieces = await this.getSetPieces(setNumber);
-
-		return {
-			...setInfo,
-			...setPieces
-		};
+		await this.downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, `./images/minifigs/${minifigId}.jpg`);
 	}
 
 	/**
@@ -384,7 +384,7 @@ export default class Webscraper {
 	 * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
 	 */
 	async downloadLegoSetImages(legoSet) {
-		Promise.all([
+		await Promise.all([
 			this.downloadLegoSetImage(legoSet.setNumber),
 			legoSet.normalPieces.map((setPiece) =>
 				this.downloadLegoPieceImage(setPiece.piece.bricklinkId, setPiece.piece.color?.bricklinkId || 0)
