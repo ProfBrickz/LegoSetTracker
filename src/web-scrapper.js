@@ -47,29 +47,37 @@ export default class Webscraper {
 	 * @returns {Promise<SetInfo>} A Promise that resolves to an object containing the parsed set information.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
-	async getSetInfo(setNumberInput) {
+	async getLegoSetInfo(setNumberInput) {
 		let document = await this.getWebpage(`https://www.bricklink.com/v2/catalog/catalogitem.page?S=${setNumberInput}`);
 
-		// Extracting the theme from the document
-		let themeElement = /** @type {HTMLElement|null} */ (document.querySelector("#content .innercontent table:first-of-type tr td:nth-child(1) :nth-child(3)"));
-
-		if (!themeElement) {
+		// Extracting the name from the document
+		let nameElement = /** @type {HTMLHeadingElement} */ (document.querySelector("#item-name-title"));
+		if (!nameElement) {
 			throw new Error(`Could not find the set ${setNumberInput}`);
 		}
-
-		let theme = themeElement.textContent.trim();
-
-		// Extracting the name from the document
-		// let nameElement = /** @type {HTMLElement} */ (document.querySelector("#id_divBlock_Main table:first-of-type tr:first-of-type td:first-of-type h1"));
-		let nameElement = /** @type {HTMLElement} */ (document.querySelector("#item-name-title"));
 		let name = nameElement.textContent.trim();
 
+
+		// Extracting the theme from the document
+		let themeElement = /** @type {HTMLTableCellElement} */ (document.querySelector(
+			"#content .innercontent table:first-of-type tr td:nth-child(1)"
+		));
+
+		let theme = Array.from(themeElement.children)
+			.slice(2)
+			.map(element => element.textContent)
+			.join(", ");
+
 		// Extracting the set number from the document
-		let setNumberElement = /** @type {HTMLElement} */ (document.querySelector("#id_divBlock_Main table:first-of-type tr:first-of-type td:first-of-type span span"));
+		let setNumberElement = /** @type {HTMLSpanElement} */ (document.querySelector(
+			"#id_divBlock_Main table:first-of-type tr:first-of-type td:first-of-type span span"
+		));
 		let setNumber = setNumberElement.textContent.trim();
 
 		// Extracting the year from the document
-		let yearElement = /** @type {HTMLElement} */ (document.querySelector("#id_divBlock_Main table:first-of-type tr:nth-of-type(2) td:nth-of-type(2) table tr:first-of-type td:first-of-type a:first-of-type"));
+		let yearElement = /** @type {HTMLAnchorElement} */ (document.querySelector(
+			"#id_divBlock_Main table:first-of-type tr:nth-of-type(2) td:nth-of-type(2) table tr:first-of-type td:first-of-type a:first-of-type"
+		));
 		let year = Number.parseInt(yearElement.textContent.trim());
 
 		// Extracting the piece count from the document
@@ -90,7 +98,7 @@ export default class Webscraper {
 	}
 
 	/**
-	 * Fetches and parses LEGO set pieces information from BrickLink's catalog.
+	 * Fetches and parses Lego set pieces information from BrickLink's catalog.
 	 *
 	 * This function retrieves detailed information about all items in a LEGO set,
 	 * categorized into "Regular Items", "Minifigures", "Extra Items", and "Counterparts".
@@ -102,10 +110,10 @@ export default class Webscraper {
 	 * @returns {Promise<SetPieceInfo>} A Promise that resolves to an object containing categorized piece data.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
-	async getSetPieces(setNumber) {
+	async getLegoSetPieces(setNumber) {
 		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&bt=0&sortAsc=a`);
 		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
-		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.childNodes));
+		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
 		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], tr[bgcolor='#C0C0C0']"));
 
 		let normalPieces = this.getSection("Regular Items:", rows, categories);
@@ -156,8 +164,7 @@ export default class Webscraper {
 		}
 
 		if (sectionStartIndex && !sectionEndIndex) sectionEndIndex = rows.length;
-
-		if (!sectionStartIndex || !sectionEndIndex) throw new Error(`Could not find ${section} in categories`);
+		if (!sectionStartIndex || !sectionEndIndex) return [];
 
 		let categoryRows = rows.slice(sectionStartIndex, sectionEndIndex);
 
@@ -173,22 +180,23 @@ export default class Webscraper {
 	 * `SetPiece` objects representing the extracted data.
 	 *
 	 * @private
-	 * @param {HTMLTableRowElement[]} categoryRows An array of table rows containing piece details.
+	 * @param {HTMLTableRowElement[]} sectionRows An array of table rows containing piece details.
 	 * @returns {SetPiece[]} An array of `SetPiece` objects representing the extracted piece data.
 	 */
-	getSectionPieces(categoryRows) {
-		/** @type {SetPiece[]})[]} */
+	getSectionPieces(sectionRows) {
+		/** @type {SetPiece[]} */
 		let pieces = [];
 
-		let i = 0;
-		for (let row of categoryRows) {
+		for (let row of sectionRows) {
 			let bricklinkIdElement = /** @type {HTMLAnchorElement} */ (row.querySelector("td:nth-of-type(3) a"));
 			let bricklinkColorId = (new URL(bricklinkIdElement.href, "https://bricklink.com")).searchParams.get("idColor");
 			let bricklinkId = bricklinkIdElement.textContent.trim();
 			let nameElement = /** @type {HTMLElement} */ (row.querySelector("td:nth-of-type(4) b"));
 			let nameAndColor = nameElement.textContent.trim();
 			// Remove repeated spaces
-			nameAndColor = nameAndColor.replace(/\s+/g, " ");
+			nameAndColor = nameAndColor
+				.replace(/\s+/g, " ")
+				.replace("Bluish", "Blueish");
 
 			let categoryElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(4) a:nth-of-type(3)"));
 			let category = categoryElement.textContent.trim();
@@ -205,9 +213,7 @@ export default class Webscraper {
 					bricklinkId,
 					name,
 					color,
-					category,
-					parentId: null,
-					children: []
+					category
 				},
 				type: "counterpart",
 				amountNeeded
@@ -307,12 +313,12 @@ export default class Webscraper {
 	 * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
 	 */
 	async getLegoSet(setNumber) {
-		let setInfo = await this.getSetInfo(setNumber);
-		let setPieces = await this.getSetPieces(setNumber);
+		let legoSetInfo = await this.getLegoSetInfo(setNumber);
+		let legoSetPieces = await this.getLegoSetPieces(setNumber);
 
 		return {
-			...setInfo,
-			...setPieces
+			...legoSetInfo,
+			...legoSetPieces
 		};
 	}
 

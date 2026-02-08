@@ -24,13 +24,3 @@ export function getRelativeFilePath(fileName) {
 export function readTextFile(fileName) {
 	return fs.readFileSync(getRelativeFilePath(fileName), "utf8");
 }
-
-/**
- * Reads an buffer file from the test directory (ex. images)
- *
- * @param {string} fileName The name of the file
- * @returns {ArrayBuffer} The contents of the file
- */
-export function readBufferFile(fileName) {
-	return fs.readFileSync(getRelativeFilePath(fileName));
-}
