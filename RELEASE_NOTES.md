@@ -3,9 +3,7 @@
 ## Release Notes - v0.3.0
 
 - Added basic styling and home page
-- Switched from using javascript to change pages, to using EJS
-- Disabled nodeIntegration, and enabled contextIsolation for security reasons
-- Added ipc and a preload script for communication between the main process and renderer process
+- Removed test page
 - Added unit tests to web scrapper functions using Jest
 
 **Full Changelog**: <https://github.com/ProfBrickz/LegoSetTracker/commits/0.3.0>
