@@ -3,7 +3,7 @@ services:
     container_name: LegoSetTracker-builder
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     tty: true
     stdin_open: true
     volumes:

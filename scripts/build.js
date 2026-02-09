@@ -55,12 +55,12 @@ function checkContainerExists() {
 
 /**
  * Creates the container.
- * 
+ *
  * @returns {void}
  */
 function createContainer() {
 	console.log("Creating LegoSetTracker-builder container...");
-	execSync(`${containerRuntime} compose -f ${currentFolder}/container/compose.yml up -d`, { stdio: "inherit" });
+	execSync(`${containerRuntime} compose -f ${currentFolder}/container/compose.yaml up -d`, { stdio: "inherit" });
 }
 
 /**
@@ -68,7 +68,7 @@ function createContainer() {
  * If the container does not exist, it will be created.
  * If the container is not running, it will be started.
  * If the container is not set to this folder, it will be recreated.
- * 
+ *
  * @returns {void}
  */
 function manageContainer() {

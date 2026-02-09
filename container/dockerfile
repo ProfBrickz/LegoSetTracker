@@ -2,8 +2,6 @@ FROM docker.io/electronuserland/builder:22-wine
 USER root
 
 RUN apt-get update
-RUN apt-get upgrade -y
-
 RUN apt-get install -y flatpak flatpak-builder
 
 RUN flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
