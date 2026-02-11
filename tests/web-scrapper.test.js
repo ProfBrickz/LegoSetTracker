@@ -280,6 +280,7 @@ describe("getMinifigPieces", () => {
 });
 
 describe("getCompositePiece", () => {
+	// TODO: Implement after MVP
 	test.todo("Implement after MVP");
 });
 
