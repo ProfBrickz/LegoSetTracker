@@ -1,4 +1,6 @@
 export class LegoColor {
+	/** @type {number | null} */
+	databaseId;
 	/** @type {number} */
 	bricklinkId;
 	/** @type {string} */
@@ -9,12 +11,14 @@ export class LegoColor {
 	legoName;
 
 	/**
+	 * @param {number | null} databaseId
 	 * @param {number} bricklinkId
 	 * @param {string} bricklinkName
 	 * @param {number | null} legoId
 	 * @param {string} legoName
 	 */
-	constructor(bricklinkId, bricklinkName, legoId, legoName) {
+	constructor(databaseId, bricklinkId, bricklinkName, legoId, legoName) {
+		this.databaseId = databaseId;
 		this.bricklinkId = bricklinkId;
 		this.bricklinkName = bricklinkName;
 		this.legoId = legoId;
@@ -23,6 +27,8 @@ export class LegoColor {
 }
 
 export class LegoPiece {
+	/** @type {number | null} */
+	databaseId;
 	/** @type {string} */
 	bricklinkId;
 	/** @type {string} */
@@ -33,12 +39,14 @@ export class LegoPiece {
 	bricklinkCategory;
 
 	/**
+	 * @param {number | null} databaseId
 	 * @param {string} bricklinkId
 	 * @param {string} bricklinkName
 	 * @param {LegoColor | null} color
 	 * @param {string} bricklinkCategory
-	 */
-	constructor(bricklinkId, bricklinkName, color, bricklinkCategory) {
+	*/
+	constructor(databaseId, bricklinkId, bricklinkName, color, bricklinkCategory) {
+		this.databaseId = databaseId;
 		this.bricklinkId = bricklinkId;
 		this.bricklinkName = bricklinkName;
 		this.color = color;
@@ -47,6 +55,8 @@ export class LegoPiece {
 }
 
 export class LegoSetPiece {
+	/** @type {number | null} */
+	databaseId;
 	/** @type {LegoPiece} */
 	#legoPiece;
 	/** @type {number} */
@@ -56,11 +66,13 @@ export class LegoSetPiece {
 
 	// Make the constructor with the jsdoc string
 	/**
+	 * @param {number | null} databaseId
 	 * @param {LegoPiece} legoPiece
 	 * @param {number} amountNeeded
 	 * @param {number} [amountFound=0]
 	 */
-	constructor(legoPiece, amountNeeded, amountFound = 0) {
+	constructor(databaseId, legoPiece, amountNeeded, amountFound = 0) {
+		this.databaseId = databaseId;
 		this.#legoPiece = legoPiece;
 		this.amountNeeded = amountNeeded;
 		this.amountFound = amountFound;
@@ -84,6 +96,8 @@ export class LegoSetPiece {
 }
 
 export class LegoSet {
+	/** @type {number | null} */
+	databaseId;
 	/** @type {string} */
 	setNumber;
 	/** @type {string} */
@@ -108,6 +122,7 @@ export class LegoSet {
 	#counterpartPieces;
 
 	/**
+	 * @param {number | null} databaseId
 	 * @param {string} setNumber
 	 * @param {string} name
 	 * @param {string} theme
@@ -121,6 +136,7 @@ export class LegoSet {
 	 * @param {LegoSetPiece[]} [counterpartPieces=[]]
 	 */
 	constructor(
+		databaseId,
 		setNumber,
 		name,
 		theme,
@@ -133,6 +149,7 @@ export class LegoSet {
 		extraPieces = [],
 		counterpartPieces = []
 	) {
+		this.databaseId = databaseId;
 		this.setNumber = setNumber;
 		this.name = name;
 		this.theme = theme;

@@ -218,7 +218,8 @@ export default class Webscraper {
 			if (color) bricklinkName = nameAndColor.replace(color.bricklinkName, "").trim();
 
 			legoSetPieces.push(new LegoSetPiece(
-				new LegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory),
+				null,
+				new LegoPiece(null, bricklinkId, bricklinkName, color, bricklinkCategory),
 				amountNeeded
 			));
 		}
@@ -265,7 +266,7 @@ export default class Webscraper {
 				let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
 				let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);
 
-				colors.push(new LegoColor(bricklinkId, bricklinkName, legoId, legoName));
+				colors.push(new LegoColor(null, bricklinkId, bricklinkName, legoId, legoName));
 			}
 		}
 
@@ -320,6 +321,7 @@ export default class Webscraper {
 		let legoSetPieces = await this.getLegoSetPieces(setNumber);
 
 		return new LegoSet(
+			null,
 			legoSetInfo.setNumber,
 			legoSetInfo.name,
 			legoSetInfo.theme,

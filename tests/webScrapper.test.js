@@ -85,13 +85,13 @@ describe("getColors", () => {
 		expect(colors.length).toEqual(7);
 		expect(colors[0]).toBeInstanceOf(LegoColor);
 		expect(colors).toEqual([
-			new LegoColor(1, "White", 1, "White"),
-			new LegoColor(5, "Red", 21, "Bright Red"),
-			new LegoColor(48, "Sand Green", 151, "Sand Green"),
-			new LegoColor(12, "Trans-Clear", 40, "Transparent"),
-			new LegoColor(17, "Trans-Red", 41, "Tr. Red"),
-			new LegoColor(14, "Trans-Dark Blue", 43, "Tr. Blue"),
-			new LegoColor(122, "Chrome Black", null, "")
+			new LegoColor(null, 1, "White", 1, "White"),
+			new LegoColor(null, 5, "Red", 21, "Bright Red"),
+			new LegoColor(null, 48, "Sand Green", 151, "Sand Green"),
+			new LegoColor(null, 12, "Trans-Clear", 40, "Transparent"),
+			new LegoColor(null, 17, "Trans-Red", 41, "Tr. Red"),
+			new LegoColor(null, 14, "Trans-Dark Blue", 43, "Tr. Blue"),
+			new LegoColor(null, 122, "Chrome Black", null, "")
 		]);
 	});
 
@@ -293,26 +293,28 @@ describe("getCompositePiece", () => {
 describe("getLegoSet", () => {
 	beforeEach(() => {
 		colors.push(
-			new LegoColor(1, "White", 1, "White"),
-			new LegoColor(85, "Dark Blueish Gray", 199, "Dark Stone Grey"),
-			new LegoColor(11, "Black", 26, "Black"),
-			new LegoColor(2, "Tan", 5, "Brick Yellow"),
-			new LegoColor(14, "Trans-Dark Blue", 43, "Tr. Blue")
+			new LegoColor(1, 1, "White", 1, "White"),
+			new LegoColor(2, 85, "Dark Blueish Gray", 199, "Dark Stone Grey"),
+			new LegoColor(3, 11, "Black", 26, "Black"),
+			new LegoColor(4, 2, "Tan", 5, "Brick Yellow"),
+			new LegoColor(5, 14, "Trans-Dark Blue", 43, "Tr. Blue")
 		);
 		legoPieces.push(
-			new LegoPiece("4738a", "Container, Treasure Chest Bottom with Slots in Back", colors[2], "Container"),
-			new LegoPiece("4739a", "Container, Treasure Chest Lid Curved with Thick Hinge", colors[2], "Container"),
-			new LegoPiece("92338", "Chain 5 Links", colors[1], "Chain"),
+			new LegoPiece(1, "4738a", "Container, Treasure Chest Bottom with Slots in Back", colors[2], "Container"),
+			new LegoPiece(2, "4739a", "Container, Treasure Chest Lid Curved with Thick Hinge", colors[2], "Container"),
+			new LegoPiece(3, "92338", "Chain 5 Links", colors[1], "Chain"),
 			new LegoPiece(
+				4,
 				"3068pb0906",
 				"Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
 				colors[3],
 				"Tile, Decorated"
 			),
-			new LegoPiece("pi146", "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull", null, "Pirates"),
-			new LegoPiece("gen067", "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back", null, "Pirates"),
-			new LegoPiece("92338", "Chain 5 Links", colors[1], "Chain"),
+			new LegoPiece(5, "pi146", "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull", null, "Pirates"),
+			new LegoPiece(6, "gen067", "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back", null, "Pirates"),
+			new LegoPiece(7, "92338", "Chain 5 Links", colors[1], "Chain"),
 			new LegoPiece(
+				8,
 				"4738ac01",
 				"Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
 				colors[2],
@@ -323,6 +325,7 @@ describe("getLegoSet", () => {
 
 	test("Successfully fetch Lego set", async () => {
 		let result = new LegoSet(
+			null,
 			"10679-1",
 			"Pirate Treasure Hunt",
 			"Juniors, Pirates, Pirates III",
@@ -331,20 +334,20 @@ describe("getLegoSet", () => {
 			2,
 			1,
 			[
-				new LegoSetPiece(legoPieces[0], 1),
-				new LegoSetPiece(legoPieces[1], 1),
-				new LegoSetPiece(legoPieces[2], 1),
-				new LegoSetPiece(legoPieces[3], 10),
+				new LegoSetPiece(null, legoPieces[0], 1),
+				new LegoSetPiece(null, legoPieces[1], 1),
+				new LegoSetPiece(null, legoPieces[2], 1),
+				new LegoSetPiece(null, legoPieces[3], 10),
 			],
 			[
-				new LegoSetPiece(legoPieces[4], 1),
-				new LegoSetPiece(legoPieces[5], 1)
+				new LegoSetPiece(null, legoPieces[4], 1),
+				new LegoSetPiece(null, legoPieces[5], 1)
 			],
 			[
-				new LegoSetPiece(legoPieces[6], 1)
+				new LegoSetPiece(null, legoPieces[6], 1)
 			],
 			[
-				new LegoSetPiece(legoPieces[7], 1)
+				new LegoSetPiece(null, legoPieces[7], 1)
 			]
 		);
 
