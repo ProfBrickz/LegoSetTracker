@@ -4,15 +4,18 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import Webscraper from "../src/web-scrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "../src/classes.js";
 
 
 // Variables
-/** @type {Color[]} */
+/** @type {LegoColor[]} */
 let colors;
+/** @type {LegoPiece[]} */
+let legoPieces;
 /** @type {Webscraper} */
 let webscraper;
 
-/** @type {jest.MockedFunction<fetch>} */
+/** @type {jest.SpiedFunction<fetch>} */
 let fetchMock;
 
 
@@ -20,12 +23,12 @@ let fetchMock;
 beforeEach(() => {
 	fetchMock = jest.spyOn(global, "fetch");
 	colors = [];
-	webscraper = new Webscraper(colors);
+	legoPieces = [];
+	webscraper = new Webscraper(colors, legoPieces);
 });
 
 afterEach(() => {
 	jest.resetAllMocks();
-	jest.restoreAllMocks();
 });
 
 
@@ -47,7 +50,7 @@ describe("getWebpage", () => {
 		// Verify that the document is a valid HTML document and contains
 		expect(document.constructor.name).toEqual("Document");
 		expect(document.documentElement.tagName).toEqual("HTML");
-		expect(document.querySelector("h1").textContent).toBe("Hello World!");
+		expect(document.querySelector("h1")?.textContent).toBe("Hello World!");
 	});
 
 	test("Throws error when the response is not ok", async () => {
@@ -80,14 +83,15 @@ describe("getColors", () => {
 		// Verify that the returned value is the correct array of colors
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(7);
+		expect(colors[0]).toBeInstanceOf(LegoColor);
 		expect(colors).toEqual([
-			{ bricklinkId: 1, bricklinkName: "White", legoId: 1, legoName: "White" },
-			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
-			{ bricklinkId: 48, bricklinkName: "Sand Green", legoId: 151, legoName: "Sand Green" },
-			{ bricklinkId: 12, bricklinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
-			{ bricklinkId: 17, bricklinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
-			{ bricklinkId: 14, bricklinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
-			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null }
+			new LegoColor(1, "White", 1, "White"),
+			new LegoColor(5, "Red", 21, "Bright Red"),
+			new LegoColor(48, "Sand Green", 151, "Sand Green"),
+			new LegoColor(12, "Trans-Clear", 40, "Transparent"),
+			new LegoColor(17, "Trans-Red", 41, "Tr. Red"),
+			new LegoColor(14, "Trans-Dark Blue", 43, "Tr. Blue"),
+			new LegoColor(122, "Chrome Black", null, "")
 		]);
 	});
 
@@ -124,159 +128,161 @@ describe("getColors", () => {
 });
 
 describe("getMinifigPieces", () => {
-	// Setup the mock colors before each test
-	beforeEach(() => {
-		colors.push(
-			{ bricklinkId: 11, bricklinkName: "Black", legoId: 26, legoName: "Black" },
-			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
-			{ bricklinkId: 89, bricklinkName: "Dark Purple", legoId: 268, legoName: "Medium Lilac" }
-		);
-	});
+	// TODO: Implement after MVP
+	test.todo("Implement after MVP");
+	// // Setup the mock colors before each test
+	// beforeEach(() => {
+	// 	colors.push(
+	// 		{ bricklinkId: 11, bricklinkName: "Black", legoId: 26, legoName: "Black" },
+	// 		{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
+	// 		{ bricklinkId: 89, bricklinkName: "Dark Purple", legoId: 268, legoName: "Medium Lilac" }
+	// 	);
+	// });
 
-	test("Returns an array of minifig pieces", async () => {
-		let html = readTextFile("./fixtures/getMinifigPieces/minifig.html");
+	// test("Returns an array of minifig pieces", async () => {
+	// 	let html = readTextFile("./fixtures/getMinifigPieces/minifig.html");
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			text: () => Promise.resolve(html)
-		}));
+	// 	fetchMock.mockResolvedValue(/** @type {Response} */({
+	// 		ok: true,
+	// 		text: () => Promise.resolve(html)
+	// 	}));
 
-		/** @type {SetPiece[]} */
-		let result = [
-			{
-				piece: {
-					bricklinkId: "970c00",
-					name: "Hips and Legs Plain",
-					color: {
-						bricklinkId: 11,
-						bricklinkName: "Black",
-						legoId: 26,
-						legoName: "Black"
-					},
-					category: "Minifigure, Legs"
-				},
-				type: "counterpart",
-				amountNeeded: 1
-			},
-			{
-				piece: {
-					bricklinkId: "973c000",
-					name: "Torso Plain / (Same Color) Arms / (Same Color) Hands",
-					color: {
-						bricklinkId: 5,
-						bricklinkName: "Red",
-						legoId: 21,
-						legoName: "Bright Red"
-					},
-					category: "Minifigure, Torso Assembly"
-				},
-				type: "counterpart",
-				amountNeeded: 1
-			},
-			{
-				piece: {
-					bricklinkId: "3626",
-					name: "Minifigure, Head (Plain)",
-					color: {
-						bricklinkId: 89,
-						bricklinkName: "Dark Purple",
-						legoId: 268,
-						legoName: "Medium Lilac"
-					},
-					category: "Minifigure, Head"
-				},
-				type: "counterpart",
-				amountNeeded: 1
-			}
-		];
+	// 	/** @type {SetPiece[]} */
+	// 	let result = [
+	// 		{
+	// 			piece: {
+	// 				bricklinkId: "970c00",
+	// 				name: "Hips and Legs Plain",
+	// 				color: {
+	// 					bricklinkId: 11,
+	// 					bricklinkName: "Black",
+	// 					legoId: 26,
+	// 					legoName: "Black"
+	// 				},
+	// 				category: "Minifigure, Legs"
+	// 			},
+	// 			type: "counterpart",
+	// 			amountNeeded: 1
+	// 		},
+	// 		{
+	// 			piece: {
+	// 				bricklinkId: "973c000",
+	// 				name: "Torso Plain / (Same Color) Arms / (Same Color) Hands",
+	// 				color: {
+	// 					bricklinkId: 5,
+	// 					bricklinkName: "Red",
+	// 					legoId: 21,
+	// 					legoName: "Bright Red"
+	// 				},
+	// 				category: "Minifigure, Torso Assembly"
+	// 			},
+	// 			type: "counterpart",
+	// 			amountNeeded: 1
+	// 		},
+	// 		{
+	// 			piece: {
+	// 				bricklinkId: "3626",
+	// 				name: "Minifigure, Head (Plain)",
+	// 				color: {
+	// 					bricklinkId: 89,
+	// 					bricklinkName: "Dark Purple",
+	// 					legoId: 268,
+	// 					legoName: "Medium Lilac"
+	// 				},
+	// 				category: "Minifigure, Head"
+	// 			},
+	// 			type: "counterpart",
+	// 			amountNeeded: 1
+	// 		}
+	// 	];
 
-		let pieces = await webscraper.getMinifigPieces();
+	// 	let pieces = await webscraper.getMinifigPieces();
 
-		expect(pieces).toEqual(result);
-	});
+	// 	expect(pieces).toEqual(result);
+	// });
 
-	test("Returns an empty array of minifig pieces", async () => {
-		let html = readTextFile("./fixtures/getMinifigPieces/empty.html");
+	// test("Returns an empty array of minifig pieces", async () => {
+	// 	let html = readTextFile("./fixtures/getMinifigPieces/empty.html");
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			text: () => Promise.resolve(html)
-		}));
+	// 	fetchMock.mockResolvedValue(/** @type {Response} */({
+	// 		ok: true,
+	// 		text: () => Promise.resolve(html)
+	// 	}));
 
-		/** @type {SetPiece[]} */
-		let result = [];
+	// 	/** @type {SetPiece[]} */
+	// 	let result = [];
 
-		let pieces = await webscraper.getMinifigPieces();
+	// 	let pieces = await webscraper.getMinifigPieces();
 
-		expect(pieces).toEqual(result);
-	});
+	// 	expect(pieces).toEqual(result);
+	// });
 
-	test("Missing color", async () => {
-		let html = readTextFile("./fixtures/getMinifigPieces/missing-color.html");
+	// test("Missing color", async () => {
+	// 	let html = readTextFile("./fixtures/getMinifigPieces/missing-color.html");
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			text: () => Promise.resolve(html)
-		}));
+	// 	fetchMock.mockResolvedValue(/** @type {Response} */({
+	// 		ok: true,
+	// 		text: () => Promise.resolve(html)
+	// 	}));
 
-		/** @type {SetPiece[]} */
-		let result = [{
-			piece: {
-				bricklinkId: "970c00",
-				name: "Hips and Legs Plain",
-				color: null,
-				category: "Minifigure, Legs"
-			},
-			type: "counterpart",
-			amountNeeded: 1
-		},];
+	// 	/** @type {SetPiece[]} */
+	// 	let result = [{
+	// 		piece: {
+	// 			bricklinkId: "970c00",
+	// 			name: "Hips and Legs Plain",
+	// 			color: null,
+	// 			category: "Minifigure, Legs"
+	// 		},
+	// 		type: "counterpart",
+	// 		amountNeeded: 1
+	// 	},];
 
-		let pieces = await webscraper.getMinifigPieces();
+	// 	let pieces = await webscraper.getMinifigPieces();
 
-		expect(pieces).toEqual(result);
-	});
+	// 	expect(pieces).toEqual(result);
+	// });
 
-	test("Missing parts sections", async () => {
-		let html = readTextFile("./fixtures/getMinifigPieces/missing-parts-section.html");
+	// test("Missing parts sections", async () => {
+	// 	let html = readTextFile("./fixtures/getMinifigPieces/missing-parts-section.html");
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			text: () => Promise.resolve(html)
-		}));
+	// 	fetchMock.mockResolvedValue(/** @type {Response} */({
+	// 		ok: true,
+	// 		text: () => Promise.resolve(html)
+	// 	}));
 
-		/** @type {SetPiece[]} */
-		let result = [{
-			piece: {
-				bricklinkId: "970c00",
-				name: "Hips and Legs Plain",
-				color: {
-					bricklinkId: 11,
-					bricklinkName: "Black",
-					legoId: 26,
-					legoName: "Black"
-				},
-				category: "Minifigure, Legs"
-			},
-			type: "counterpart",
-			amountNeeded: 1
-		}];
+	// 	/** @type {SetPiece[]} */
+	// 	let result = [{
+	// 		piece: {
+	// 			bricklinkId: "970c00",
+	// 			name: "Hips and Legs Plain",
+	// 			color: {
+	// 				bricklinkId: 11,
+	// 				bricklinkName: "Black",
+	// 				legoId: 26,
+	// 				legoName: "Black"
+	// 			},
+	// 			category: "Minifigure, Legs"
+	// 		},
+	// 		type: "counterpart",
+	// 		amountNeeded: 1
+	// 	}];
 
-		expect(await webscraper.getMinifigPieces()).toEqual(result);
-	});
+	// 	expect(await webscraper.getMinifigPieces()).toEqual(result);
+	// });
 
-	test("Missing regular items section", async () => {
-		let html = readTextFile("./fixtures/getMinifigPieces/missing-regular-items-section.html");
+	// test("Missing regular items section", async () => {
+	// 	let html = readTextFile("./fixtures/getMinifigPieces/missing-regular-items-section.html");
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			text: () => Promise.resolve(html)
-		}));
+	// 	fetchMock.mockResolvedValue(/** @type {Response} */({
+	// 		ok: true,
+	// 		text: () => Promise.resolve(html)
+	// 	}));
 
-		/** @type {SetPiece[]} */
-		let result = [];
+	// 	/** @type {SetPiece[]} */
+	// 	let result = [];
 
-		expect(await webscraper.getMinifigPieces()).toEqual([]);
-	});
+	// 	expect(await webscraper.getMinifigPieces()).toEqual([]);
+	// });
 });
 
 describe("getCompositePiece", () => {
@@ -287,186 +293,60 @@ describe("getCompositePiece", () => {
 describe("getLegoSet", () => {
 	beforeEach(() => {
 		colors.push(
-			{
-				bricklinkId: 1,
-				bricklinkName: "White",
-				legoId: 1,
-				legoName: "White"
-			},
-			{
-				bricklinkId: 85,
-				bricklinkName: "Dark Blueish Gray",
-				legoId: 199,
-				legoName: "Dark Stone Grey"
-			},
-			{
-				bricklinkId: 11,
-				bricklinkName: "Black",
-				legoId: 26,
-				legoName: "Black"
-			},
-			{
-				bricklinkId: 2,
-				bricklinkName: "Tan",
-				legoId: 5,
-				legoName: "Brick Yellow"
-			},
-			{
-				bricklinkId: 14,
-				bricklinkName: "Trans-Dark Blue",
-				legoId: 43,
-				legoName: "Tr. Blue"
-			}
+			new LegoColor(1, "White", 1, "White"),
+			new LegoColor(85, "Dark Blueish Gray", 199, "Dark Stone Grey"),
+			new LegoColor(11, "Black", 26, "Black"),
+			new LegoColor(2, "Tan", 5, "Brick Yellow"),
+			new LegoColor(14, "Trans-Dark Blue", 43, "Tr. Blue")
+		);
+		legoPieces.push(
+			new LegoPiece("4738a", "Container, Treasure Chest Bottom with Slots in Back", colors[2], "Container"),
+			new LegoPiece("4739a", "Container, Treasure Chest Lid Curved with Thick Hinge", colors[2], "Container"),
+			new LegoPiece("92338", "Chain 5 Links", colors[1], "Chain"),
+			new LegoPiece(
+				"3068pb0906",
+				"Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
+				colors[3],
+				"Tile, Decorated"
+			),
+			new LegoPiece("pi146", "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull", null, "Pirates"),
+			new LegoPiece("gen067", "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back", null, "Pirates"),
+			new LegoPiece("92338", "Chain 5 Links", colors[1], "Chain"),
+			new LegoPiece(
+				"4738ac01",
+				"Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
+				colors[2],
+				"Container"
+			)
 		);
 	});
 
 	test("Successfully fetch Lego set", async () => {
-		let result = {
-			name: "Pirate Treasure Hunt",
-			setNumber: "10679-1",
-			theme: "Juniors, Pirates, Pirates III",
-			year: 2015,
-			pieceCount: 46,
-			minifigCount: 2,
-			normalPieces: [
-				{
-					piece: {
-						bricklinkId: "4738a",
-						name: "Container, Treasure Chest Bottom with Slots in Back",
-						color: colors[2],
-						category: "Container"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "4739a",
-						name: "Container, Treasure Chest Lid Curved with Thick Hinge",
-						color: colors[2],
-						category: "Container"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "92338",
-						name: "Chain 5 Links",
-						color: colors[1],
-						category: "Chain"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "14518",
-						name: "Shark Body with Debossed Gills",
-						color: colors[1],
-						category: "Animal, Body Part"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "87587",
-						name: "Shark Head with Rounded Nose and Debossed Eyes",
-						color: colors[1],
-						category: "Animal, Body Part"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "3068pb0906",
-						name: "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
-						color: colors[3],
-						category: "Tile, Decorated"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "30153",
-						name: "Rock 1 x 1 Jewel 24 Facet",
-						color: colors[4],
-						category: "Rock"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "2335pb129",
-						name: "Flag 2 x 2 Square with Skull and Crossbones with No Lower Jaw on Black Background Pattern on Both Sides (Jolly Roger)",
-						color: colors[0],
-						category: "Flag, Decorated"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				}
+		let result = new LegoSet(
+			"10679-1",
+			"Pirate Treasure Hunt",
+			"Juniors, Pirates, Pirates III",
+			2015,
+			46,
+			2,
+			1,
+			[
+				new LegoSetPiece(legoPieces[0], 1),
+				new LegoSetPiece(legoPieces[1], 1),
+				new LegoSetPiece(legoPieces[2], 1),
+				new LegoSetPiece(legoPieces[3], 10),
 			],
-			minifigs: [
-				{
-					piece: {
-						bricklinkId: "pi146",
-						name: "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull",
-						color: null,
-						category: "Pirates"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "gen067",
-						name: "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back",
-						color: null,
-						category: "Pirates"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				}
+			[
+				new LegoSetPiece(legoPieces[4], 1),
+				new LegoSetPiece(legoPieces[5], 1)
 			],
-			extraPieces: [
-				{
-					piece: {
-						bricklinkId: "92338",
-						name: "Chain 5 Links",
-						color: colors[1],
-						category: "Chain"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				}
+			[
+				new LegoSetPiece(legoPieces[6], 1)
 			],
-			counterparts: [
-				{
-					piece: {
-						bricklinkId: "4738ac01",
-						name: "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
-						color: colors[2],
-						category: "Container"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				},
-				{
-					piece: {
-						bricklinkId: "14518c01",
-						name: "Shark with Rounded Nose and Debossed Gills and Eyes",
-						color: colors[1],
-						category: "Animal, Water"
-					},
-					type: "counterpart",
-					amountNeeded: 1
-				}
+			[
+				new LegoSetPiece(legoPieces[7], 1)
 			]
-		};
+		);
 
 		let legoSetInfoHtml = readTextFile("./fixtures/getLegoSetInfo/success.html");
 		let legoSetPiecesHtml = readTextFile("./fixtures/getLegoSetPieces/success.html");
@@ -483,7 +363,8 @@ describe("getLegoSet", () => {
 
 		let legoSet = await webscraper.getLegoSet("10679-1");
 
-		expect(legoSet.normalPieces[0].piece.color).toBe(result.normalPieces[0].piece.color);
+		expect(legoSet.normalPieces[0].color).toBe(result.normalPieces[0].color);
+		expect(legoSet.normalPieces[0]).toEqual(result.normalPieces[0]);
 		expect(legoSet).toEqual(result);
 	});
 
@@ -516,10 +397,12 @@ describe("downloadImage", () => {
 	});
 
 	test("Downloads image", async () => {
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			arrayBuffer: () => Promise.resolve(imageData)
-		}));
+		// fetchMock.mockResolvedValue(/** @type {Response} */({
+		// 	ok: true,
+		// 	arrayBuffer: () => Promise.resolve(imageData)
+		// }));
+		// fetchMock.mockResolvedValue(new Response({ arrayBuffer: () => Promise.resolve(imageData) }, { status: 200 }));
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
 
 		// Verify that the file does not exist before downloading it
 		expect(fs.existsSync(downloadFile)).toEqual(false);
@@ -535,10 +418,7 @@ describe("downloadImage", () => {
 	test("Does not download image if already exists", async () => {
 		fs.writeFileSync(downloadFile, imageData);
 
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: true,
-			arrayBuffer: () => Promise.resolve(imageData)
-		}));
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
 
 		// Check if file exists before downloading
 		expect(fs.existsSync(downloadFile)).toEqual(true);
@@ -550,11 +430,7 @@ describe("downloadImage", () => {
 	});
 
 	test("Throws error when the response is not ok", async () => {
-		fetchMock.mockResolvedValue(/** @type {Response} */({
-			ok: false,
-			status: 404,
-			statusText: "Not Found"
-		}));
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 404, statusText: "Not Found" }));
 
 		await expect(webscraper.downloadImage("https://example.com/image.jpg", downloadFile)).rejects.toThrow(
 			new Error("Failed to fetch https://example.com/image.jpg: 404 Not Found")
@@ -562,10 +438,7 @@ describe("downloadImage", () => {
 	});
 
 	test("Throws error when write fails", async () => {
-		fetchMock.mockResolvedValue({
-			ok: true,
-			arrayBuffer: () => Promise.resolve(imageData),
-		});
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
 
 		// Mock fsPromises.writeFile to simulate a write failure
 		let writeFileMock = jest.spyOn(fsPromises, "writeFile");

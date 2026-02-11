@@ -3,7 +3,8 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { SRC_DIRECTORY, IS_DEV_MODE } from "./constants.js";
+import { LegoColor } from "./classes.js";
+import { IS_DEV_MODE, SRC_DIRECTORY } from "./constants.js";
 
 
 // Constants
@@ -17,8 +18,9 @@ const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 let mainWindow;
 
 
-/** @type {Color[]} */
+/** @type {LegoColor[]} */
 let colors = [];
+
 
 // Functions
 /**

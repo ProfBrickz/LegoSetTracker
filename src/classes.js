@@ -3,7 +3,7 @@ export class LegoColor {
 	bricklinkId;
 	/** @type {string} */
 	bricklinkName;
-	/** @type {number} */
+	/** @type {number | null} */
 	legoId;
 	/** @type {string} */
 	legoName;
@@ -11,9 +11,8 @@ export class LegoColor {
 	/**
 	 * @param {number} bricklinkId
 	 * @param {string} bricklinkName
-	 * @param {number} legoId
+	 * @param {number | null} legoId
 	 * @param {string} legoName
-	 * @returns {LegoColor}
 	 */
 	constructor(bricklinkId, bricklinkName, legoId, legoName) {
 		this.bricklinkId = bricklinkId;
@@ -28,7 +27,7 @@ export class LegoPiece {
 	bricklinkId;
 	/** @type {string} */
 	bricklinkName;
-	/** @type {LegoColor} */
+	/** @type {LegoColor | null} */
 	color;
 	/** @type {string} */
 	bricklinkCategory;
@@ -36,9 +35,8 @@ export class LegoPiece {
 	/**
 	 * @param {string} bricklinkId
 	 * @param {string} bricklinkName
-	 * @param {LegoColor} color
+	 * @param {LegoColor | null} color
 	 * @param {string} bricklinkCategory
-	 * @returns {LegoPiece}
 	 */
 	constructor(bricklinkId, bricklinkName, color, bricklinkCategory) {
 		this.bricklinkId = bricklinkId;
@@ -49,10 +47,7 @@ export class LegoPiece {
 }
 
 export class LegoSetPiece {
-	/**
-	 * @private
-	 * @type {LegoPiece}
-	 */
+	/** @type {LegoPiece} */
 	#legoPiece;
 	/** @type {number} */
 	amountNeeded;
@@ -64,7 +59,6 @@ export class LegoSetPiece {
 	 * @param {LegoPiece} legoPiece
 	 * @param {number} amountNeeded
 	 * @param {number} [amountFound=0]
-	 * @returns {LegoSetPiece}
 	 */
 	constructor(legoPiece, amountNeeded, amountFound = 0) {
 		this.#legoPiece = legoPiece;
@@ -104,25 +98,13 @@ export class LegoSet {
 	minifigCount;
 	/** @type {number} */
 	legoSetCount;
-	/**
-	 * @private
-	 * @type {LegoPiece[]}
-	 */
+	/** @type {LegoSetPiece[]}	*/
 	#normalPieces;
-	/**
-	 * @private
-	 * @type {LegoPiece[]}
-	 */
+	/** @type {LegoSetPiece[]} */
 	#minifigs;
-	/**
-	 * @private
-	 * @type {LegoPiece[]}
-	 */
+	/** @type {LegoSetPiece[]} */
 	#extraPieces;
-	/**
-	 * @private
-	 * @type {LegoPiece[]}
-	 */
+	/** @type {LegoSetPiece[]} */
 	#counterpartPieces;
 
 	/**
@@ -133,10 +115,10 @@ export class LegoSet {
 	 * @param {number} pieceCount
 	 * @param {number} minifigCount
 	 * @param {number} [legoSetCount=1]
-	 * @param {LegoPiece[]} [normalPieces=[]]
-	 * @param {LegoPiece[]} [minifigs=[]]
-	 * @param {LegoPiece[]} [extraPieces=[]]
-	 * @param {LegoPiece[]} [counterpartPieces=[]]
+	 * @param {LegoSetPiece[]} [normalPieces=[]]
+	 * @param {LegoSetPiece[]} [minifigs=[]]
+	 * @param {LegoSetPiece[]} [extraPieces=[]]
+	 * @param {LegoSetPiece[]} [counterpartPieces=[]]
 	 */
 	constructor(
 		setNumber,
