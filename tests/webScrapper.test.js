@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import fs from "fs";
 import fsPromises from "fs/promises";
-import Webscraper from "../src/web-scrapper.js";
+import Webscraper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "../src/classes.js";
 
