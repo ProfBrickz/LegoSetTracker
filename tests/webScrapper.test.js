@@ -1,8 +1,9 @@
 // Imports
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
+import fs from "fs";
 import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
-import { readTextFile } from "./testFunctions.js";
+import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 /** @import { LegoSetInfo, LegoSetPieceInfo } from "../src/types.js" */
 
 
@@ -141,6 +142,16 @@ describe("getLegoSetInfo", () => {
 
 		expect(legoSetInfo).toEqual(result);
 	});
+
+	test("Not Found", async () => {
+		let setNumber = "10679-1";
+
+		let html = readTextFile("./fixtures/getLegoSetInfo/not-found.html");
+
+		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
+
+		await expect(webScrapper.getLegoSetInfo(setNumber)).rejects.toThrow(`Could not find the set ${setNumber}`);
+	});
 });
 
 describe("getLegoSetPieces", () => {
@@ -224,9 +235,81 @@ describe("getLegoSetPieces", () => {
 		expect(legoSetPieceInfo.normalPieces[0].bricklinkCategory).toEqual(result.normalPieces[0].bricklinkCategory);
 		expect(legoSetPieceInfo).toEqual(result);
 	});
+
+	test("Return empty array if no pieces are found", async () => {
+		/** @type {LegoSetPieceInfo} */
+		let result = {
+			normalPieces: [],
+			minifigs: [],
+			extraPieces: [],
+			counterparts: []
+		};
+
+		let html = readTextFile("./fixtures/getLegoSetPieces/empty.html");
+
+		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
+
+		let legoSetPieceInfo = await webScrapper.getLegoSetPieces("10679-1");
+
+		expect(legoSetPieceInfo).toEqual(result);
+	});
 });
 
-describe("getLegoSet", () => {
-	// TODO: Implement
-	test.todo("Implement");
+describe("downloadImage", () => {
+	let sourceFile = getRelativeFilePath("./fixtures/downloadImage/image.jpg");
+	let downloadFile = getRelativeFilePath("./image.jpg");
+	let imageData = fs.readFileSync(sourceFile);
+	let url = "https://example.com/image.jpg";
+
+	afterEach(() => {
+		fs.rmSync(downloadFile, { force: true });
+	});
+
+	test("Downloads image", async () => {
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
+
+		// Verify that the file does not exist before downloading it
+		expect(fs.existsSync(downloadFile)).toEqual(false);
+
+		await webScrapper.downloadImage(url, downloadFile);
+
+		// Verify that the file was downloaded
+		expect(fetch).toHaveBeenCalledWith(url);
+		expect(fs.existsSync(downloadFile)).toEqual(true);
+		expect(fs.readFileSync(downloadFile)).toEqual(fs.readFileSync(sourceFile));
+	});
+
+	test("Does not download image if already exists", async () => {
+		fs.writeFileSync(downloadFile, imageData);
+
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
+
+		// Check if file exists before downloading
+		expect(fs.existsSync(downloadFile)).toEqual(true);
+		await webScrapper.downloadImage(url, downloadFile);
+
+		// Check if file still exists after attempting to download again
+		expect(fetch).not.toHaveBeenCalledWith(url);
+		expect(fs.existsSync(downloadFile)).toEqual(true);
+	});
+
+	test("Throws error when the response is not ok", async () => {
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 404, statusText: "Not Found" }));
+
+		await expect(webScrapper.downloadImage("https://example.com/image.jpg", downloadFile)).rejects.toThrow(
+			new Error("Failed to fetch https://example.com/image.jpg: 404 Not Found")
+		);
+	});
+
+	test("Throws error when write fails", async () => {
+		fetchMock.mockResolvedValue(new Response(imageData, { status: 200 }));
+
+		// Mock fs.promises.writeFile to simulate a write failure
+		let writeFileMock = jest.spyOn(fs.promises, "writeFile");
+		writeFileMock.mockImplementation(() => {
+			throw new Error("Write failed");
+		});
+
+		await expect(webScrapper.downloadImage(url, downloadFile)).rejects.toThrow("Write failed");
+	});
 });

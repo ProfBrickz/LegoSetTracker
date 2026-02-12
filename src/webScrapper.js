@@ -309,36 +309,6 @@ export default class WebScrapper {
 	}
 
 	/**
-	 * Retrieves a LEGO set's information by combining set details and its pieces.
-	*
-	* @public
-	* @param {string} setNumber The LEGO set number (e.g., "10179-1").
-	* @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
-	* @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
-	*/
-	async getLegoSet(setNumber) {
-		// TODO: Implement
-		throw new Error("TODO");
-		// let legoSetInfo = await this.getLegoSetInfo(setNumber);
-		// let legoSetPieces = await this.getLegoSetPieces(setNumber);
-
-		// return new LegoSet(
-		// 	null,
-		// 	legoSetInfo.setNumber,
-		// 	legoSetInfo.name,
-		// 	legoSetInfo.theme,
-		// 	legoSetInfo.releaseYear,
-		// 	legoSetInfo.pieceCount,
-		// 	legoSetInfo.minifigCount,
-		// 	undefined,
-		// 	legoSetPieces.normalPieces,
-		// 	legoSetPieces.minifigs,
-		// 	legoSetPieces.extraPieces,
-		// 	legoSetPieces.counterparts
-		// );
-	}
-
-	/**
 	 * Downloads an image from the specified URL to the given download path.
 	 *
 	 * @public

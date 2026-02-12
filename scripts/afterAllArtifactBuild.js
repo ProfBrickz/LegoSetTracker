@@ -20,7 +20,7 @@ const ARCHITECTURE_RENAME_MAP = {
 // Functions
 /**
  * @param {Buffer} data
- * @param {string} algorithm 
+ * @param {string} algorithm
  */
 function calculateChecksum(data, algorithm) {
 	const hash = crypto.hash(algorithm, data);
@@ -29,7 +29,7 @@ function calculateChecksum(data, algorithm) {
 
 /**
  * Moves a file to a new folder with updated naming conventions.
- * 
+ *
  * @param {string} oldFilePath - The path of the file to move.
  */
 function moveFile(oldFilePath) {
@@ -70,7 +70,7 @@ function moveFile(oldFilePath) {
 
 /**
  * Handles the completion of artifact builds by creating necessary folder structures and moving artifacts.
- * 
+ *
  * @param {import("electron-builder").BuildResult} result The result object containing `artifactPaths`.
  */
 async function artifactBuildCompleted(result) {
