@@ -2,12 +2,12 @@
 import fs from "fs";
 import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
-import { LegoColor, LegoPiece, LegoSetPiece, LegoSet } from "./classes.js";
-/** @import {LegoSetInfo, LegoSetPieces} from "./types.js" */
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
+/** @import {LegoSetInfo, LegoSetPieceInfo} from "./types.js" */
 
 
 // Functions
-export default class Webscraper {
+export default class WebScrapper {
 	/** @type {LegoColor[]} */
 	#colors;
 	/** @type {LegoPiece[]} */
@@ -114,7 +114,7 @@ export default class Webscraper {
 	 *
 	 * @public
 	 * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
-	 * @returns {Promise<LegoSetPieces>} A Promise that resolves to an object containing categorized piece data.
+	 * @returns {Promise<LegoSetPieceInfo>} A Promise that resolves to an object containing categorized piece data.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
 	async getLegoSetPieces(setNumber) {
@@ -127,8 +127,6 @@ export default class Webscraper {
 		let minifigs = this.getSection("Minifigures:", rows, categories);
 		let extraPieces = this.getSection("Extra Items:", rows, categories);
 		let counterparts = this.getSection("Counterparts:", rows, categories);
-
-		console.log(normalPieces[0]);
 
 		return { normalPieces, minifigs, extraPieces, counterparts };
 	}
@@ -281,12 +279,14 @@ export default class Webscraper {
 	 * @returns {Promise<LegoSetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
 	 */
 	async getMinifigPieces(minifigId) {
-		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?M=${minifigId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
-		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
-		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
-		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], form > table tr[bgcolor='#C0C0C0']"));
+		throw new Error("TODO");
 
-		return this.getSection("Regular Items:", rows, categories);
+		// let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?M=${minifigId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
+		// let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
+		// let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
+		// let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], form > table tr[bgcolor='#C0C0C0']"));
+
+		// return this.getSection("Regular Items:", rows, categories);
 	}
 
 	/**
@@ -310,30 +310,32 @@ export default class Webscraper {
 
 	/**
 	 * Retrieves a LEGO set's information by combining set details and its pieces.
-	 *
-	 * @public
-	 * @param {string} setNumber The LEGO set number (e.g., "10179-1").
-	 * @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
-	 * @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
-	 */
+	*
+	* @public
+	* @param {string} setNumber The LEGO set number (e.g., "10179-1").
+	* @returns {Promise<LegoSet>} A promise that resolves to a `LegoSet` object containing set information and pieces.
+	* @throws {Error} If fetching set information or pieces fails (e.g., invalid set number, network error).
+	*/
 	async getLegoSet(setNumber) {
-		let legoSetInfo = await this.getLegoSetInfo(setNumber);
-		let legoSetPieces = await this.getLegoSetPieces(setNumber);
+		// TODO: Implement
+		throw new Error("TODO");
+		// let legoSetInfo = await this.getLegoSetInfo(setNumber);
+		// let legoSetPieces = await this.getLegoSetPieces(setNumber);
 
-		return new LegoSet(
-			null,
-			legoSetInfo.setNumber,
-			legoSetInfo.name,
-			legoSetInfo.theme,
-			legoSetInfo.releaseYear,
-			legoSetInfo.pieceCount,
-			legoSetInfo.minifigCount,
-			undefined,
-			legoSetPieces.normalPieces,
-			legoSetPieces.minifigs,
-			legoSetPieces.extraPieces,
-			legoSetPieces.counterparts
-		);
+		// return new LegoSet(
+		// 	null,
+		// 	legoSetInfo.setNumber,
+		// 	legoSetInfo.name,
+		// 	legoSetInfo.theme,
+		// 	legoSetInfo.releaseYear,
+		// 	legoSetInfo.pieceCount,
+		// 	legoSetInfo.minifigCount,
+		// 	undefined,
+		// 	legoSetPieces.normalPieces,
+		// 	legoSetPieces.minifigs,
+		// 	legoSetPieces.extraPieces,
+		// 	legoSetPieces.counterparts
+		// );
 	}
 
 	/**
@@ -407,13 +409,16 @@ export default class Webscraper {
 	async downloadLegoSetImages(legoSet) {
 		await Promise.all([
 			this.downloadLegoSetImage(legoSet.setNumber),
-			legoSet.normalPieces.map((setPiece) =>
+			legoSet.normalPieces.forEach((setPiece) =>
 				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
 			),
-			legoSet.counterpartPieces.map((setPiece) =>
+			legoSet.normalPieces.forEach((setPiece) =>
 				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
 			),
-			legoSet.minifigs.map((setPiece) => this.downloadMinifigImage(setPiece.bricklinkId))
+			legoSet.counterpartPieces.forEach((setPiece) =>
+				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
+			),
+			legoSet.minifigs.forEach((setPiece) => this.downloadMinifigImage(setPiece.bricklinkId))
 		]);
 	}
 }

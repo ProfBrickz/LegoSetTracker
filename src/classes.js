@@ -1,181 +1,33 @@
-export class LegoColor {
-	/** @type {number | null} */
-	databaseId;
-	/** @type {number} */
-	bricklinkId;
-	/** @type {string} */
-	bricklinkName;
-	/** @type {number | null} */
-	legoId;
-	/** @type {string} */
-	legoName;
+// Classes
+/**
+ * @template K
+ * @template V
+ * @extends {Map<K, V>}
+ */
+export class ClassMap extends Map {
+	/** @type {new (...args: any[]) => V} */
+	#classType;
 
 	/**
-	 * @param {number | null} databaseId
-	 * @param {number} bricklinkId
-	 * @param {string} bricklinkName
-	 * @param {number | null} legoId
-	 * @param {string} legoName
-	 */
-	constructor(databaseId, bricklinkId, bricklinkName, legoId, legoName) {
-		this.databaseId = databaseId;
-		this.bricklinkId = bricklinkId;
-		this.bricklinkName = bricklinkName;
-		this.legoId = legoId;
-		this.legoName = legoName;
-	}
-}
-
-export class LegoPiece {
-	/** @type {number | null} */
-	databaseId;
-	/** @type {string} */
-	bricklinkId;
-	/** @type {string} */
-	bricklinkName;
-	/** @type {LegoColor | null} */
-	color;
-	/** @type {string} */
-	bricklinkCategory;
-
-	/**
-	 * @param {number | null} databaseId
-	 * @param {string} bricklinkId
-	 * @param {string} bricklinkName
-	 * @param {LegoColor | null} color
-	 * @param {string} bricklinkCategory
+	 * @param {new (...args: any[]) => V} classType
+	 * @param {Iterable<readonly [K, V]>} [iterable]
 	*/
-	constructor(databaseId, bricklinkId, bricklinkName, color, bricklinkCategory) {
-		this.databaseId = databaseId;
-		this.bricklinkId = bricklinkId;
-		this.bricklinkName = bricklinkName;
-		this.color = color;
-		this.bricklinkCategory = bricklinkCategory;
+	constructor(classType, iterable) {
+		super(iterable);
+		this.#classType = classType;
 	}
-}
-
-export class LegoSetPiece {
-	/** @type {number | null} */
-	databaseId;
-	/** @type {LegoPiece} */
-	#legoPiece;
-	/** @type {number} */
-	amountNeeded;
-	/** @type {number} */
-	amountFound;
-
-	// Make the constructor with the jsdoc string
-	/**
-	 * @param {number | null} databaseId
-	 * @param {LegoPiece} legoPiece
-	 * @param {number} amountNeeded
-	 * @param {number} [amountFound=0]
-	 */
-	constructor(databaseId, legoPiece, amountNeeded, amountFound = 0) {
-		this.databaseId = databaseId;
-		this.#legoPiece = legoPiece;
-		this.amountNeeded = amountNeeded;
-		this.amountFound = amountFound;
-	}
-
-	get bricklinkId() {
-		return this.#legoPiece.bricklinkId;
-	}
-
-	get bricklinkName() {
-		return this.#legoPiece.bricklinkName;
-	}
-
-	get color() {
-		return this.#legoPiece.color;
-	}
-
-	get bricklinkCategory() {
-		return this.#legoPiece.bricklinkCategory;
-	}
-}
-
-export class LegoSet {
-	/** @type {number | null} */
-	databaseId;
-	/** @type {string} */
-	setNumber;
-	/** @type {string} */
-	name;
-	/** @type {string} */
-	theme;
-	/** @type {number} */
-	releaseYear;
-	/** @type {number} */
-	pieceCount;
-	/** @type {number} */
-	minifigCount;
-	/** @type {number} */
-	legoSetCount;
-	/** @type {LegoSetPiece[]}	*/
-	#normalPieces;
-	/** @type {LegoSetPiece[]} */
-	#minifigs;
-	/** @type {LegoSetPiece[]} */
-	#extraPieces;
-	/** @type {LegoSetPiece[]} */
-	#counterpartPieces;
 
 	/**
-	 * @param {number | null} databaseId
-	 * @param {string} setNumber
-	 * @param {string} name
-	 * @param {string} theme
-	 * @param {number} releaseYear
-	 * @param {number} pieceCount
-	 * @param {number} minifigCount
-	 * @param {number} [legoSetCount=1]
-	 * @param {LegoSetPiece[]} [normalPieces=[]]
-	 * @param {LegoSetPiece[]} [minifigs=[]]
-	 * @param {LegoSetPiece[]} [extraPieces=[]]
-	 * @param {LegoSetPiece[]} [counterpartPieces=[]]
+	 * @param {K} key
+	 * @param {V} value
+	 * @returns {this}
+	 * @throws {TypeError} if value is not an instance of classTyp
 	 */
-	constructor(
-		databaseId,
-		setNumber,
-		name,
-		theme,
-		releaseYear,
-		pieceCount,
-		minifigCount,
-		legoSetCount = 1,
-		normalPieces = [],
-		minifigs = [],
-		extraPieces = [],
-		counterpartPieces = []
-	) {
-		this.databaseId = databaseId;
-		this.setNumber = setNumber;
-		this.name = name;
-		this.theme = theme;
-		this.releaseYear = releaseYear;
-		this.pieceCount = pieceCount;
-		this.minifigCount = minifigCount;
-		this.legoSetCount = legoSetCount;
-		this.#normalPieces = normalPieces;
-		this.#minifigs = minifigs;
-		this.#extraPieces = extraPieces;
-		this.#counterpartPieces = counterpartPieces;
-	}
+	set(key, value) {
+		if (!(value instanceof this.#classType)) {
+			throw new TypeError(`Value must be an instance of ${this.#classType.name}`);
+		}
 
-	get normalPieces() {
-		return this.#normalPieces;
-	}
-
-	get minifigs() {
-		return this.#minifigs;
-	}
-
-	get extraPieces() {
-		return this.#extraPieces;
-	}
-
-	get counterpartPieces() {
-		return this.#counterpartPieces;
+		return super.set(key, value);
 	}
 }

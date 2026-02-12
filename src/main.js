@@ -3,8 +3,8 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { LegoColor } from "./classes.js";
 import { IS_DEV_MODE, SRC_DIRECTORY } from "./constants.js";
+import { LegoColor } from "./models.js";
 
 
 // Constants
