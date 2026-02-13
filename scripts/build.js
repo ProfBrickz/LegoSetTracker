@@ -100,7 +100,7 @@ function manageContainer() {
 
 // Main
 let currentFolder = import.meta.dirname;
-if (currentFolder.endsWith("/scripts")) currentFolder = currentFolder.slice(0, -8);
+if (currentFolder.endsWith("/scripts") || currentFolder.endsWith("\\scripts")) currentFolder = currentFolder.slice(0, -8);
 
 // Detect container runtime
 let containerRuntime = detectContainerRuntime();
