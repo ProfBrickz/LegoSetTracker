@@ -272,9 +272,11 @@ export default class WebScrapper {
 	}
 
 	/**
+	 * Fetches the categories for LEGO sets.
 	 *
 	 * @public
 	 * @returns {Promise<Map<string, string>>}
+	 * A promise that resolves to a map where the keys are category names and the values are category IDs.
 	 */
 	async getLegoSetCategories() {
 		/** @type {Map<string, string>} */
