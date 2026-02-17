@@ -4,8 +4,7 @@ import { LegoSetPiece } from "./models.js";
 
 // Types
 /**
- * @typedef LegoSetInfo
- * @type {Object}
+ * @typedef {Object} LegoSetInfo
  * @property {string} setNumber The unique identifier for the set
  * @property {string} name The official name of the LEGO set
  * @property {string} theme The theme of the LEGO set
@@ -15,10 +14,16 @@ import { LegoSetPiece } from "./models.js";
 */
 
 /**
- * @typedef LegoSetPieceInfo
- * @type {Object}
+ * @typedef {Object} LegoSetPieceInfo
  * @property {LegoSetPiece[]} normalPieces The normal pieces in the set
  * @property {LegoSetPiece[]} minifigs The minifigures in the set
  * @property {LegoSetPiece[]} extraPieces The extra pieces in the set
  * @property {LegoSetPiece[]} counterparts The counterpart pieces in the set
+ */
+
+/**
+ * @typedef {Object} LegoSetSearchResult
+ * @property {string} setNumber The unique identifier for the set
+ * @property {string} name The official name of the LEGO set
+ * @property {string} themeId The ID of the theme associated with the set (ex. 65.806.258)
  */

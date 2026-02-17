@@ -3,7 +3,7 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
-/** @import {LegoSetInfo, LegoSetPieceInfo} from "./types.js" */
+/** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult} from "./types.js" */
 
 
 // Functions
@@ -304,6 +304,69 @@ export default class WebScrapper {
 	}
 
 	/**
+	 * @param {string} searchQuery The search query for the search.
+	 * @param {Object} [options]
+	 * @param {string} [options.themeId] The ID of the theme to filter by.
+	 * @param {string} [options.startYear] The start year for the search (inclusive).
+	 * @param {string} [options.endYear] The end year for the search (inclusive).
+	 *
+	 * @returns {Promise<LegoSetSearchResult[]>}
+	 */
+	async searchLegoSets(searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) {
+		/** @type {LegoSetSearchResult[]} */
+		let legoSets = [];
+
+		let url = new URL("https://www.bricklink.com/ajax/clone/search/searchproduct.ajax");
+		url.searchParams.set("type", "S");
+		url.searchParams.set("q", searchQuery);
+		url.searchParams.set("cat", themeId);
+		url.searchParams.set("yf", startYear);
+		url.searchParams.set("yt", endYear);
+
+		let response = await fetch(url);
+		if (!response.ok) throw new Error("Failed to fetch data");
+
+		/**
+		 * @typedef {"S" | "P" | "M" | "G" | "B"} ItemType - The type of the item.
+		 *
+		 * @typedef {Object} Item
+		 * @property {ItemType} typeItem - The type of the item.
+		 * @property {string} strItemNo - The item number.
+		 * @property {string} strItemName - The name of the item.
+		 * @property {string} strCategory - The category of the item.
+		 *
+		 * @typedef {Object} TypeList
+		 * @property {number} type - The type identifier.
+		 * @property {number} count - The count of items in this type.
+		 * @property {Item[]} items - An array of items belonging to this type.
+		 *
+		 * @typedef {Object} Result
+		 * @property {TypeList[]} typeList - An array of type lists containing items.
+		 *
+		 * @typedef {Object} SearchResponse
+		 * @property {Result} result - The result object containing the data.
+		 * @property {number} returnCode - Return code indicating success or failure.
+		 * @property {string} returnMessage - Message describing the result.
+		 */
+		/** @type {SearchResponse} */
+		let { result, returnCode, returnMessage } = await response.json();
+		if (returnCode != 0) throw new Error(returnMessage);
+
+		let items = result.typeList[0].items;
+		items[0].strItemNo;
+
+		for (let item of items) {
+			legoSets.push({
+				setNumber: item.strItemNo,
+				name: item.strItemName,
+				themeId: item.strCategory,
+			});
+		}
+
+		return legoSets;
+	}
+
+	/**
 	 * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
 	 *
 	 * @public
@@ -424,10 +487,3 @@ export default class WebScrapper {
 		]);
 	}
 }
-
-/** @type {LegoColor[]} */
-let colors = [];
-/** @type {LegoPiece[]} */
-let legoPieces = [];
-let webScrapper = new WebScrapper(colors, legoPieces);
-

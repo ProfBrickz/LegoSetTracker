@@ -4,7 +4,7 @@ import fs from "fs";
 import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo } from "../src/types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult } from "../src/types.js" */
 
 
 // Variables
@@ -74,7 +74,6 @@ describe("getColors", () => {
 		];
 
 		let html = readTextFile("./fixtures/getColors/colors.html");
-
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
@@ -142,6 +141,65 @@ describe("getLegoSetCategories", () => {
 		// expect(legoSetCategories.length).toEqual(7);
 		// expect(legoSetCategories[0]).toBeInstanceOf(LegoColor);
 		expect(legoSetCategories).toEqual(result);
+	});
+});
+
+describe("searchLegoSets", () => {
+	test("Returns an array of Lego set search results", async () => {
+		/** @type {LegoSetSearchResult[]} */
+		let result = [
+			{
+				name: "Star Destroyer",
+				setNumber: "75033-1",
+				themeId: "65.806.258",
+			}, {
+				name: "Imperial Star Destroyer",
+				setNumber: "75055-1",
+				themeId: "65.258",
+			}, {
+				name: "First Order Star Destroyer",
+				setNumber: "75190-1",
+				themeId: "65.923",
+			}, {
+				name: "First Order Star Destroyer - Mini polybag",
+				setNumber: "30277-1",
+				themeId: "65.481.858",
+			}, {
+				name: "Star Destroyer + TIE Fighter - Mini foil pack",
+				setNumber: "911510-1",
+				themeId: "65.481.258",
+			}, {
+				name: "Mini Star Destroyer - Star Wars Celebration Anaheim 2015",
+				setNumber: "CELEB2015SD-1",
+				themeId: "65.983",
+			}, {
+				name: "Advent Calendar 2015, Star Wars (Day 11) - Star Destroyer",
+				setNumber: "75097-12",
+				themeId: "390.715.65",
+			},
+		];
+
+		let json = readTextFile("./fixtures/searchLegoSets/success.json");
+		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
+
+		let searchResults = await webScrapper.searchLegoSets("destroyer", { themeId: "65", startYear: "2014", endYear: "2017" });
+
+		expect(searchResults.length).toEqual(7);
+		expect(searchResults).toEqual(result);
+	});
+
+	test("Throws error when not ok", async () => {
+		fetchMock.mockResolvedValue(new Response("", { status: 400, statusText: "Bad Request" }));
+
+		await expect(webScrapper.searchLegoSets("")).rejects.toThrow("Failed to fetch data");
+	});
+
+	test("Invalid parameters", async () => {
+		let json = readTextFile("./fixtures/searchLegoSets/error.json");
+		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
+
+		// let searchResults = await webScrapper.searchLegoSets("");
+		await expect(webScrapper.searchLegoSets("")).rejects.toThrow("Query keyword is not specified!");
 	});
 });
 
