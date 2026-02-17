@@ -272,6 +272,36 @@ export default class WebScrapper {
 	}
 
 	/**
+	 *
+	 * @public
+	 * @returns {Promise<Map<string, string>>}
+	 */
+	async getLegoSetCategories() {
+		/** @type {Map<string, string>} */
+		let categories = new Map();
+
+		let document = await this.getWebpage("https://www.bricklink.com/catalogTree.asp?itemType=S");
+
+		let sections =/** @type {HTMLTableRowElement[]} */ Array.from(document.querySelectorAll(".catalog-tree__spacing-reset")).slice(0, 2);
+		/** @type {HTMLAnchorElement[]} */
+		let links = [];
+		for (let section of sections) {
+			links.push(...section.querySelectorAll("a"));
+		}
+
+		for (let link of links) {
+			let id = new URL(link.href, "https://bricklink.com").searchParams.get("catString") || "";
+			let name = link.textContent.trim();
+
+			if (name == "{}" || name == "{more}") continue;
+
+			categories.set(id, name);
+		}
+
+		return categories;
+	}
+
+	/**
 	 * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
 	 *
 	 * @public
@@ -392,3 +422,10 @@ export default class WebScrapper {
 		]);
 	}
 }
+
+/** @type {LegoColor[]} */
+let colors = [];
+/** @type {LegoPiece[]} */
+let legoPieces = [];
+let webScrapper = new WebScrapper(colors, legoPieces);
+

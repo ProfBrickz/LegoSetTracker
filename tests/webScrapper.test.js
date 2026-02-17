@@ -112,6 +112,39 @@ describe("getColors", () => {
 	});
 });
 
+describe("getLegoSetCategories", () => {
+	test("Returns an Map of categories with id's and name's", async () => {
+		/** @type {Map<string, string>} */
+		let result = new Map([
+			["143", "(Other)"],
+			["516", "4 Juniors"],
+			["516.178", "Jack Stone"],
+			["516.61", "Pirates"],
+			["516.469", "Spider-Man"],
+			["609", "Agents"],
+			["1370", "Education"],
+			["166", "Educational & Dacta"],
+			["166.167", "DUPLO"],
+			["166.167.173", "Action Wheelers"],
+			["166.167.612", "Town"],
+			["166.167.612.325", "Airport"]
+		]);
+
+		let html = readTextFile("./fixtures/getLegoSetCategories/success.html");
+
+		// Mock fetch to return the HTML content of the fixture
+		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
+
+		let legoSetCategories = await webScrapper.getLegoSetCategories();
+
+		// Verify that the returned value is the correct array of colors
+		expect(legoSetCategories).toBeInstanceOf(Map);
+		// expect(legoSetCategories.length).toEqual(7);
+		// expect(legoSetCategories[0]).toBeInstanceOf(LegoColor);
+		expect(legoSetCategories).toEqual(result);
+	});
+});
+
 describe("getMinifigPieces", () => {
 	// TODO: Implement after MVP
 	test.todo("Implement after MVP");
