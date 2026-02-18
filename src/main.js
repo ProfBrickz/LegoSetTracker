@@ -123,7 +123,11 @@ ipcMain.on("loadPage",
 
 		let html = loadPage(page, params);
 
-		mainWindow.webContents.send("pageLoaded", { page, html });
+		mainWindow.webContents.send("pageLoaded", page, html);
+
+		if (page == "settings") {
+			mainWindow.webContents.send("themeChange", nativeTheme.themeSource);
+		}
 	}
 );
 
@@ -134,6 +138,10 @@ ipcMain.handle("setTheme",
 	 * @returns {void}
 	 */
 	(event, theme) => {
+		if (!mainWindow) return;
+
 		nativeTheme.themeSource = theme;
+
+		mainWindow.webContents.send("themeChange", theme);
 	}
 );

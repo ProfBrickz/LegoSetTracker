@@ -67,27 +67,6 @@ body {
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.menu-btn {
-   background: none;
-   border: none;
-   color: var(--text);
-   cursor: pointer;
-   padding: 0.5rem;
-   border-radius: 4px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-}
-
-.menu-btn:hover {
-   background-color: var(--bg-light);
-}
-
-.menu-btn i {
-   width: 24px;
-   height: 24px;
-}
-
 .menu-section {
    display: flex;
    align-items: center;
@@ -101,38 +80,41 @@ body {
    flex: 1;
 }
 
-.nav-link {
+/* Unified Button Styles */
+button {
    display: flex;
    align-items: center;
    gap: 0.5rem;
    padding: 0.75rem 1rem;
    background-color: transparent;
    color: var(--text);
-   border: none;
-   border-radius: 4px;
+   background-color: var(--bg);
+   border: 2px solid var(--border);
+   border-radius: 8px;
    cursor: pointer;
    font-size: var(--p);
    font-family: inherit;
 }
 
-.nav-link:hover {
+button:hover {
    background-color: var(--highlight);
    color: var(--text);
 }
 
-.nav-link.active {
+button.active {
    background-color: var(--primary);
    color: var(--bg-dark);
-   font-weight: 600;
+   font-weight: bold;
+   transform: scale(0.9);
 }
 
-.nav-link i {
-   width: 20px;
-   height: 20px;
+button i {
+   width: 1.2rem;
+   height: 1.2rem;
    flex-shrink: 0;
 }
 
-.nav-link span {
+button span {
    white-space: nowrap;
 }
 
@@ -246,36 +228,14 @@ body {
    flex-wrap: wrap;
 }
 
-.theme-btn {
-   display: flex;
+.settings-section button {
    flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   gap: 0.5rem;
-   padding: 1rem 1.5rem;
-   background-color: var(--bg);
-   border: 2px solid var(--border);
-   border-radius: 8px;
-   color: var(--text);
-   cursor: pointer;
-   font-size: var(--p);
-   font-weight: 500;
-   min-width: 120px;
+   padding: 1rem 2rem;
 }
 
-.theme-btn:hover {
-   background-color: var(--highlight);
-   border-color: var(--primary);
-   color: var(--primary);
-}
-
-.theme-btn:active {
-   transform: scale(0.98);
-}
-
-.theme-btn i {
-   width: 24px;
-   height: 24px;
+.settings-section button i {
+   width: 2rem;
+   height: 2rem;
 }
 
 /* Responsive Design */
@@ -283,10 +243,6 @@ body {
    .navbar {
       gap: 0.25rem;
       padding: 0.75rem;
-   }
-
-   .nav-link span {
-      display: none;
    }
 
    .main-content {
@@ -320,7 +276,7 @@ body {
       flex-direction: column;
    }
 
-   .theme-btn {
+   .theme-buttons button {
       width: 100%;
    }
 }

@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	}
 });
 
-ipcRenderer.on("pageLoaded", (event, { page, html }) => {
+ipcRenderer.on("pageLoaded", (event, page, html) => {
 	const mainElement = document.getElementById("main");
 	if (!mainElement) return;
 
@@ -32,9 +32,9 @@ ipcRenderer.on("pageLoaded", (event, { page, html }) => {
 
 	// Update active button
 	const navButtons = document.querySelectorAll(".nav-link");
-	navButtons.forEach(button => {
-		button.classList.remove("active");
-	});
+	for (let navButton of navButtons) {
+		navButton.classList.remove("active");
+	}
 
 	// Add active class to current page button
 	const currentButton = document.querySelector(`.nav-link[onclick*="${page}"]`);
@@ -44,4 +44,16 @@ ipcRenderer.on("pageLoaded", (event, { page, html }) => {
 
 	// Notify that page has changed so icons can be recreated
 	document.dispatchEvent(new CustomEvent("pageChanged"));
+});
+
+ipcRenderer.on("themeChange", (event, theme) => {
+	const themeButtons = document.querySelectorAll(".theme-buttons button");
+	for (let themeButton of themeButtons) {
+		themeButton.classList.remove("active");
+	}
+
+	const currentButton = document.querySelector(`.theme-buttons button#theme-${theme}`);
+	if (currentButton) {
+		currentButton.classList.add("active");
+	}
 });
