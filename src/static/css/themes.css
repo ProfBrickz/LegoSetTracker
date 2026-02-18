@@ -5,7 +5,7 @@
 
 
 @media (prefers-color-scheme: dark) {
-	body {
+	html {
 		/* hsl (fallback color) */
 		--bg-dark: hsl(226 100% 4%);
 		--bg: hsl(213 100% 5%);
@@ -40,7 +40,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-	body {
+	html {
 		/* hsl (fallback color) */
 		--bg-dark: hsl(205 100% 90%);
 		--bg: hsl(205 100% 95%);

@@ -1,5 +1,48 @@
 /* Global Styles */
-html,
+html {
+   --font-scale: calc(1 + 1 / 5);
+   --small: calc(var(--p) / var(--font-scale));
+   --p: 1.2rem;
+   --h5: calc(var(--p) * var(--font-scale));
+   --h4: calc(var(--h5) * var(--font-scale));
+   --h3: calc(var(--h4) * var(--font-scale));
+   --h2: calc(var(--h3) * var(--font-scale));
+   --h1: calc(var(--h2) * var(--font-scale));
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+   font-weight: bold;
+}
+
+h1 {
+   font-size: var(--h1);
+}
+
+h2 {
+   font-size: var(--h2);
+}
+
+h3 {
+   font-size: var(--h3);
+}
+
+h4 {
+   font-size: var(--h4);
+}
+
+h5 {
+   font-size: var(--h5);
+}
+
+small {
+   font-size: var(--small);
+}
+
+
 body {
    height: 100%;
    width: 100%;
@@ -9,9 +52,8 @@ body {
    color: var(--text);
    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
       Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-   font-size: 16px;
+   font-size: var(--p);
    line-height: 1.6;
-   /* transition: background-color 0.3s ease, color 0.3s ease; */
 }
 
 /* Navbar Styles */
@@ -35,7 +77,6 @@ body {
    display: flex;
    align-items: center;
    justify-content: center;
-   /* transition: background-color 0.2s ease, color 0.2s ease; */
 }
 
 .menu-btn:hover {
@@ -70,8 +111,7 @@ body {
    border: none;
    border-radius: 4px;
    cursor: pointer;
-   /* transition: background-color 0.2s ease, color 0.2s ease; */
-   font-size: 1rem;
+   font-size: var(--p);
    font-family: inherit;
 }
 
@@ -109,23 +149,11 @@ body {
 
 /* Home Page Styles */
 .main-content>h1:first-child {
-   font-size: 2.5rem;
+   font-size: var(--h1);
    font-weight: 700;
    color: var(--primary);
    margin-bottom: 2rem;
    text-align: center;
-   width: 100%;
-   max-width: 800px;
-}
-
-.main-content>h2 {
-   font-size: 1.5rem;
-   font-weight: 600;
-   color: var(--text);
-   margin-top: 2rem;
-   margin-bottom: 1rem;
-   border-bottom: 2px solid var(--border);
-   padding-bottom: 0.5rem;
    width: 100%;
    max-width: 800px;
 }
@@ -145,7 +173,7 @@ body {
 
 .description p {
    color: var(--text-muted);
-   font-size: 1.05rem;
+   font-size: var(--p);
    line-height: 1.8;
    margin: 0;
 }
@@ -161,7 +189,7 @@ body {
 .features li {
    padding: 0.75rem 0;
    color: var(--text-muted);
-   font-size: 1rem;
+   font-size: var(--p);
    line-height: 1.7;
 }
 
@@ -199,7 +227,7 @@ body {
 }
 
 .settings-section h2 {
-   font-size: 1.25rem;
+   font-size: var(--h2);
    font-weight: 600;
    color: var(--text);
    margin: 0 0 1rem 0;
@@ -208,7 +236,7 @@ body {
 .settings-section p {
    color: var(--text-muted);
    margin: 0 0 1rem 0;
-   font-size: 1rem;
+   font-size: var(--p);
 }
 
 /* Theme Buttons */
@@ -230,9 +258,8 @@ body {
    border-radius: 8px;
    color: var(--text);
    cursor: pointer;
-   font-size: 1rem;
+   font-size: var(--p);
    font-weight: 500;
-   /* transition: all 0.2s ease; */
    min-width: 120px;
 }
 
@@ -273,12 +300,12 @@ body {
 
    .home-container h1,
    .settings-container h1 {
-      font-size: 1.75rem;
+      font-size: var(--h1);
       margin-bottom: 1.5rem;
    }
 
    .home-container h2 {
-      font-size: 1.25rem;
+      font-size: var(--h2);
       margin-top: 1.5rem;
    }
 
@@ -314,18 +341,18 @@ body {
 
    .home-container h1,
    .settings-container h1 {
-      font-size: 1.5rem;
+      font-size: var(--h1);
       margin-bottom: 1rem;
    }
 
    .home-container h2 {
-      font-size: 1.1rem;
+      font-size: var(--h2);
       margin-top: 1rem;
    }
 
    .description p,
    .how-to-use li,
    .features li {
-      font-size: 0.95rem;
+      font-size: var(--p);
    }
 }
