@@ -56,6 +56,44 @@ body {
 	line-height: 1.6;
 }
 
+button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+	background-color: transparent;
+	color: var(--text);
+	background-color: var(--bg);
+	border: 2px solid var(--border);
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: var(--p);
+	font-family: inherit;
+
+	:hover {
+		background-color: var(--highlight);
+		color: var(--text);
+	}
+
+	.active {
+		background-color: var(--primary);
+		color: var(--bg-dark);
+		font-weight: bold;
+		transform: scale(0.9);
+	}
+
+	i {
+		width: 1.2rem;
+		height: 1.2rem;
+		flex-shrink: 0;
+	}
+
+	span {
+		white-space: nowrap;
+	}
+}
+
+
 /* Navbar Styles */
 .navbar {
 	display: flex;
@@ -80,43 +118,6 @@ body {
 	flex: 1;
 }
 
-/* Unified Button Styles */
-button {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.75rem 1rem;
-	background-color: transparent;
-	color: var(--text);
-	background-color: var(--bg);
-	border: 2px solid var(--border);
-	border-radius: 8px;
-	cursor: pointer;
-	font-size: var(--p);
-	font-family: inherit;
-}
-
-button:hover {
-	background-color: var(--highlight);
-	color: var(--text);
-}
-
-button.active {
-	background-color: var(--primary);
-	color: var(--bg-dark);
-	font-weight: bold;
-	transform: scale(0.9);
-}
-
-button i {
-	width: 1.2rem;
-	height: 1.2rem;
-	flex-shrink: 0;
-}
-
-button span {
-	white-space: nowrap;
-}
 
 /* Main Content */
 .main-content {
