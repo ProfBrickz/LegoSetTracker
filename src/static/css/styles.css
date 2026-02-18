@@ -70,12 +70,12 @@ button {
 	font-size: var(--p);
 	font-family: inherit;
 
-	:hover {
+	&:hover {
 		background-color: var(--highlight);
 		color: var(--text);
 	}
 
-	.active {
+	&.active {
 		background-color: var(--primary);
 		color: var(--bg-dark);
 		font-weight: bold;
