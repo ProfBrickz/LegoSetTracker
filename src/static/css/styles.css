@@ -99,7 +99,6 @@ form {
 	flex-direction: column;
 	gap: 1.5rem;
 	width: 100%;
-	max-width: 600px;
 	margin-top: 2rem;
 }
 
@@ -181,9 +180,9 @@ select:disabled {
 
 
 /* Main Content */
-.main-content {
+#main {
 	flex: 1;
-	padding: 2rem;
+	padding: 2rem clamp(5rem, 10%, 10rem);
 	overflow-y: auto;
 	background-color: var(--bg);
 	display: flex;
@@ -192,14 +191,17 @@ select:disabled {
 }
 
 /* Home Page Styles */
-.main-content>h1:first-child {
+#main>h1:first-child {
 	font-size: var(--h1);
 	font-weight: 700;
 	color: var(--primary);
 	margin-bottom: 2rem;
 	text-align: center;
 	width: 100%;
-	max-width: 800px;
+}
+
+.introduction {
+	max-width: 70rem;
 }
 
 .description,
@@ -211,7 +213,6 @@ select:disabled {
 	border-radius: 8px;
 	border-left: 4px solid var(--primary);
 	width: 100%;
-	max-width: 800px;
 	box-sizing: border-box;
 }
 
@@ -254,8 +255,8 @@ select:disabled {
 }
 
 /* Settings Page Styles */
-.main-content>h1:first-child+.settings-section,
-.main-content>.settings-section:first-of-type {
+#main>h1:first-child+.settings-section,
+#main>.settings-section:first-of-type {
 	margin-top: 0;
 }
 
@@ -265,8 +266,7 @@ select:disabled {
 	background-color: var(--bg-light);
 	border-radius: 8px;
 	border: 1px solid var(--border);
-	width: 100%;
-	max-width: 600px;
+	width: fit-content;
 	box-sizing: border-box;
 }
 
@@ -307,7 +307,7 @@ select:disabled {
 		padding: 0.75rem;
 	}
 
-	.main-content {
+	#main {
 		padding: 1rem;
 	}
 
@@ -348,7 +348,7 @@ select:disabled {
 		padding: 0.5rem;
 	}
 
-	.main-content {
+	#main {
 		padding: 0.5rem;
 	}
 
