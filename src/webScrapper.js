@@ -10,17 +10,13 @@ import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
 export default class WebScrapper {
 	/** @type {LegoColor[]} */
 	#colors;
-	/** @type {LegoPiece[]} */
-	#legoPieces;
 
 	/**
 	 * @public
 	 * @param {LegoColor[]} colors An array of colors
-	 * @param {LegoPiece[]} legoPieces An array of LEGO pieces
 	 */
-	constructor(colors, legoPieces) {
+	constructor(colors) {
 		this.#colors = colors;
-		this.#legoPieces = legoPieces;
 	}
 
 	/**

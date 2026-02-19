@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	 * @returns {void}
 	 */
 	loadPage: (page, params = {}) => {
-		ipcRenderer.send("loadPage", { page, params });
+		ipcRenderer.send("loadPage", page, params);
 	},
 	/**
 	 * @param {"light" | "dark" | "system"} theme The theme to set.
@@ -20,6 +20,16 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	 */
 	setTheme: (theme) => {
 		ipcRenderer.invoke("setTheme", theme);
+	},
+	searchLegoSets: () => {
+		let searchQueryElement = /** @type {HTMLInputElement} */ (document.getElementById("search-query"));
+		let searchQuery = searchQueryElement.value;
+		let startYearElement = /** @type {HTMLInputElement} */ (document.getElementById("start-year"));
+		let startYear = startYearElement.value;
+		let endYearElement = /** @type {HTMLInputElement} */ (document.getElementById("end-year"));
+		let endYear = endYearElement.value;
+
+		ipcRenderer.invoke("searchLegoSets", searchQuery, { startYear, endYear });
 	}
 });
 
@@ -56,4 +66,8 @@ ipcRenderer.on("themeChange", (event, theme) => {
 	if (currentButton) {
 		currentButton.classList.add("active");
 	}
+});
+
+ipcRenderer.on("searchResults", (event, searchResults) => {
+	console.log(searchResults);
 });

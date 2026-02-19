@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { IS_DEV_MODE, SRC_DIRECTORY } from "./constants.js";
 import { LegoColor } from "./models.js";
+import WebScrapper from "./webScrapper.js";
 
 
 // Constants
@@ -16,10 +17,9 @@ const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 // Variables
 /** @type {BrowserWindow | null} */
 let mainWindow;
-
-
 /** @type {LegoColor[]} */
 let colors = [];
+let webScrapper = new WebScrapper(colors);
 
 
 // Functions
@@ -118,7 +118,7 @@ ipcMain.on("loadPage",
 	 * @param {Object} data.params The parameters for the page.
 	 * @returns {void}
 	 */
-	(event, { page, params }) => {
+	(event, page, params) => {
 		if (!mainWindow) return;
 
 		let html = loadPage(page, params);
@@ -145,3 +145,35 @@ ipcMain.handle("setTheme",
 		mainWindow.webContents.send("themeChange", theme);
 	}
 );
+
+/**
+	 * @param {string} searchQuery The search query for the search.
+	 * @param {Object} [options]
+	 * @param {string} [options.themeId] The ID of the theme to filter by.
+	 * @param {string} [options.startYear] The start year for the search (inclusive).
+	 * @param {string} [options.endYear] The end year for the search (inclusive).
+	 */
+ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
+	if (!mainWindow) return;
+
+	// let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+	let searchResults = [
+		{
+			"setNumber": "75033-1",
+			"name": "Star Destroyer",
+			"themeId": "65.806.258"
+		},
+		{
+			"setNumber": "8303-1",
+			"name": "Demon Destroyer",
+			"themeId": "179.571"
+		},
+		{
+			"setNumber": "8002-1",
+			"name": "Destroyer Droid",
+			"themeId": "36.65.257"
+		}
+	];
+
+	mainWindow.webContents.send("searchResults", searchResults);
+});
