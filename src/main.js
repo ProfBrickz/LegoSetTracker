@@ -1,6 +1,6 @@
 // Imports
 import ejs from "ejs";
-import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
+import { app, BrowserWindow, ipcMain, nativeTheme, screen } from "electron";
 import fs from "fs";
 import path from "path";
 import { IS_DEV_MODE, SRC_DIRECTORY } from "./constants.js";
@@ -70,9 +70,11 @@ function loadLayout(layout) {
  * Creates a new BrowserWindow instance and loads the main application view.
  */
 function createWindow() {
+	let { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
 	mainWindow = new BrowserWindow({
-		width: 960,
-		height: 540,
+		width,
+		height,
 		webPreferences: {
 			contextIsolation: true,
 			devTools: IS_DEV_MODE,
