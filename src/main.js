@@ -3,15 +3,9 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme, screen } from "electron";
 import fs from "fs";
 import path from "path";
-import { IS_DEV_MODE, SRC_DIRECTORY } from "./constants.js";
+import { IS_DEV_MODE, LAYOUTS_PATH, PAGES_PATH, SRC_DIRECTORY } from "./constants.js";
 import { LegoColor } from "./models.js";
 import WebScrapper from "./webScrapper.js";
-
-
-// Constants
-const VIEWS_PATH = path.join(SRC_DIRECTORY, "views");
-const PAGES_PATH = path.join(VIEWS_PATH, "pages");
-const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 
 
 // Variables

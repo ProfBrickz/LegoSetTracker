@@ -1,10 +1,8 @@
 // Imports
 const { contextBridge, ipcRenderer } = require("electron");
 
-// Cache for rendered pages to improve performance
-const pageCache = new Map();
-let currentPage = null;
 
+// Context Bridge
 contextBridge.exposeInMainWorld("electronAPI", {
 	/**
 	 * @param {string} page The page to navigate to.
@@ -33,6 +31,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	}
 });
 
+// IPC Listeners
 ipcRenderer.on("pageLoaded", (event, page, html) => {
 	const mainElement = document.getElementById("main");
 	if (!mainElement) return;
