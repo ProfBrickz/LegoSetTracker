@@ -1,6 +1,6 @@
 // Imports
 import ejs from "ejs";
-import { app, BrowserWindow, ipcMain, nativeTheme, screen } from "electron";
+import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
 import { IS_DEV_MODE, LAYOUTS_PATH, PAGES_PATH, PRELOAD_FILE } from "./constants.js";
@@ -57,17 +57,17 @@ function loadLayout(layout) {
  * Creates a new BrowserWindow instance and loads the main application view.
  */
 function createWindow() {
-	let { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
 	mainWindow = new BrowserWindow({
-		width,
-		height,
+		show: false,
 		webPreferences: {
 			contextIsolation: true,
 			devTools: IS_DEV_MODE,
 			preload: PRELOAD_FILE
 		}
 	});
+
+	mainWindow.maximize();
+	mainWindow.show();
 
 	loadLayout("main");
 
