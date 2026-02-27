@@ -1,4 +1,6 @@
-import { BarChart, createIcons, House, Menu, Monitor, Moon, Settings, Sun, ToyBrick } from "../../../node_modules/lucide/dist/esm/lucide.js";
+// import { BarChart, createIcons, House, Menu, Monitor, Moon, Settings, Sun, ToyBrick } from "../../../node_modules/lucide/dist/esm/lucide.js";
+import { BarChart, createIcons, House, Menu, Monitor, Moon, Settings, Sun, ToyBrick } from "lucide";
+
 
 const iconsConfig = {
    icons: {
@@ -8,7 +10,7 @@ const iconsConfig = {
 
 // Initial icon creation
 document.addEventListener("DOMContentLoaded", () => {
-   electronAPI.loadPage("home");
+   window.electronAPI.loadPage("home");
    createIcons(iconsConfig);
 });
 

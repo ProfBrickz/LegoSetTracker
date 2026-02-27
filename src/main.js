@@ -3,7 +3,7 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme, screen } from "electron";
 import fs from "fs";
 import path from "path";
-import { IS_DEV_MODE, LAYOUTS_PATH, PAGES_PATH, SRC_DIRECTORY } from "./constants.js";
+import { IS_DEV_MODE, LAYOUTS_PATH, PAGES_PATH, PRELOAD_FILE } from "./constants.js";
 import { LegoColor } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
@@ -25,26 +25,15 @@ let webScrapper = new WebScrapper(colors);
  * @returns {string} The rendered HTML.
  */
 function renderPage(page, params = {}) {
-	let pagePath = path.join(PAGES_PATH, `${page}.ejs`);
+	let pagePath = PAGES_PATH;
+	if (process.env['ELECTRON_RENDERER_URL']) {
+		pagePath = path.resolve("src/renderer/views/pages");
+	}
+	pagePath = path.join(pagePath, `${page}.ejs`);
 	let pageEJS = fs.readFileSync(pagePath, "utf-8");
 
 	let html = ejs.render(pageEJS, params);
 
-	return html;
-}
-
-
-/**
- * Loads the specified page into the main window.
- *
- * @param {string} page The name of the page to load.
- * @param {Object} [params] The parameters to pass to the page.
- * @returns {string}
- */
-function loadPage(page, params = {}) {
-	if (!mainWindow) return "";
-
-	let html = renderPage(page, params);
 	return html;
 }
 
@@ -57,7 +46,11 @@ function loadPage(page, params = {}) {
 function loadLayout(layout) {
 	if (!mainWindow) return;
 
-	mainWindow.loadFile(path.join(LAYOUTS_PATH, `${layout}.html`));
+	if (process.env['ELECTRON_RENDERER_URL']) {
+		mainWindow.loadURL(new URL(`views/layouts/${layout}.html`, process.env['ELECTRON_RENDERER_URL']).href);
+	} else {
+		mainWindow.loadFile(path.join(LAYOUTS_PATH, `${layout}.html`));
+	}
 }
 
 /**
@@ -72,7 +65,7 @@ function createWindow() {
 		webPreferences: {
 			contextIsolation: true,
 			devTools: IS_DEV_MODE,
-			preload: path.join(SRC_DIRECTORY, "preload.js")
+			preload: PRELOAD_FILE
 		}
 	});
 
@@ -117,7 +110,7 @@ ipcMain.on("loadPage",
 	(event, page, params) => {
 		if (!mainWindow) return;
 
-		let html = loadPage(page, params);
+		let html = renderPage(page, params);
 
 		mainWindow.webContents.send("pageLoaded", page, html);
 

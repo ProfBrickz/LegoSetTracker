@@ -3,7 +3,7 @@
 		"./src/**/*"
 	],
 	"ext": "html,ejs,css,js",
-	"exec": "electron .",
+	"exec": "electron-vite dev",
 	"env": {
 		"NODE_ENV": "development"
 	}

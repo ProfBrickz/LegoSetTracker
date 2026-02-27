@@ -3,9 +3,7 @@ productName: Lego_Set_Tracker
 afterAllArtifactBuild: ./scripts/afterAllArtifactBuild.js
 publish: null
 files:
-  - src/**/*
-  - node_modules/**/*
-  - package.json
+  - out/**/*
   - LICENSE
   - RELEASE_NOTES.md
 

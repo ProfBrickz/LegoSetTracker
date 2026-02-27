@@ -37,7 +37,6 @@ ipcRenderer.on("pageLoaded", (event, page, html) => {
 	if (!mainElement) return;
 
 	mainElement.innerHTML = html;
-	currentPage = page;
 
 	// Update active button
 	const navButtons = document.querySelectorAll(".nav-link");
