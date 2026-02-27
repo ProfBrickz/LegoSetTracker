@@ -27,3 +27,7 @@ import { LegoSetPiece } from "./models.js";
  * @property {string} name The official name of the LEGO set
  * @property {string} themeId The ID of the theme associated with the set (ex. 65.806.258)
  */
+
+/**
+ * @typedef {"light" | "dark" | "system"} Theme
+ */

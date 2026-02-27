@@ -13,12 +13,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		ipcRenderer.send("loadPage", page, params);
 	},
 	/**
-	 * @param {"light" | "dark" | "system"} theme The theme to set.
+	 * @param {import("../types.js").Theme} theme The theme to set.
 	 * @returns {void}
 	 */
 	setTheme: (theme) => {
 		ipcRenderer.invoke("setTheme", theme);
 	},
+	/**
+	 * @returns {void}
+	 */
 	searchLegoSets: () => {
 		let searchQueryElement = /** @type {HTMLInputElement} */ (document.getElementById("search-query"));
 		let searchQuery = searchQueryElement.value;
