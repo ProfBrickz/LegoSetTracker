@@ -35,7 +35,9 @@ export default defineConfig({
 		root: path.resolve(__dirname, "src/renderer"),
 		build: {
 			outDir: path.resolve(__dirname, "out/renderer"),
-			watch: {},
+			watch: {
+				include: ["**/*.ejs"],
+			},
 			rollupOptions: {
 				input: path.resolve(__dirname, "src/renderer/views/layouts/main.html")
 			}
@@ -48,7 +50,17 @@ export default defineConfig({
 						dest: "views"
 					}
 				],
-			})
-		]
+			}),
+			{
+				name: "reload",
+				handleHotUpdate({ file, server }) {
+					if (file.endsWith(".ejs")) {
+						server.ws.send({
+							type: "full-reload",
+						});
+					}
+				}
+			}
+		],
 	}
 });
