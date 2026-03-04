@@ -274,7 +274,7 @@ export default class WebScrapper {
 	 * @returns {Promise<Map<string, string>>}
 	 * A promise that resolves to a map where the keys are category names and the values are category IDs.
 	 */
-	async getLegoSetCategories() {
+	async getLegoSetThemes() {
 		/** @type {Map<string, string>} */
 		let categories = new Map();
 
@@ -289,6 +289,9 @@ export default class WebScrapper {
 
 		for (let link of links) {
 			let id = new URL(link.href, "https://bricklink.com").searchParams.get("catString") || "";
+			let ids = id.split(".");
+			id = ids[ids.length - 1];
+
 			let name = link.textContent.trim();
 
 			if (name == "{}" || name == "{more}") continue;

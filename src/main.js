@@ -13,6 +13,8 @@ import WebScrapper from "./webScrapper.js";
 let mainWindow;
 /** @type {LegoColor[]} */
 let colors = [];
+/** @type {Map<string, string>} */
+let legoSetThemes = new Map();
 let webScrapper = new WebScrapper(colors);
 
 
@@ -78,7 +80,9 @@ function createWindow() {
 
 
 // Event listeners
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+	legoSetThemes = await webScrapper.getLegoSetThemes();
+
 	createWindow();
 
 	app.on("activate", () => {
@@ -149,21 +153,40 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	/** @type {import("./types.js").LegoSetSearchResult[]} */
 	let searchResults = [
 		{
-			"setNumber": "75033-1",
-			"name": "Star Destroyer",
-			"themeId": "65.806.258"
+			setNumber: "75033-1",
+			name: "Star Destroyer",
+			themeId: "65.806.258"
 		},
 		{
-			"setNumber": "8303-1",
-			"name": "Demon Destroyer",
-			"themeId": "179.571"
+			setNumber: "8303-1",
+			name: "Demon Destroyer",
+			themeId: "179.571"
 		},
 		{
-			"setNumber": "8002-1",
-			"name": "Destroyer Droid",
-			"themeId": "36.65.257"
+			setNumber: "8002-1",
+			name: "Destroyer Droid",
+			themeId: "36.65.257"
 		}
 	];
+	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string})[]} */
+	let tableRows = [];
 
-	mainWindow.webContents.send("searchResults", searchResults);
+	for (let searchResult of searchResults) {
+		let themeIds = searchResult.themeId.split(".");
+		let themes = [];
+
+		for (let themeId of themeIds) {
+			themes.push(legoSetThemes.get(themeId));
+		}
+
+		let tableRow = {
+			...searchResult,
+			theme: ""
+		};
+		tableRow.theme = themes.join(": ");
+
+		tableRows.push(tableRow);
+	}
+
+	mainWindow.webContents.send("searchResults", tableRows);
 });

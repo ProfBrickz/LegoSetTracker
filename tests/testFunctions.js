@@ -1,7 +1,7 @@
 // Imports
 import fs from "fs";
 import path from "path";
-import { TEST_DIRECTORY } from "../src/constants.js";
+import { TEST_PATH } from "../src/constants.js";
 
 
 // Functions
@@ -12,7 +12,7 @@ import { TEST_DIRECTORY } from "../src/constants.js";
  * @returns {string}
  */
 export function getRelativeFilePath(fileName) {
-	return path.join(TEST_DIRECTORY, fileName);
+	return path.join(TEST_PATH, fileName);
 }
 
 /**

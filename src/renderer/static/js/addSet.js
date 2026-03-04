@@ -19,8 +19,12 @@ document.addEventListener("pageLoad", (event) => {
 			accessorKey: "setNumber"
 		},
 		{
-			header: "Theme",
+			header: "Theme ID",
 			accessorKey: "themeId"
+		},
+		{
+			header: "Theme",
+			accessorKey: "theme"
 		}
 	];
 

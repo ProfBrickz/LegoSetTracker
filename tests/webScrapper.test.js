@@ -111,7 +111,7 @@ describe("getColors", () => {
 	});
 });
 
-describe("getLegoSetCategories", () => {
+describe("getLegoSetThemes", () => {
 	test("Returns an Map of categories with id's and name's", async () => {
 		/** @type {Map<string, string>} */
 		let result = new Map([
@@ -129,12 +129,12 @@ describe("getLegoSetCategories", () => {
 			["166.167.612.325", "Airport"]
 		]);
 
-		let html = readTextFile("./fixtures/getLegoSetCategories/success.html");
+		let html = readTextFile("./fixtures/getLegoSetThemes/success.html");
 
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetCategories = await webScrapper.getLegoSetCategories();
+		let legoSetCategories = await webScrapper.getLegoSetThemes();
 
 		// Verify that the returned value is the correct array of colors
 		expect(legoSetCategories).toBeInstanceOf(Map);
