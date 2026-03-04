@@ -2,6 +2,8 @@
 import fs from "fs";
 import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
+import path from "path";
+import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
 /** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult} from "./types.js" */
 
@@ -417,7 +419,8 @@ export default class WebScrapper {
 		let response = await fetch(url);
 
 		if (!response.ok) {
-			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+			return;
+			// throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 
 		let imageData = await response.arrayBuffer();
@@ -434,7 +437,8 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
 	async downloadLegoSetImage(setNumber) {
-		await this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, `./images/sets/${setNumber}.jpg`);
+		// await this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
+		await this.downloadImage(`https://img.bricklink.com/ItemImage/ST/0/${setNumber}.t1.png`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
 	}
 
 	/**
@@ -447,7 +451,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadLegoPieceImage(pieceId, colorId) {
-		await this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, `./images/pieces/${colorId}/${pieceId}.jpg`);
+		await this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, path.join(PIECE_IMAGES_PATH, colorId.toString(), `${pieceId}.jpg`));
 	}
 
 	/**
@@ -459,7 +463,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadMinifigImage(minifigId) {
-		await this.downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, `./images/minifigs/${minifigId}.jpg`);
+		await this.downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, path.join(MINIFIG_IMAGES_PATH, `${minifigId}.jpg`));
 	}
 
 	/**

@@ -3,8 +3,8 @@ import ejs from "ejs";
 import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { IS_DEV_MODE, LAYOUTS_PATH, PAGES_PATH, PRELOAD_FILE } from "./constants.js";
-import { LegoColor } from "./models.js";
+import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
+import { LegoColor, LegoSet } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
 
@@ -56,6 +56,16 @@ function loadLayout(layout) {
 }
 
 /**
+ * Initializes all necessary folders.
+ */
+function initializeFolders() {
+	if (!fs.existsSync(IMAGES_PATH)) fs.mkdirSync(IMAGES_PATH);
+	if (!fs.existsSync(SET_IMAGES_PATH)) fs.mkdirSync(SET_IMAGES_PATH);
+	if (!fs.existsSync(PIECE_IMAGES_PATH)) fs.mkdirSync(PIECE_IMAGES_PATH);
+	if (!fs.existsSync(MINIFIG_IMAGES_PATH)) fs.mkdirSync(MINIFIG_IMAGES_PATH);
+}
+
+/**
  * Creates a new BrowserWindow instance and loads the main application view.
  */
 function createWindow() {
@@ -81,6 +91,7 @@ function createWindow() {
 
 // Event listeners
 app.whenReady().then(async () => {
+	initializeFolders();
 	legoSetThemes = await webScrapper.getLegoSetThemes();
 
 	createWindow();
@@ -168,7 +179,7 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 			themeId: "36.65.257"
 		}
 	];
-	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string})[]} */
+	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
 	let tableRows = [];
 
 	for (let searchResult of searchResults) {
@@ -179,11 +190,16 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 			themes.push(legoSetThemes.get(themeId));
 		}
 
+		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+
 		let tableRow = {
 			...searchResult,
-			theme: ""
+			theme: "",
+			image: ""
 		};
 		tableRow.theme = themes.join(": ");
+		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
+		tableRow.image = `data:image/jpg;base64,${image}`;
 
 		tableRows.push(tableRow);
 	}

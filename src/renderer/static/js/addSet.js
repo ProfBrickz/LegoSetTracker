@@ -11,6 +11,13 @@ document.addEventListener("pageLoad", (event) => {
 
 	dataTable.columns = [
 		{
+			header: "Image",
+			accessorKey: "image",
+			meta: {
+				type: "image"
+			}
+		},
+		{
 			header: "Name",
 			accessorKey: "name"
 		},

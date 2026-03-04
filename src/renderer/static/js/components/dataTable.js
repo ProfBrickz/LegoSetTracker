@@ -117,6 +117,11 @@ export class DataTable extends HTMLElement {
 
          input.value = String(cell.getValue());
          td.appendChild(input);
+      } else if (type === "image") {
+         let imageElement = document.createElement("img");
+         imageElement.src = String(cell.getValue());
+
+         td.appendChild(imageElement);
       } else {
          td.innerText = String(cell.getValue());
       }
