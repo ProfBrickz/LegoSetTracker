@@ -3,26 +3,14 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 
 // Context Bridge
-contextBridge.exposeInMainWorld("electronAPI", {
-	/**
-	 * @param {string} page The page to navigate to.
-	 * @param {Object} pageParams The parameters for the page.
-	 * @param {Object} params The parameters for the page.
-	 * @returns {void}
-	 */
+/** @type {import("../typeDefinitions/electronAPI.js").ElectronAPI} */
+let electronAPI = {
 	loadPage: (page, pageParams = {}, params = {}) => {
 		ipcRenderer.send("loadPage", page, pageParams, params);
 	},
-	/**
-	 * @param {import("../types.js").Theme} theme The theme to set.
-	 * @returns {void}
-	 */
 	setTheme: (theme) => {
 		ipcRenderer.invoke("setTheme", theme);
 	},
-	/**
-	 * @returns {void}
-	 */
 	searchLegoSets: () => {
 		let searchQueryElement = /** @type {HTMLInputElement} */ (document.getElementById("search-query"));
 		let searchQuery = searchQueryElement.value;
@@ -33,13 +21,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
 		ipcRenderer.invoke("searchLegoSets", searchQuery, { startYear, endYear });
 	},
-	/**
-	 * @param {(event: import("electron").IpcRendererEvent, searchResults: import("../types.js").LegoSetSearchResult[]) => void} callback
-	 */
 	onSearchResults: (callback) => {
 		ipcRenderer.on("searchResults", callback);
 	}
-});
+};
+contextBridge.exposeInMainWorld("electronAPI", electronAPI);
 
 // IPC Listeners
 ipcRenderer.on("pageLoad", (event, page, html, params) => {
