@@ -125,11 +125,15 @@ ipcMain.on("loadPage",
 	(event, page, pageParams, params) => {
 		if (!mainWindow) return;
 
+		if (page === "add-set") {
+			pageParams.legoSetThemes = legoSetThemes;
+		}
+
 		let html = renderPage(page, pageParams);
 
 		mainWindow.webContents.send("pageLoad", page, html, params);
 
-		if (page == "settings") {
+		if (page === "settings") {
 			mainWindow.webContents.send("themeChange", nativeTheme.themeSource);
 		}
 	}
@@ -160,25 +164,7 @@ ipcMain.handle("setTheme",
 ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
 	if (!mainWindow) return;
 
-	// let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
-	/** @type {import("./types.js").LegoSetSearchResult[]} */
-	let searchResults = [
-		{
-			setNumber: "75033-1",
-			name: "Star Destroyer",
-			themeId: "65.806.258"
-		},
-		{
-			setNumber: "8303-1",
-			name: "Demon Destroyer",
-			themeId: "179.571"
-		},
-		{
-			setNumber: "8002-1",
-			name: "Destroyer Droid",
-			themeId: "36.65.257"
-		}
-	];
+	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
 	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
 	let tableRows = [];
 

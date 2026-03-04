@@ -13,8 +13,13 @@
 	<div class="input-container">
 		<label for="theme">Theme</label>
 		<p class="input-description">Select the theme of the LEGO set</p>
-		<select id="theme" name="theme" disabled>
+		<select id="theme" name="theme">
 			<option value="">All Themes</option>
+			<% for (let [themeId, theme] of legoSetThemes.entries()) { %>
+				<option value="<%= themeId %>">
+					<%= theme %>
+				</option>
+				<% } %>
 		</select>
 	</div>
 
