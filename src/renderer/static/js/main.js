@@ -1,4 +1,7 @@
+// Imports
 import { BarChart, createIcons, House, Menu, Monitor, Moon, Settings, Sun, ToyBrick } from "lucide";
+import "./addSet.js";
+
 
 const iconsConfig = {
    icons: {
@@ -13,6 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Recreate icons on page change
-document.addEventListener("pageChanged", () => {
+document.addEventListener("pageLoad", () => {
    createIcons(iconsConfig);
 });

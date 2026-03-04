@@ -6,4 +6,8 @@ declare global {
    interface Window {
       electronAPI: ElectronAPI;
    }
+
+   interface DocumentEventMap {
+      pageLoad: CustomEvent;
+   }
 }

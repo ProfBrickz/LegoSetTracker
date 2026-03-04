@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	 * @returns {void}
 	 */
 	loadPage: (page, pageParams = {}, params = {}) => {
-		ipcRenderer.send("loadPage", page, pageParams);
+		ipcRenderer.send("loadPage", page, pageParams, params);
 	},
 	/**
 	 * @param {import("../types.js").Theme} theme The theme to set.
@@ -32,11 +32,17 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		let endYear = endYearElement.value;
 
 		ipcRenderer.invoke("searchLegoSets", searchQuery, { startYear, endYear });
+	},
+	/**
+	 * @param {(event: import("electron").IpcRendererEvent, searchResults: import("../types.js").LegoSetSearchResult[]) => void} callback
+	 */
+	onSearchResults: (callback) => {
+		ipcRenderer.on("searchResults", callback);
 	}
 });
 
 // IPC Listeners
-ipcRenderer.on("pageLoaded", (event, page, html) => {
+ipcRenderer.on("pageLoad", (event, page, html, params) => {
 	const mainElement = document.getElementById("main");
 	if (!mainElement) return;
 
@@ -55,7 +61,12 @@ ipcRenderer.on("pageLoaded", (event, page, html) => {
 	}
 
 	// Notify that page has changed so icons can be recreated
-	document.dispatchEvent(new CustomEvent("pageChanged"));
+	document.dispatchEvent(new CustomEvent("pageLoad", {
+		detail: {
+			page,
+			params
+		}
+	}));
 });
 
 ipcRenderer.on("themeChange", (event, theme) => {
@@ -68,8 +79,4 @@ ipcRenderer.on("themeChange", (event, theme) => {
 	if (currentButton) {
 		currentButton.classList.add("active");
 	}
-});
-
-ipcRenderer.on("searchResults", (event, searchResults) => {
-	console.log(searchResults);
 });

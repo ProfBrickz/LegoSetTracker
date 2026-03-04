@@ -20,7 +20,8 @@ export class DataTable extends HTMLElement {
 
       this.table = createTable({
          columns: [],
-         data: [{}],
+         /** @type {TableRow[]} */
+         data: [],
          getCoreRowModel: getCoreRowModel(),
          onStateChange: () => { },
          state: {
@@ -28,6 +29,14 @@ export class DataTable extends HTMLElement {
          },
          renderFallbackValue: null
       });
+   }
+
+   get columns() {
+      return this.table.options.columns;
+   }
+
+   get data() {
+      return this.table.options.data;
    }
 
    /**
@@ -45,13 +54,12 @@ export class DataTable extends HTMLElement {
    }
 
    /**
-    *
     * @param {import("@tanstack/table-core").Header<TableRow, unknown>} header
     */
    #createHeader(header) {
       let th = document.createElement("th");
 
-      th.innerText = header.id;
+      th.innerText = header.column.columnDef.header?.toString() || "";
 
       return th;
    }
@@ -69,7 +77,6 @@ export class DataTable extends HTMLElement {
    }
 
    /**
-    *
     * @param {import("@tanstack/table-core").Cell<TableRow, unknown>} cell
     */
    #createCell(cell) {

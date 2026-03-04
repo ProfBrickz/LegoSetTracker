@@ -102,17 +102,17 @@ app.on("window-all-closed", () => {
 ipcMain.on("loadPage",
 	/**
 	 * @param {Electron.IpcMainEvent} event
-	 * @param {Object} data
-	 * @param {string} data.page The page to navigate to.
-	 * @param {Object} data.params The parameters for the page.
+	 * @param {string} page The page to navigate to.
+	 * @param {Object} pageParams The parameters for the page ejs.
+	 * @param {Object} params The parameters for the page js.
 	 * @returns {void}
 	 */
-	(event, page, params) => {
+	(event, page, pageParams, params) => {
 		if (!mainWindow) return;
 
-		let html = renderPage(page, params);
+		let html = renderPage(page, pageParams);
 
-		mainWindow.webContents.send("pageLoaded", page, html);
+		mainWindow.webContents.send("pageLoad", page, html, params);
 
 		if (page == "settings") {
 			mainWindow.webContents.send("themeChange", nativeTheme.themeSource);
@@ -146,6 +146,7 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	if (!mainWindow) return;
 
 	// let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+	/** @type {import("./types.js").LegoSetSearchResult[]} */
 	let searchResults = [
 		{
 			"setNumber": "75033-1",
