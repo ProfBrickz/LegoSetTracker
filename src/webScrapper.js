@@ -438,7 +438,7 @@ export default class WebScrapper {
 	 */
 	async downloadLegoSetImage(setNumber) {
 		// await this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
-		await this.downloadImage(`https://img.bricklink.com/ItemImage/ST/0/${setNumber}.t1.png`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
+		await this.downloadImage(`https://img.bricklink.com/ItemImage/SN/0/${setNumber}.png`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
 	}
 
 	/**

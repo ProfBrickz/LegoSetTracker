@@ -300,6 +300,67 @@ select:disabled {
 	height: 2rem;
 }
 
+/* Table Styles */
+data-table {
+	width: 100%;
+	margin: 1rem 0;
+	border-collapse: collapse;
+	background-color: var(--bg);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+data-table table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+data-table thead {
+	background-color: var(--bg-light);
+}
+
+data-table th {
+	padding: 1rem;
+	text-align: left;
+	font-weight: 600;
+	color: var(--text);
+	border-bottom: 2px solid var(--border);
+}
+
+data-table td {
+	padding: 1rem;
+	border-bottom: 1px solid var(--border);
+}
+
+data-table tr:last-child td {
+	border-bottom: none;
+}
+
+data-table tr:hover {
+	background-color: var(--bg-light);
+}
+
+data-table input[type="text"],
+data-table input[type="number"] {
+	width: 100%;
+	padding: 0.5rem;
+	background-color: var(--bg);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	font-size: var(--p);
+	font-family: inherit;
+	box-sizing: border-box;
+}
+
+data-table img {
+	--size: 15rem;
+	max-width: var(--size);
+	max-height: var(--size);
+	border-radius: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
 	.navbar {
