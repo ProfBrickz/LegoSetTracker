@@ -6,11 +6,12 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("electronAPI", {
 	/**
 	 * @param {string} page The page to navigate to.
+	 * @param {Object} pageParams The parameters for the page.
 	 * @param {Object} params The parameters for the page.
 	 * @returns {void}
 	 */
-	loadPage: (page, params = {}) => {
-		ipcRenderer.send("loadPage", page, params);
+	loadPage: (page, pageParams = {}, params = {}) => {
+		ipcRenderer.send("loadPage", page, pageParams);
 	},
 	/**
 	 * @param {import("../types.js").Theme} theme The theme to set.

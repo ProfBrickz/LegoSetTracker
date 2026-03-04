@@ -1,21 +1,26 @@
-import { createTable, getCoreRowModel, } from "@tanstack/table-core";
+// Imports
+import { createTable, getCoreRowModel } from "@tanstack/table-core";
 
-class DataTable extends HTMLElement {
-   /** @type {boolean} */
-   initialized = false;
+
+// Types
+/**
+ * @typedef {Record<string, unknown>} TableRow
+ */
+/**
+ * @typedef {import("@tanstack/table-core").ColumnDef<TableRow, any>} TableColumn
+ */
+
+
+export class DataTable extends HTMLElement {
+   /** @type {import("@tanstack/table-core").Table<TableRow>} */
+   table;
 
    constructor() {
       super();
-      this.innerHTML = "hi";
-
-      /** @type {import("@tanstack/table-core").ColumnDef<Record<string, unknown>, any>[]} */
-      let columns = JSON.parse(this.getAttribute("columns") || "[]");
-      /** @type {Record<string, unknown>[]} */
-      let data = JSON.parse(this.getAttribute("data") || "[]");
 
       this.table = createTable({
-         columns,
-         data,
+         columns: [],
+         data: [{}],
          getCoreRowModel: getCoreRowModel(),
          onStateChange: () => { },
          state: {
@@ -23,48 +28,25 @@ class DataTable extends HTMLElement {
          },
          renderFallbackValue: null
       });
-
-      this.#createTable();
-   }
-
-   static observedAttributes = ["data"];
-
-   /**
-    * @param {string} name
-    * @param {string} newValue
-    * @param {string} oldValue
-    */
-   attributeChangedCallback(name, oldValue, newValue) {
-      if (!this.initialized) return;
-      if (name !== "data") return;
-
-      let data = JSON.parse(newValue);
-
-      this.#setData(data);
-   }
-
-   connectedCallback() {
-      this.initialized = true;
    }
 
    /**
-    * @param {Record<string, unknown>[]} data
+    * @param {TableColumn[]} columns
     */
-   #setData(data) {
-      this.table.setOptions(previous => {
-         console.log("oldData", previous.data);
-         console.log("newData", data);
+   set columns(columns) {
+      this.table.options.columns = columns;
+   }
 
-         return ({
-            ...previous,
-            data
-         });
-      });
+   /**
+    * @param {TableRow[]} data
+    */
+   set data(data) {
+      this.table.options.data = data;
    }
 
    /**
     *
-    * @param {import("@tanstack/table-core").Header<Record<string, unknown>, unknown>} header
+    * @param {import("@tanstack/table-core").Header<TableRow, unknown>} header
     */
    #createHeader(header) {
       let th = document.createElement("th");
@@ -87,16 +69,62 @@ class DataTable extends HTMLElement {
    }
 
    /**
-    * @param {import("@tanstack/table-core").Row<Record<string, unknown>>} row
+    *
+    * @param {import("@tanstack/table-core").Cell<TableRow, unknown>} cell
+    */
+   #createCell(cell) {
+      let td = document.createElement("td");
+
+      let { type, editable, onChange } = cell.column.columnDef.meta || {};
+
+      if (editable && type) {
+         let input = document.createElement("input");
+
+         if (type === "string") {
+            input.type = "text";
+            input.onchange = (event) => {
+               let element = /** @type {HTMLInputElement} */ (event.target);
+               if (!element) return;
+
+               let value = element.value;
+               this.table.options.data[cell.row.index][cell.column.id] = value;
+
+               if (onChange) {
+                  onChange(value);
+               }
+
+               this.#handleChange(cell.column.id, cell.row.index, value);
+            };
+         } else if (type === "number") {
+            input.type = "number";
+            input.onchange = (event) => {
+               let element = /** @type {HTMLInputElement} */ (event.target);
+               if (!element) return;
+
+               let value = Number(element.value);
+               this.table.options.data[cell.row.index][cell.column.id] = value;
+
+               this.#handleChange(cell.column.id, cell.row.index, value);
+            };
+         }
+
+         input.value = String(cell.getValue());
+         td.appendChild(input);
+      } else {
+         td.innerText = String(cell.getValue());
+      }
+
+      return td;
+   }
+
+   /**
+    * @param {import("@tanstack/table-core").Row<TableRow>} row
    */
    #createRow(row) {
       let tr = document.createElement("tr");
 
       for (let cell of row.getAllCells()) {
-         let td = document.createElement("td");
-         tr.appendChild(td);
-
-         td.innerText = String(cell.getValue());
+         tr.appendChild(this.#createCell(cell));
       }
 
       return tr;
@@ -112,7 +140,7 @@ class DataTable extends HTMLElement {
       return tbody;
    }
 
-   #createTable() {
+   renderTable() {
       this.innerHTML = "";
 
       let table = document.createElement("table");
@@ -120,6 +148,31 @@ class DataTable extends HTMLElement {
       table.appendChild(this.#createTbody());
 
       this.appendChild(table);
+   }
+
+   /**
+    * @param {string} columnId
+    * @param {number} rowIndex
+    * @param {string | number} value
+    */
+   #handleChange(columnId, rowIndex, value) {
+      this.dispatchEvent(
+         new CustomEvent("cellChange", {
+            detail: {
+               columnId,
+               rowIndex,
+               value
+            },
+            bubbles: true
+         })
+      );
+   }
+
+   /**
+    * @param {EventListenerOrEventListenerObject} callback
+    */
+   onCellChange(callback) {
+      this.addEventListener("cellChange", callback);
    }
 }
 
