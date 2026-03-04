@@ -23,8 +23,6 @@ document.addEventListener("pageLoad", (event) => {
 			accessorKey: "themeId"
 		}
 	];
-	console.log("columns", dataTable.columns);
-	console.log("data", dataTable.data);
 
 	window.electronAPI.onSearchResults((event, searchResults) => {
 		dataTable.data = searchResults;
