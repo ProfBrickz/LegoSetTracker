@@ -23,6 +23,9 @@ let electronAPI = {
 	},
 	onSearchResults: (callback) => {
 		ipcRenderer.on("searchResults", callback);
+	},
+	addSet: (setNumber) => {
+		ipcRenderer.invoke("addSet", setNumber);
 	}
 };
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

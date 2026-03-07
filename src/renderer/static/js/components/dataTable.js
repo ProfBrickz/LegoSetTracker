@@ -122,6 +122,9 @@ export class DataTable extends HTMLElement {
          imageElement.src = String(cell.getValue());
 
          td.appendChild(imageElement);
+      } else if (type === "function" && typeof cell.column.columnDef.cell === "function") {
+         let result = cell.column.columnDef.cell(cell.getContext());
+         td.appendChild(result);
       } else {
          td.innerText = String(cell.getValue());
       }

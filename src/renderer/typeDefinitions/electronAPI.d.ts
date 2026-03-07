@@ -6,4 +6,5 @@ export interface ElectronAPI {
    setTheme(theme: Theme): void;
    searchLegoSets(): void;
    onSearchResults(callback: (event: IpcRendererEvent, searchResults: (LegoSetSearchResult & { theme: string, image: string; })[]) => void): void;
+   addSet(setNumber: string): void;
 }

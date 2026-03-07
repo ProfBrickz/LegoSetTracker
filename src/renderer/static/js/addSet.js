@@ -2,6 +2,7 @@
 import { DataTable } from "./components/dataTable.js";
 
 
+// Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	let { page } = event.detail;
 
@@ -28,6 +29,23 @@ document.addEventListener("pageLoad", (event) => {
 		{
 			header: "Theme",
 			accessorKey: "theme"
+		},
+		{
+			header: "Add",
+			cell: ({ row }) => {
+				let addButton = document.createElement("button");
+				addButton.innerText = "Add Set";
+
+				addButton.onclick = () => {
+					console.log(row.getValue("setNumber"));
+					window.electronAPI.addSet(row.getValue("setNumber"));
+				};
+
+				return addButton;
+			},
+			meta: {
+				type: "function"
+			}
 		}
 	];
 

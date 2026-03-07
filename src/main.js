@@ -118,7 +118,7 @@ ipcMain.on("loadPage",
 	/**
 	 * @param {Electron.IpcMainEvent} event
 	 * @param {string} page The page to navigate to.
-	 * @param {Object} pageParams The parameters for the page ejs.
+	 * @param {Object<string, unknown>} pageParams The parameters for the page ejs.
 	 * @param {Object} params The parameters for the page js.
 	 * @returns {void}
 	 */
@@ -191,4 +191,8 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	}
 
 	mainWindow.webContents.send("searchResults", tableRows);
+});
+
+ipcMain.handle("addSet", async (event, setNumber) => {
+	console.log(setNumber);
 });
