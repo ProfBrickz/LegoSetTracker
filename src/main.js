@@ -4,15 +4,18 @@ import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
 import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
-import { LegoColor, LegoSet } from "./models.js";
+import { LegoColors, LegoPieces, LegoSets } from "./controllers.js";
+import { LegoSet } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
 
 // Variables
 /** @type {BrowserWindow | null} */
 let mainWindow;
-/** @type {LegoColor[]} */
-let colors = [];
+let colors = new LegoColors();
+let legoPieces = new LegoPieces();
+let legoSets = new LegoSets();
+LegoSet.legoPieces = legoPieces;
 /** @type {Map<string, string>} */
 let legoSetThemes = new Map();
 let webScrapper = new WebScrapper(colors);
@@ -63,6 +66,12 @@ function initializeFolders() {
 	if (!fs.existsSync(SET_IMAGES_PATH)) fs.mkdirSync(SET_IMAGES_PATH);
 	if (!fs.existsSync(PIECE_IMAGES_PATH)) fs.mkdirSync(PIECE_IMAGES_PATH);
 	if (!fs.existsSync(MINIFIG_IMAGES_PATH)) fs.mkdirSync(MINIFIG_IMAGES_PATH);
+
+	for (let color of colors.values()) {
+		let colorImagePath = path.join(PIECE_IMAGES_PATH, color.bricklinkId.toString());
+
+		if (!fs.existsSync(colorImagePath)) fs.mkdirSync(colorImagePath);
+	}
 }
 
 /**
@@ -91,8 +100,11 @@ function createWindow() {
 
 // Event listeners
 app.whenReady().then(async () => {
-	initializeFolders();
 	legoSetThemes = await webScrapper.getLegoSetThemes();
+	colors = await webScrapper.getColors();
+	webScrapper.setColors(colors);
+
+	initializeFolders();
 
 	createWindow();
 
@@ -122,6 +134,7 @@ ipcMain.on("loadPage",
 	 * @param {Object} params The parameters for the page js.
 	 * @returns {void}
 	 */
+	// @ts-ignore
 	(event, page, pageParams, params) => {
 		if (!mainWindow) return;
 
@@ -145,6 +158,7 @@ ipcMain.handle("setTheme",
 	 * @param {"light" | "dark" | "system"} theme The theme to set.
 	 * @returns {void}
 	 */
+	// @ts-ignore
 	(event, theme) => {
 		if (!mainWindow) return;
 
@@ -161,6 +175,7 @@ ipcMain.handle("setTheme",
 	 * @param {string} [options.startYear] The start year for the search (inclusive).
 	 * @param {string} [options.endYear] The end year for the search (inclusive).
 	 */
+// @ts-ignore
 ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
 	if (!mainWindow) return;
 
@@ -193,6 +208,35 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	mainWindow.webContents.send("searchResults", tableRows);
 });
 
+// @ts-ignore
 ipcMain.handle("addSet", async (event, setNumber) => {
-	console.log(setNumber);
+	if (!mainWindow) return;
+
+	let legoSetInfo;
+	try {
+		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
+	} catch (error) {
+		return false;
+	}
+
+	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
+
+	let legoSet = new LegoSet(
+		legoSets.size,
+		legoSetInfo.setNumber,
+		legoSetInfo.name,
+		legoSetInfo.theme,
+		legoSetInfo.releaseYear,
+		legoSetInfo.pieceCount,
+		legoSetInfo.minifigCount
+	);
+
+	legoSet.addNormalPieces(legoSetPieces.normalPieces);
+	legoSet.addMinifigs(legoSetPieces.minifigs);
+	legoSet.addExtraPieces(legoSetPieces.extraPieces);
+	legoSet.addCounterpartPieces(legoSetPieces.counterparts);
+
+	await webScrapper.downloadLegoSetImages(legoSet);
+
+	mainWindow.webContents.send("addSet");
 });

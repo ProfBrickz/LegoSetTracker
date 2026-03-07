@@ -4,18 +4,19 @@ import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
+import { LegoColors } from "./controllers.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
 /** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult} from "./types.js" */
 
 
 // Functions
 export default class WebScrapper {
-	/** @type {LegoColor[]} */
+	/** @type {LegoColors} */
 	#colors;
 
 	/**
 	 * @public
-	 * @param {LegoColor[]} colors An array of colors
+	 * @param {LegoColors} colors A map of Lego colors
 	 */
 	constructor(colors) {
 		this.#colors = colors;
@@ -209,7 +210,7 @@ export default class WebScrapper {
 			let amountNeededElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(2)"));
 			let amountNeeded = Number.parseInt(amountNeededElement.textContent);
 
-			let color = this.#colors.find((color) => bricklinkColorId == color.bricklinkId) || null;
+			let color = this.#colors.get(bricklinkColorId) || null;
 			let bricklinkName = nameAndColor;
 			if (color) bricklinkName = nameAndColor.replace(color.bricklinkName, "").trim();
 
@@ -232,12 +233,11 @@ export default class WebScrapper {
 	 * for element selection.
 	 *
 	 * @public
-	 * @returns {Promise<LegoColor[]>} A promise that resolves to an array of `LegoColor` objects.
+	 * @returns {Promise<LegoColors>} A promise that resolves to an array of `LegoColor` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
 	async getColors() {
-		/** @type {LegoColor[]} */
-		let colors = [];
+		let colors = new LegoColors();
 
 		let document = await this.getWebpage("https://v2.bricklink.com/en-us/catalog/color-guide");
 
@@ -262,11 +262,18 @@ export default class WebScrapper {
 				let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
 				let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);
 
-				colors.push(new LegoColor(null, bricklinkId, bricklinkName, legoId, legoName));
+				colors.set(bricklinkId, new LegoColor(null, bricklinkId, bricklinkName, legoId, legoName));
 			}
 		}
 
 		return colors;
+	}
+
+	/**
+	 * @param {LegoColors} colors A map of Lego colors
+	 */
+	setColors(colors) {
+		this.#colors = colors;
 	}
 
 	/**

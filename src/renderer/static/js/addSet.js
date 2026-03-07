@@ -37,7 +37,6 @@ document.addEventListener("pageLoad", (event) => {
 				addButton.innerText = "Add Set";
 
 				addButton.onclick = () => {
-					console.log(row.getValue("setNumber"));
 					window.electronAPI.addSet(row.getValue("setNumber"));
 				};
 

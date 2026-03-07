@@ -24,6 +24,26 @@ export class LegoPieces extends ClassMap {
 	constructor(iterable) {
 		super(LegoPiece, iterable);
 	}
+
+	/**
+	 *
+	 * @param {string} bricklinkId
+	 * @param {string} bricklinkName
+	 * @param {LegoColor | null} color
+	 * @param {string} bricklinkCategory
+	 */
+	getDatabaseId(bricklinkId, bricklinkName, color, bricklinkCategory) {
+		for (let value of this.values()) {
+			if (
+				value.bricklinkId == bricklinkId
+				&& value.bricklinkName == bricklinkName
+				&& value.color == color
+				&& value.bricklinkCategory == bricklinkCategory
+			) return value.databaseId;
+		}
+
+		return null;
+	}
 }
 
 
