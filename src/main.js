@@ -26,7 +26,7 @@ let webScrapper = new WebScrapper(colors);
  * Renders an EJS template with the given parameters.
  *
  * @param {string} page The name of the EJS template file to render.
- * @param {Object} [params] The parameters to pass to the EJS template.
+ * @param {Record<string, unknown>} [params] The parameters to pass to the EJS template.
  * @returns {string} The rendered HTML.
  */
 function renderPage(page, params = {}) {
@@ -130,11 +130,10 @@ ipcMain.on("loadPage",
 	/**
 	 * @param {Electron.IpcMainEvent} event
 	 * @param {string} page The page to navigate to.
-	 * @param {Object<string, unknown>} pageParams The parameters for the page ejs.
-	 * @param {Object} params The parameters for the page js.
+	 * @param {Record<string, unknown>} pageParams The parameters for the page ejs.
+	 * @param {Record<string, unknown>} params The parameters for the page js.
 	 * @returns {void}
 	 */
-	// @ts-ignore
 	(event, page, pageParams, params) => {
 		if (!mainWindow) return;
 
@@ -157,8 +156,7 @@ ipcMain.handle("setTheme",
 	 * @param {Electron.IpcMainInvokeEvent} event
 	 * @param {"light" | "dark" | "system"} theme The theme to set.
 	 * @returns {void}
-	 */
-	// @ts-ignore
+	*/
 	(event, theme) => {
 		if (!mainWindow) return;
 
@@ -168,75 +166,80 @@ ipcMain.handle("setTheme",
 	}
 );
 
-/**
+ipcMain.handle("searchLegoSets",
+	/**
+	 * @param {Electron.IpcMainInvokeEvent} event
 	 * @param {string} searchQuery The search query for the search.
 	 * @param {Object} [options]
 	 * @param {string} [options.themeId] The ID of the theme to filter by.
 	 * @param {string} [options.startYear] The start year for the search (inclusive).
 	 * @param {string} [options.endYear] The end year for the search (inclusive).
 	 */
-// @ts-ignore
-ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
-	if (!mainWindow) return;
+	async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
+		if (!mainWindow) return;
 
-	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
-	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
-	let tableRows = [];
+		let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+		/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
+		let tableRows = [];
 
-	for (let searchResult of searchResults) {
-		let themeIds = searchResult.themeId.split(".");
-		let themes = [];
+		for (let searchResult of searchResults) {
+			let themeIds = searchResult.themeId.split(".");
+			let themes = [];
 
-		for (let themeId of themeIds) {
-			themes.push(legoSetThemes.get(themeId));
+			for (let themeId of themeIds) {
+				themes.push(legoSetThemes.get(themeId));
+			}
+
+			await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+
+			let tableRow = {
+				...searchResult,
+				theme: "",
+				image: ""
+			};
+			tableRow.theme = themes.join(": ");
+			let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
+			tableRow.image = `data:image/jpg;base64,${image}`;
+
+			tableRows.push(tableRow);
 		}
 
-		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+		mainWindow.webContents.send("searchResults", tableRows);
+	});
 
-		let tableRow = {
-			...searchResult,
-			theme: "",
-			image: ""
-		};
-		tableRow.theme = themes.join(": ");
-		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
-		tableRow.image = `data:image/jpg;base64,${image}`;
+ipcMain.handle("addSet",
+	/**
+	 * @param {Electron.IpcMainInvokeEvent} event
+	 * @param {string} setNumber
+	 */
+	async (event, setNumber) => {
+		if (!mainWindow) return;
 
-		tableRows.push(tableRow);
-	}
+		let legoSetInfo;
+		try {
+			legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
+		} catch (error) {
+			return false;
+		}
 
-	mainWindow.webContents.send("searchResults", tableRows);
-});
+		let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
 
-// @ts-ignore
-ipcMain.handle("addSet", async (event, setNumber) => {
-	if (!mainWindow) return;
+		let legoSet = new LegoSet(
+			legoSets.size,
+			legoSetInfo.setNumber,
+			legoSetInfo.name,
+			legoSetInfo.theme,
+			legoSetInfo.releaseYear,
+			legoSetInfo.pieceCount,
+			legoSetInfo.minifigCount
+		);
 
-	let legoSetInfo;
-	try {
-		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
-	} catch (error) {
-		return false;
-	}
+		legoSet.addNormalPieces(legoSetPieces.normalPieces);
+		legoSet.addMinifigs(legoSetPieces.minifigs);
+		legoSet.addExtraPieces(legoSetPieces.extraPieces);
+		legoSet.addCounterpartPieces(legoSetPieces.counterparts);
 
-	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
+		await webScrapper.downloadLegoSetImages(legoSet);
 
-	let legoSet = new LegoSet(
-		legoSets.size,
-		legoSetInfo.setNumber,
-		legoSetInfo.name,
-		legoSetInfo.theme,
-		legoSetInfo.releaseYear,
-		legoSetInfo.pieceCount,
-		legoSetInfo.minifigCount
-	);
-
-	legoSet.addNormalPieces(legoSetPieces.normalPieces);
-	legoSet.addMinifigs(legoSetPieces.minifigs);
-	legoSet.addExtraPieces(legoSetPieces.extraPieces);
-	legoSet.addCounterpartPieces(legoSetPieces.counterparts);
-
-	await webScrapper.downloadLegoSetImages(legoSet);
-
-	mainWindow.webContents.send("addSet");
-});
+		mainWindow.webContents.send("addSet");
+	});
