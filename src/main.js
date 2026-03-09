@@ -172,10 +172,10 @@ ipcMain.handle("searchLegoSets",
 	 * @param {string} searchQuery The search query for the search.
 	 * @param {Object} [options]
 	 * @param {string} [options.themeId] The ID of the theme to filter by.
-	 * @param {string} [options.startYear] The start year for the search (inclusive).
-	 * @param {string} [options.endYear] The end year for the search (inclusive).
+	 * @param {number} [options.startYear] The start year for the search (inclusive).
+	 * @param {number} [options.endYear] The end year for the search (inclusive).
 	 */
-	async (event, searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) => {
+	async (event, searchQuery, { themeId = "", startYear, endYear } = {}) => {
 		if (!mainWindow) return;
 
 		let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
@@ -205,7 +205,8 @@ ipcMain.handle("searchLegoSets",
 		}
 
 		mainWindow.webContents.send("searchResults", tableRows);
-	});
+	}
+);
 
 ipcMain.handle("addSet",
 	/**
@@ -242,4 +243,5 @@ ipcMain.handle("addSet",
 		await webScrapper.downloadLegoSetImages(legoSet);
 
 		mainWindow.webContents.send("addSet");
-	});
+	}
+);

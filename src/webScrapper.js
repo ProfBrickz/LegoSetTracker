@@ -315,21 +315,21 @@ export default class WebScrapper {
 	 * @param {string} searchQuery The search query for the search.
 	 * @param {Object} [options]
 	 * @param {string} [options.themeId] The ID of the theme to filter by.
-	 * @param {string} [options.startYear] The start year for the search (inclusive).
-	 * @param {string} [options.endYear] The end year for the search (inclusive).
+	 * @param {number} [options.startYear] The start year for the search (inclusive).
+	 * @param {number} [options.endYear] The end year for the search (inclusive).
 	 *
 	 * @returns {Promise<LegoSetSearchResult[]>}
 	 */
-	async searchLegoSets(searchQuery, { themeId = "", startYear = "", endYear = "" } = {}) {
+	async searchLegoSets(searchQuery, { themeId, startYear, endYear } = {}) {
 		/** @type {LegoSetSearchResult[]} */
 		let legoSets = [];
 
 		let url = new URL("https://www.bricklink.com/ajax/clone/search/searchproduct.ajax");
 		url.searchParams.set("type", "S");
 		url.searchParams.set("q", searchQuery);
-		url.searchParams.set("cat", themeId);
-		url.searchParams.set("yf", startYear);
-		url.searchParams.set("yt", endYear);
+		if (themeId) url.searchParams.set("cat", themeId);
+		if (startYear) url.searchParams.set("yf", startYear.toString());
+		if (endYear) url.searchParams.set("yt", endYear.toString());
 
 		let response = await fetch(url);
 		if (!response.ok) throw new Error("Failed to fetch data");

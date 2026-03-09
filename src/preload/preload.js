@@ -14,12 +14,16 @@ let electronAPI = {
 	searchLegoSets: () => {
 		let searchQueryElement = /** @type {HTMLInputElement} */ (document.getElementById("search-query"));
 		let searchQuery = searchQueryElement.value;
+		let themeElement =/** @type {HTMLSelectElement} */ (document.getElementById("theme"));
+		let themeId = themeElement.value;
 		let startYearElement = /** @type {HTMLInputElement} */ (document.getElementById("start-year"));
-		let startYear = startYearElement.value;
+		let startYear;
+		if (!Number.isNaN(startYear)) startYear = startYearElement.valueAsNumber;
 		let endYearElement = /** @type {HTMLInputElement} */ (document.getElementById("end-year"));
-		let endYear = endYearElement.value;
+		let endYear;
+		if (!Number.isNaN(endYear)) endYear = endYearElement.valueAsNumber;
 
-		ipcRenderer.invoke("searchLegoSets", searchQuery, { startYear, endYear });
+		ipcRenderer.invoke("searchLegoSets", searchQuery, { themeId, startYear, endYear });
 	},
 	onSearchResults: (callback) => {
 		ipcRenderer.on("searchResults", callback);
