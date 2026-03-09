@@ -239,6 +239,7 @@ ipcMain.handle("addSet",
 		legoSet.addMinifigs(legoSetPieces.minifigs);
 		legoSet.addExtraPieces(legoSetPieces.extraPieces);
 		legoSet.addCounterpartPieces(legoSetPieces.counterparts);
+		legoSets.set(legoSets.size, legoSet);
 
 		await webScrapper.downloadLegoSetImages(legoSet);
 
