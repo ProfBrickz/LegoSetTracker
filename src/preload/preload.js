@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 
 // Context Bridge
-/** @type {import("../renderer/typeDefinitions/electronAPI.js").ElectronAPI} */
+/** @type {import("../renderer/types/electronAPI.js").ElectronAPI} */
 let electronAPI = {
 	loadPage: (page, pageParams = {}, params = {}) => {
 		ipcRenderer.send("loadPage", page, pageParams, params);
