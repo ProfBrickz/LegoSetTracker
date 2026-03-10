@@ -8,6 +8,7 @@ services:
     stdin_open: true
     volumes:
       - ..:/project:rw,Z
+      - node_modules_volume:/project/node_modules:rw
     working_dir: /project
     privileged: true
     security_opt:
@@ -15,3 +16,6 @@ services:
     environment:
       - DOCKER_CLI_EXPERIMENTAL=enabled
       - CI=true
+
+volumes:
+  node_modules_volume:
