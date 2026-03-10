@@ -126,123 +126,91 @@ app.on("window-all-closed", () => {
 
 
 // IPC
-ipcMain.on("loadPage",
-	/**
-	 * @param {Electron.IpcMainEvent} event
-	 * @param {string} page The page to navigate to.
-	 * @param {Record<string, unknown>} pageParams The parameters for the page ejs.
-	 * @param {Record<string, unknown>} params The parameters for the page js.
-	 * @returns {void}
-	 */
-	(event, page, pageParams, params) => {
-		if (!mainWindow) return;
+ipcMain.handle("loadPage", (event, page, pageParams, params) => {
+	if (!mainWindow) return;
 
-		if (page === "add-set") {
-			pageParams.legoSetThemes = legoSetThemes;
+	if (page === "add-set") {
+		pageParams.legoSetThemes = legoSetThemes;
+	}
+
+	let html = renderPage(page, pageParams);
+
+	if (page === "settings") {
+		setTimeout(() => {
+			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
+		}, 10);
+	}
+
+	return { page, html, params };
+});
+
+ipcMain.on("setTheme", async (event, theme) => {
+	if (!mainWindow) return;
+
+	nativeTheme.themeSource = theme;
+
+	mainWindow.webContents.send("themeChange", theme);
+});
+
+ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear, endYear } = {}) => {
+	if (!mainWindow) return;
+
+	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
+	let tableRows = [];
+
+	for (let searchResult of searchResults) {
+		let themeIds = searchResult.themeId.split(".");
+		let themes = [];
+
+		for (let themeId of themeIds) {
+			themes.push(legoSetThemes.get(themeId));
 		}
 
-		let html = renderPage(page, pageParams);
+		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
 
-		mainWindow.webContents.send("pageLoad", page, html, params);
+		let tableRow = {
+			...searchResult,
+			theme: "",
+			image: ""
+		};
+		tableRow.theme = themes.join(": ");
+		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
+		tableRow.image = `data:image/jpg;base64,${image}`;
 
-		if (page === "settings") {
-			mainWindow.webContents.send("themeChange", nativeTheme.themeSource);
-		}
+		tableRows.push(tableRow);
 	}
-);
 
-ipcMain.handle("setTheme",
-	/**
-	 * @param {Electron.IpcMainInvokeEvent} event
-	 * @param {"light" | "dark" | "system"} theme The theme to set.
-	 * @returns {void}
-	*/
-	(event, theme) => {
-		if (!mainWindow) return;
+	return tableRows;
+});
 
-		nativeTheme.themeSource = theme;
+ipcMain.on("addSet", async (event, setNumber) => {
+	if (!mainWindow) return;
 
-		mainWindow.webContents.send("themeChange", theme);
+	let legoSetInfo;
+	try {
+		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
+	} catch (error) {
+		return false;
 	}
-);
 
-ipcMain.handle("searchLegoSets",
-	/**
-	 * @param {Electron.IpcMainInvokeEvent} event
-	 * @param {string} searchQuery The search query for the search.
-	 * @param {Object} [options]
-	 * @param {string} [options.themeId] The ID of the theme to filter by.
-	 * @param {number} [options.startYear] The start year for the search (inclusive).
-	 * @param {number} [options.endYear] The end year for the search (inclusive).
-	 */
-	async (event, searchQuery, { themeId = "", startYear, endYear } = {}) => {
-		if (!mainWindow) return;
+	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
 
-		let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
-		/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
-		let tableRows = [];
+	let legoSet = new LegoSet(
+		legoSets.size,
+		legoSetInfo.setNumber,
+		legoSetInfo.name,
+		legoSetInfo.theme,
+		legoSetInfo.releaseYear,
+		legoSetInfo.pieceCount,
+		legoSetInfo.minifigCount
+	);
 
-		for (let searchResult of searchResults) {
-			let themeIds = searchResult.themeId.split(".");
-			let themes = [];
+	legoSet.addNormalPieces(legoSetPieces.normalPieces);
+	legoSet.addMinifigs(legoSetPieces.minifigs);
+	legoSet.addExtraPieces(legoSetPieces.extraPieces);
+	legoSet.addCounterpartPieces(legoSetPieces.counterparts);
+	legoSets.set(legoSets.size, legoSet);
 
-			for (let themeId of themeIds) {
-				themes.push(legoSetThemes.get(themeId));
-			}
-
-			await webScrapper.downloadLegoSetImage(searchResult.setNumber);
-
-			let tableRow = {
-				...searchResult,
-				theme: "",
-				image: ""
-			};
-			tableRow.theme = themes.join(": ");
-			let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
-			tableRow.image = `data:image/jpg;base64,${image}`;
-
-			tableRows.push(tableRow);
-		}
-
-		mainWindow.webContents.send("searchResults", tableRows);
-	}
-);
-
-ipcMain.handle("addSet",
-	/**
-	 * @param {Electron.IpcMainInvokeEvent} event
-	 * @param {string} setNumber
-	 */
-	async (event, setNumber) => {
-		if (!mainWindow) return;
-
-		let legoSetInfo;
-		try {
-			legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
-		} catch (error) {
-			return false;
-		}
-
-		let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
-
-		let legoSet = new LegoSet(
-			legoSets.size,
-			legoSetInfo.setNumber,
-			legoSetInfo.name,
-			legoSetInfo.theme,
-			legoSetInfo.releaseYear,
-			legoSetInfo.pieceCount,
-			legoSetInfo.minifigCount
-		);
-
-		legoSet.addNormalPieces(legoSetPieces.normalPieces);
-		legoSet.addMinifigs(legoSetPieces.minifigs);
-		legoSet.addExtraPieces(legoSetPieces.extraPieces);
-		legoSet.addCounterpartPieces(legoSetPieces.counterparts);
-		legoSets.set(legoSets.size, legoSet);
-
-		await webScrapper.downloadLegoSetImages(legoSet);
-
-		mainWindow.webContents.send("addSet");
-	}
-);
+	webScrapper.downloadLegoSetImages(legoSet);
+});

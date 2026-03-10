@@ -1,75 +1,113 @@
 import "electron";
+import { LegoSetSearchResult, Theme } from "../types.js";
 
 export { };
 
 declare global {
 	namespace Electron {
 		interface IpcMain {
-			on<C extends keyof IpcChannels>(
+			on<C extends keyof IpcEventMap>(
 				channel: C,
 				listener: (
 					event: IpcMainEvent,
-					...args: IpcChannels[C]
+					...args: IpcEventMap[C]
 				) => void
 			): this;
-			once<C extends keyof IpcChannels>(
+			once<C extends keyof IpcEventMap>(
 				channel: C,
 				listener: (
 					event: IpcMainEvent,
-					...args: IpcChannels[C]
+					...args: IpcEventMap[C]
 				) => void
 			): this;
-			handle<C extends keyof IpcChannels>(
+			handle<C extends keyof IpcRequestsMap>(
 				channel: C,
 				listener: (
 					event: IpcMainInvokeEvent,
-					...args: IpcChannels[C]
-				) => Promise<any> | any
+					...args: IpcRequestsMap[C]["args"]
+				) => Promise<IpcRequestsMap[C]["returns"]> | IpcRequestsMap[C]["returns"]
 			): void;
-			handleOnce<C extends keyof IpcChannels>(
+			handleOnce<C extends keyof IpcRequestsMap>(
 				channel: C,
 				listener: (
 					event: IpcMainInvokeEvent,
-					...args: IpcChannels[C]
-				) => Promise<any> | any
+					...args: IpcRequestsMap[C]["args"]
+				) => Promise<IpcRequestsMap[C]["returns"]> | IpcRequestsMap[C]["returns"]
 			): void;
 		}
 
 		interface ipcRenderer {
-			on<C extends keyof IpcChannels>(
+			on<C extends keyof IpcEventMap>(
 				channel: C,
 				listener: (
 					event: IpcRendererEvent,
-					...args: IpcChannels[C]
+					...args: IpcEventMap[C]
 				) => void
 			): this;
-			once<C extends keyof IpcChannels>(
+			once<C extends keyof IpcEventMap>(
 				channel: C,
 				listener: (
 					event: IpcRendererEvent,
-					...args: IpcChannels[C]
+					...args: IpcEventMap[C]
 				) => void
 			): this;
-			send<C extends keyof IpcChannels>(
+			send<C extends keyof IpcEventMap>(
 				channel: C,
-				...args: IpcChannels[C]
+				...args: IpcEventMap[C]
 			): this;
-			invoke<C extends keyof IpcChannels>(
+			sendSync<C extends keyof IpcEventMap>(
 				channel: C,
-				...args: IpcChannels[C]
+				...args: IpcEventMap[C]
 			): this;
-			sendSync<C extends keyof IpcChannels>(
+			invoke<C extends keyof IpcRequestsMap>(
 				channel: C,
-				...args: IpcChannels[C]
+				...args: IpcRequestsMap[C]["args"]
 			): this;
+		}
+
+		interface WebContents {
+			send<C extends keyof IpcEventMap>(
+				channel: C,
+				...args: IpcEventMap[C]
+			): void;
 		}
 	}
 }
 
-type IpcChannels = {
-	loadPage: [
-		page: string,
-		pageParams: Record<string, unknown>,
-		params: Record<string, unknown>
+type IpcEventMap = {
+	addSet: [
+		setNumber: string
 	];
+	setTheme: [
+		theme: Theme
+	];
+	themeChange: [
+		theme: Theme
+	];
+};
+
+type IpcRequestsMap = {
+	loadPage: {
+		args: [
+			page: string,
+			pageParams: Record<string, unknown>,
+			params: Record<string, unknown>
+		],
+		returns: {
+			page: string,
+			html: string,
+			params: Record<string, unknown>;
+		};
+	};
+	searchLegoSets: {
+		args: [
+			searchQuery: string,
+			options: {
+				themeId: string,
+				startYear: number,
+				endYear: number;
+			}
+		];
+		returns: (LegoSetSearchResult & { theme: string, image: string; })[];
+	};
 };

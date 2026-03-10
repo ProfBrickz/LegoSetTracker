@@ -1,12 +1,20 @@
 // Imports
 import { DataTable } from "./components/dataTable.js";
 
-
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	let { page } = event.detail;
 
 	if (page !== "add-set") return;
+
+	let setSearchForm = /** @type {HTMLFormElement} */ (document.getElementById("set-search-form"));
+	setSearchForm.onsubmit = (event) => {
+		event.preventDefault();
+		window.electronAPI.searchLegoSets((searchResults) => {
+			dataTable.data = searchResults;
+			dataTable.renderTable();
+		});
+	};
 
 	let dataTable = /** @type {DataTable} */ (document.getElementById("lego-set-search-results"));
 
@@ -48,8 +56,8 @@ document.addEventListener("pageLoad", (event) => {
 		}
 	];
 
-	window.electronAPI.onSearchResults((event, searchResults) => {
-		dataTable.data = searchResults;
-		dataTable.renderTable();
-	});
+	// window.electronAPI.onSearchResults(searchResults, (searchResults) => {
+	// dataTable.data = searchResults;
+	// dataTable.renderTable();
+	// });
 });
