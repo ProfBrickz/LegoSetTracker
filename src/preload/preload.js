@@ -28,8 +28,8 @@ let electronAPI = {
 		// Notify that page has changed so icons can be recreated
 		document.dispatchEvent(new CustomEvent("pageLoad", {
 			detail: {
-				newPage,
-				newParams
+				page: newPage,
+				params: newParams
 			}
 		}));
 	},
