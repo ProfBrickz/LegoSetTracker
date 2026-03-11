@@ -1,5 +1,5 @@
 // Imports
-import { DataTable } from "./components/dataTable.js";
+import { DataTable } from "../components/dataTable.js";
 
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
@@ -55,9 +55,4 @@ document.addEventListener("pageLoad", (event) => {
 			}
 		}
 	];
-
-	// window.electronAPI.onSearchResults(searchResults, (searchResults) => {
-	// dataTable.data = searchResults;
-	// dataTable.renderTable();
-	// });
 });

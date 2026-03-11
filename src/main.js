@@ -97,6 +97,38 @@ function createWindow() {
 	});
 }
 
+/**
+ * @param {import("./types.js").LegoSetSearchResult[]} searchResults
+ */
+async function getSearchLegoSetsTableRows(searchResults) {
+	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
+	let tableRows = [];
+
+	for (let searchResult of searchResults) {
+		let themeIds = searchResult.themeId.split(".");
+		let themes = [];
+
+		for (let themeId of themeIds) {
+			themes.push(legoSetThemes.get(themeId));
+		}
+
+		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+
+		let tableRow = {
+			...searchResult,
+			theme: "",
+			image: ""
+		};
+		tableRow.theme = themes.join(": ");
+		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
+		tableRow.image = `data:image/jpg;base64,${image}`;
+
+		tableRows.push(tableRow);
+	}
+
+	return tableRows;
+}
+
 
 // Event listeners
 app.whenReady().then(async () => {
@@ -136,6 +168,7 @@ ipcMain.handle("loadPage", (event, page, pageParams, params) => {
 		pageParams.legoSetThemes = legoSetThemes;
 	}
 
+
 	let html = renderPage(page, pageParams);
 
 	if (page === "settings") {
@@ -159,32 +192,8 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	if (!mainWindow) return;
 
 	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
-	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
-	let tableRows = [];
 
-	for (let searchResult of searchResults) {
-		let themeIds = searchResult.themeId.split(".");
-		let themes = [];
-
-		for (let themeId of themeIds) {
-			themes.push(legoSetThemes.get(themeId));
-		}
-
-		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
-
-		let tableRow = {
-			...searchResult,
-			theme: "",
-			image: ""
-		};
-		tableRow.theme = themes.join(": ");
-		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
-		tableRow.image = `data:image/jpg;base64,${image}`;
-
-		tableRows.push(tableRow);
-	}
-
-	return tableRows;
+	return await getSearchLegoSetsTableRows(searchResults);
 });
 
 ipcMain.on("addSet", async (event, setNumber) => {
