@@ -102,6 +102,9 @@ function createWindow() {
 app.whenReady().then(async () => {
 	legoSetThemes = await webScrapper.getLegoSetThemes();
 	colors = await webScrapper.getColors();
+	for (let [i, color] of colors.entries()) {
+		color.databaseId = i;
+	}
 	webScrapper.setColors(colors);
 
 	initializeFolders();
