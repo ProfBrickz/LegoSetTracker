@@ -31,3 +31,10 @@ import { LegoSetPiece } from "./models.js";
 /**
  * @typedef {"light" | "dark" | "system"} Theme
  */
+
+/**
+ * @template T
+ * @typedef {Pick<T, {
+ *   [K in keyof T]: T[K] extends Function ? never : K
+ * }[keyof T]>} PropertiesOnly
+ */

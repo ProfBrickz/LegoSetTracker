@@ -72,6 +72,74 @@ function initializeFolders() {
 
 		if (!fs.existsSync(colorImagePath)) fs.mkdirSync(colorImagePath);
 	}
+	let noColorImagePath = path.join(PIECE_IMAGES_PATH, "0");
+	if (!fs.existsSync(noColorImagePath)) fs.mkdirSync(noColorImagePath);
+}
+
+/**
+ * Gets the rows for the Lego set search table
+ *
+ * @param {import("./types.js").LegoSetSearchResult[]} searchResults
+ */
+async function getSearchLegoSetsTableRows(searchResults) {
+	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
+	let tableRows = [];
+
+	for (let searchResult of searchResults) {
+		let themeIds = searchResult.themeId.split(".");
+		let themes = [];
+
+		for (let themeId of themeIds) {
+			themes.push(legoSetThemes.get(themeId));
+		}
+
+		let tableRow = {
+			...searchResult,
+			theme: "",
+			image: ""
+		};
+		tableRow.theme = themes.join(": ");
+		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
+		tableRow.image = `data:image/jpg;base64,${image}`;
+
+		tableRows.push(tableRow);
+	}
+
+	return tableRows;
+}
+
+/**
+ * Gets the rows for the main Lego sets table
+ */
+function getLegoSetsTableRows() {
+	/**
+	 * @type {({
+	 * image: string,
+	 * name: string,
+	 * setNumber: string,
+	 * theme: string
+	 * releaseYear: number
+	 * pieceCount: number
+	 * minifigCount: number
+	 * })[]}
+	 */
+	let tableRows = [];
+
+	for (let legoSet of legoSets.values()) {
+		let image = fs.readFileSync(LegoSet.getImagePath(legoSet.setNumber)).toString("base64") || "";
+
+		tableRows.push({
+			image: `data:image/jpg;base64,${image}`,
+			name: legoSet.name,
+			setNumber: legoSet.setNumber,
+			theme: legoSet.theme,
+			releaseYear: legoSet.releaseYear,
+			pieceCount: legoSet.pieceCount,
+			minifigCount: legoSet.minifigCount,
+		});
+	}
+
+	return tableRows;
 }
 
 /**
@@ -95,38 +163,6 @@ function createWindow() {
 	mainWindow.on("closed", () => {
 		mainWindow = null;
 	});
-}
-
-/**
- * @param {import("./types.js").LegoSetSearchResult[]} searchResults
- */
-async function getSearchLegoSetsTableRows(searchResults) {
-	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
-	let tableRows = [];
-
-	for (let searchResult of searchResults) {
-		let themeIds = searchResult.themeId.split(".");
-		let themes = [];
-
-		for (let themeId of themeIds) {
-			themes.push(legoSetThemes.get(themeId));
-		}
-
-		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
-
-		let tableRow = {
-			...searchResult,
-			theme: "",
-			image: ""
-		};
-		tableRow.theme = themes.join(": ");
-		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
-		tableRow.image = `data:image/jpg;base64,${image}`;
-
-		tableRows.push(tableRow);
-	}
-
-	return tableRows;
 }
 
 
@@ -176,6 +212,9 @@ ipcMain.handle("loadPage", (event, page, pageParams, params) => {
 			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
 		}, 10);
 	}
+	if (page == "sets") {
+		params.tableRows = getLegoSetsTableRows();
+	}
 
 	return { page, html, params };
 });
@@ -192,6 +231,10 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", star
 	if (!mainWindow) return;
 
 	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+
+	for (let searchResult of searchResults) {
+		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+	}
 
 	return await getSearchLegoSetsTableRows(searchResults);
 });

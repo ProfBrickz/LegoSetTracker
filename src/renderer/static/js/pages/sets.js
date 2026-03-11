@@ -4,6 +4,7 @@ import { DataTable } from "../components/dataTable.js";
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	let { page, params } = event.detail;
+	let { tableRows } = params;
 
 	if (page !== "sets") return;
 
@@ -39,9 +40,11 @@ document.addEventListener("pageLoad", (event) => {
 		},
 		{
 			header: "Minifig Count",
-			accessorKey: "Minifig Count"
+			accessorKey: "minifigCount"
 		}
 	];
+
+	dataTable.data = tableRows;
 
 	dataTable.renderTable();
 });

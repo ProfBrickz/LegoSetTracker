@@ -1,3 +1,4 @@
+
 // Imports
 const { contextBridge, ipcRenderer } = require("electron");
 
@@ -6,11 +7,13 @@ const { contextBridge, ipcRenderer } = require("electron");
 /** @type {import("../renderer/types/electronAPI.js").ElectronAPI} */
 let electronAPI = {
 	loadPage: async (page, pageParams = {}, params = {}) => {
-		let { newPage = page, html, newParams = params } = await ipcRenderer.invoke("loadPage", page, pageParams, params);
+		// call loadPage on server side
+		let { page: newPage, html, params: newParams } = await ipcRenderer.invoke("loadPage", page, pageParams, params);
 
 		const mainElement = document.getElementById("main");
 		if (!mainElement) return;
 
+		// Update page content
 		mainElement.innerHTML = html;
 
 		// Update active button
@@ -25,7 +28,7 @@ let electronAPI = {
 			currentButton.classList.add("active");
 		}
 
-		// Notify that page has changed so icons can be recreated
+		// Notify that page has changed, so the js for each page can detect it
 		document.dispatchEvent(new CustomEvent("pageLoad", {
 			detail: {
 				page: newPage,
@@ -37,6 +40,7 @@ let electronAPI = {
 		ipcRenderer.send("setTheme", theme);
 	},
 	searchLegoSets: async (callback) => {
+		// Get form values
 		let searchQueryElement = /** @type {HTMLInputElement} */ (document.getElementById("search-query"));
 		let searchQuery = searchQueryElement.value;
 		let themeElement =/** @type {HTMLSelectElement} */ (document.getElementById("theme"));
