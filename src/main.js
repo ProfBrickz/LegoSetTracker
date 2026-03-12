@@ -283,3 +283,9 @@ ipcMain.on("addSet", async (event, setNumber) => {
 
 	return true;
 });
+
+ipcMain.on("changeSetCount", (event, setId, value) => {
+	let legoSet = /** @type {LegoSet} */ (legoSets.get(setId));
+
+	legoSet.legoSetCount = value;
+});

@@ -84,6 +84,10 @@ type IpcEventMap = {
 	themeChange: [
 		theme: Theme
 	];
+	changeSetCount: [
+		rowIndex: number,
+		value: number
+	];
 };
 
 type IpcRequestsMap = {

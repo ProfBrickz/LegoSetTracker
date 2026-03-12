@@ -95,9 +95,9 @@ export class DataTable extends HTMLElement {
    #createCell(cell) {
       let td = document.createElement("td");
 
-      let { type, editable, onChange } = cell.column.columnDef.meta || {};
+      let { type, onChange, min, max } = cell.column.columnDef.meta || {};
 
-      if (editable && type) {
+      if (onChange && (type === "string" || type === "number")) {
          let input = document.createElement("input");
 
          if (type === "string") {
@@ -110,21 +110,23 @@ export class DataTable extends HTMLElement {
                this.table.options.data[cell.row.index][cell.column.id] = value;
 
                if (onChange) {
-                  onChange(value);
+                  onChange(cell.row.index, value);
                }
-
-               this.#handleChange(cell.column.id, cell.row.index, value);
             };
          } else if (type === "number") {
             input.type = "number";
+            input.min = String(min);
+            input.max = String(max);
             input.onchange = (event) => {
                let element = /** @type {HTMLInputElement} */ (event.target);
                if (!element) return;
 
-               let value = Number(element.value);
+               let value = element.valueAsNumber;
                this.table.options.data[cell.row.index][cell.column.id] = value;
 
-               this.#handleChange(cell.column.id, cell.row.index, value);
+               if (cell.column.columnDef.meta?.onChange) {
+                  cell.column.columnDef.meta.onChange(cell.row.index, value);
+               }
             };
          }
 
@@ -182,31 +184,6 @@ export class DataTable extends HTMLElement {
       tableElement.appendChild(this.#createTbody());
 
       this.appendChild(tableElement);
-   }
-
-   /**
-    * @param {string} columnId
-    * @param {number} rowIndex
-    * @param {string | number} value
-    */
-   #handleChange(columnId, rowIndex, value) {
-      this.dispatchEvent(
-         new CustomEvent("cellChange", {
-            detail: {
-               columnId,
-               rowIndex,
-               value
-            },
-            bubbles: true
-         })
-      );
-   }
-
-   /**
-    * @param {EventListenerOrEventListenerObject} callback
-    */
-   onCellChange(callback) {
-      this.addEventListener("cellChange", callback);
    }
 }
 

@@ -5,4 +5,5 @@ export interface ElectronAPI {
    setTheme(theme: Theme): void;
    searchLegoSets(callback: (searchResults: (LegoSetSearchResult & { theme: string, image: string; })[]) => void): void;
    addSet(setNumber: string): void;
+   changeSetCount(setId: number, value: number): void;
 }

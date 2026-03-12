@@ -44,7 +44,17 @@ document.addEventListener("pageLoad", (event) => {
 		},
 		{
 			header: "Amount",
-			accessorKey: "legoSetCount"
+			accessorKey: "legoSetCount",
+			meta: {
+				editable: true,
+				type: "number",
+				min: 1,
+				onChange: (rowIndex, value) => {
+					if (typeof value !== "number") return;
+
+					window.electronAPI.changeSetCount(rowIndex, value);
+				}
+			},
 		}
 	];
 

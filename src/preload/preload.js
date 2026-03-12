@@ -57,6 +57,9 @@ let electronAPI = {
 	},
 	addSet: (setNumber) => {
 		ipcRenderer.send("addSet", setNumber);
+	},
+	changeSetCount: (setId, value) => {
+		ipcRenderer.send("changeSetCount", setId, value);
 	}
 };
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);
