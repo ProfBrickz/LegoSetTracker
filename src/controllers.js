@@ -66,4 +66,15 @@ export class LegoSets extends ClassMap {
 	constructor(iterable) {
 		super(LegoSet, iterable);
 	}
+
+	/**
+	 * @param {string} setNumber
+	 */
+	getBySetNumber(setNumber) {
+		for (let legoSet of this.values()) {
+			if (legoSet.setNumber === setNumber) return legoSet;
+		}
+
+		return null;
+	}
 }

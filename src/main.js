@@ -121,6 +121,7 @@ function getLegoSetsTableRows() {
 	 * releaseYear: number
 	 * pieceCount: number
 	 * minifigCount: number
+	 * legoSetCount: number
 	 * })[]}
 	 */
 	let tableRows = [];
@@ -136,6 +137,7 @@ function getLegoSetsTableRows() {
 			releaseYear: legoSet.releaseYear,
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
+			legoSetCount: legoSet.legoSetCount
 		});
 	}
 
@@ -249,9 +251,19 @@ ipcMain.on("addSet", async (event, setNumber) => {
 		return false;
 	}
 
+	let legoSet = legoSets.getBySetNumber(setNumber);
+
+	// Increment set count if it already exists
+	if (legoSet) {
+		legoSet.legoSetCount++;
+		return true;
+	}
+
+	// Get the pieces for this set
 	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
 
-	let legoSet = new LegoSet(
+	// Add Lego set
+	legoSet = new LegoSet(
 		legoSets.size,
 		legoSetInfo.setNumber,
 		legoSetInfo.name,
@@ -268,4 +280,6 @@ ipcMain.on("addSet", async (event, setNumber) => {
 	legoSets.set(legoSets.size, legoSet);
 
 	webScrapper.downloadLegoSetImages(legoSet);
+
+	return true;
 });

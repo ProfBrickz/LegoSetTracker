@@ -41,6 +41,10 @@ document.addEventListener("pageLoad", (event) => {
 		{
 			header: "Minifig Count",
 			accessorKey: "minifigCount"
+		},
+		{
+			header: "Amount",
+			accessorKey: "legoSetCount"
 		}
 	];
 

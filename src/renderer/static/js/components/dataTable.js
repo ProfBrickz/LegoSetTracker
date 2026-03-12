@@ -171,8 +171,6 @@ export class DataTable extends HTMLElement {
    renderTable() {
       this.innerHTML = "";
 
-      console.log(this.hideOnEmpty, this.table.options.data.length, this.hideOnEmpty && this.table.options.data.length <= 0);
-
       if (this.hideOnEmpty && this.table.options.data.length <= 0) {
          this.style.display = "none";
       } else {
