@@ -14,6 +14,8 @@ import { createTable, getCoreRowModel } from "@tanstack/table-core";
 export class DataTable extends HTMLElement {
    /** @type {import("@tanstack/table-core").Table<TableRow>} */
    table;
+   /** @type {boolean} */
+   hideOnEmpty = false;
 
    constructor() {
       super();
@@ -29,6 +31,17 @@ export class DataTable extends HTMLElement {
          },
          renderFallbackValue: null
       });
+   }
+
+   static observedAttributes = ["hide-on-empty"];
+
+   /**
+    * @param {string} name
+    * @param {string} oldValue
+    * @param {string} newValue
+    */
+   attributeChangedCallback(name, oldValue, newValue) {
+      if (name == "hide-on-empty") this.hideOnEmpty = newValue !== "false";
    }
 
    get columns() {
@@ -158,11 +171,19 @@ export class DataTable extends HTMLElement {
    renderTable() {
       this.innerHTML = "";
 
-      let table = document.createElement("table");
-      table.appendChild(this.#createThead());
-      table.appendChild(this.#createTbody());
+      console.log(this.hideOnEmpty, this.table.options.data.length, this.hideOnEmpty && this.table.options.data.length <= 0);
 
-      this.appendChild(table);
+      if (this.hideOnEmpty && this.table.options.data.length <= 0) {
+         this.style.display = "none";
+      } else {
+         this.style.display = "";
+      }
+
+      let tableElement = document.createElement("table");
+      tableElement.appendChild(this.#createThead());
+      tableElement.appendChild(this.#createTbody());
+
+      this.appendChild(tableElement);
    }
 
    /**
