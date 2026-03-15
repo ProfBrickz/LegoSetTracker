@@ -16,6 +16,12 @@ document.addEventListener("pageLoad", (event) => {
 			dataTable.renderTable();
 		});
 	};
+	let selectTheme = /** @type {HTMLSelectElement} */ (document.getElementById("theme"));
+	selectTheme.onchange = (event) => {
+		event.preventDefault();
+		let valid = setSearchForm.reportValidity();
+		if (valid) setSearchForm.dispatchEvent(new Event("submit"));
+	};
 
 	let dataTable = /** @type {DataTable} */ (document.getElementById("lego-set-search-results"));
 

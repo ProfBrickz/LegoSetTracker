@@ -11,6 +11,7 @@ import { createTable, getCoreRowModel } from "@tanstack/table-core";
  */
 
 
+// Web Component
 export class DataTable extends HTMLElement {
    /** @type {import("@tanstack/table-core").Table<TableRow>} */
    table;
