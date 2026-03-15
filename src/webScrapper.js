@@ -349,7 +349,7 @@ export default class WebScrapper {
 		 * @property {Item[]} items - An array of items belonging to this type.
 		 *
 		 * @typedef {Object} Result
-		 * @property {TypeList[]} typeList - An array of type lists containing items.
+		 * @property {(TypeList | undefined)[]} typeList - An array of type lists containing items.
 		 *
 		 * @typedef {Object} SearchResponse
 		 * @property {Result} result - The result object containing the data.
@@ -360,8 +360,9 @@ export default class WebScrapper {
 		let { result, returnCode, returnMessage } = await response.json();
 		if (returnCode != 0) throw new Error(returnMessage);
 
-		let items = result.typeList[0].items;
-		items[0].strItemNo;
+		/** @type {Item[]} */
+		let items = [];
+		if (result.typeList[0]) items = result.typeList[0].items;
 
 		for (let item of items) {
 			legoSets.push({

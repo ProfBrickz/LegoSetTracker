@@ -191,7 +191,7 @@ app.on("window-all-closed", () => {
 
 
 // IPC
-ipcMain.handle("loadPage", (event, page, pageParams, params) => {
+ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 	if (page === "add-set") {
 		pageParams.legoSetThemes = legoSetThemes;
 	}
@@ -219,7 +219,7 @@ ipcMain.on("setTheme", async (event, theme) => {
 	mainWindow.webContents.send("themeChange", theme);
 });
 
-ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear, endYear } = {}) => {
+ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId, startYear, endYear }) => {
 	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
 
 	for (let searchResult of searchResults) {

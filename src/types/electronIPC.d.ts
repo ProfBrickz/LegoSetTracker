@@ -95,8 +95,10 @@ type IpcRequestsMap = {
 	loadPage: {
 		args: [
 			page: string,
-			pageParams: Record<string, unknown>,
-			params: Record<string, unknown>
+			options: {
+				pageParams: Record<string, unknown>,
+				params: Record<string, unknown>;
+			}
 		],
 		returns: {
 			page: string,
@@ -108,9 +110,9 @@ type IpcRequestsMap = {
 		args: [
 			searchQuery: string,
 			options: {
-				themeId: string,
-				startYear: number,
-				endYear: number;
+				themeId?: string,
+				startYear?: number,
+				endYear?: number;
 			}
 		];
 		returns: (LegoSetSearchResult & { theme: string, image: string; })[];
