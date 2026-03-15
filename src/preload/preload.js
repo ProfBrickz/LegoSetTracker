@@ -1,10 +1,11 @@
 
 // Imports
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge } = require("electron");
+const { ipcRenderer } = require("./ipcRenderer");
 
 
 // Context Bridge
-/** @type {import("../renderer/types/electronAPI.js").ElectronAPI} */
+/** @type {import("../renderer/types/electronAPI.d.ts").ElectronAPI} */
 let electronAPI = {
 	loadPage: async (page, pageParams = {}, params = {}) => {
 		// call loadPage on server side

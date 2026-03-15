@@ -3,8 +3,10 @@ import { DataTable } from "../components/dataTable.js";
 
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
-	let { page, params } = event.detail;
-	let { tableRows } = params;
+	/** @type {string} */
+	let page = event.detail.page;
+	/** @type {import("../../../../types.js").LegoSetsTableRow[]} */
+	let tableRows = event.detail.params.tableRows;
 
 	if (page !== "sets") return;
 

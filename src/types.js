@@ -33,8 +33,13 @@ import { LegoSetPiece } from "./models.js";
  */
 
 /**
- * @template T
- * @typedef {Pick<T, {
- *   [K in keyof T]: T[K] extends Function ? never : K
- * }[keyof T]>} PropertiesOnly
+ * @typedef {Object} LegoSetsTableRow
+ * @property {string} image
+ * @property {string} name
+ * @property {string} setNumber
+ * @property {string} theme
+ * @property {number} releaseYear
+ * @property {number} pieceCount
+ * @property {number} minifigCount
+ * @property {number} legoSetCount
  */

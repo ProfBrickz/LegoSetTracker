@@ -1,4 +1,4 @@
-import type { ElectronAPI } from "./electronAPI.js";
+import type { ElectronAPI } from "./electronAPI.d.ts";
 
 export { };
 

@@ -3,7 +3,8 @@ import { DataTable } from "../components/dataTable.js";
 
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
-	let { page } = event.detail;
+	/** @type {string} */
+	let page = event.detail.page;
 
 	if (page !== "add-set") return;
 

@@ -1,10 +1,11 @@
 // Imports
 import ejs from "ejs";
-import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
+import { app, BrowserWindow, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
 import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors, LegoPieces, LegoSets } from "./controllers.js";
+import { ipcMain } from "./ipcMain.js";
 import { LegoSet } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
@@ -113,16 +114,7 @@ async function getSearchLegoSetsTableRows(searchResults) {
  */
 function getLegoSetsTableRows() {
 	/**
-	 * @type {({
-	 * image: string,
-	 * name: string,
-	 * setNumber: string,
-	 * theme: string
-	 * releaseYear: number
-	 * pieceCount: number
-	 * minifigCount: number
-	 * legoSetCount: number
-	 * })[]}
+	 * @type {import("./types.js").LegoSetsTableRow[]}
 	 */
 	let tableRows = [];
 
@@ -200,8 +192,6 @@ app.on("window-all-closed", () => {
 
 // IPC
 ipcMain.handle("loadPage", (event, page, pageParams, params) => {
-	if (!mainWindow) return;
-
 	if (page === "add-set") {
 		pageParams.legoSetThemes = legoSetThemes;
 	}
@@ -230,8 +220,6 @@ ipcMain.on("setTheme", async (event, theme) => {
 });
 
 ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId = "", startYear, endYear } = {}) => {
-	if (!mainWindow) return;
-
 	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
 
 	for (let searchResult of searchResults) {
