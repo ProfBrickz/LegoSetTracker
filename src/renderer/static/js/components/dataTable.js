@@ -41,7 +41,7 @@ export class DataTable extends HTMLElement {
     * @param {string} newValue
     */
    attributeChangedCallback(name, oldValue, newValue) {
-      if (name == "hide-on-empty") this.hideOnEmpty = newValue !== "false";
+      if (name == "hide-on-empty") this.hideOnEmpty = newValue != null && newValue !== "false";
    }
 
    get columns() {

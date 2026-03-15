@@ -1,7 +1,9 @@
-
 // Imports
 const { contextBridge } = require("electron");
-const { ipcRenderer } = require("./ipcRenderer");
+const electronIpcRenderer = require("electron").ipcRenderer;
+
+/** @type {import("../types/electronIPC.d.ts").TypedIpcRenderer} */
+export const ipcRenderer = electronIpcRenderer;
 
 
 // Context Bridge
@@ -64,6 +66,7 @@ let electronAPI = {
 	}
 };
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);
+
 
 // IPC Listeners
 ipcRenderer.on("themeChange", (event, theme) => {
