@@ -1,7 +1,7 @@
 // Imports
 import { BarChart, createIcons, House, Menu, Monitor, Moon, Settings, Sun, ToyBrick } from "lucide";
-import "./pages/addSet.js";
-import "./pages/sets.js";
+import "./pages/addLegoSet.js";
+import "./pages/legoSets.js";
 
 
 const iconsConfig = {

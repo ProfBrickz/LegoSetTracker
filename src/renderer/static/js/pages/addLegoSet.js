@@ -6,7 +6,7 @@ document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
 	let page = event.detail.page;
 
-	if (page !== "add-set") return;
+	if (page !== "add-lego-set") return;
 
 	let setSearchForm = /** @type {HTMLFormElement} */ (document.getElementById("set-search-form"));
 	setSearchForm.onsubmit = (event) => {

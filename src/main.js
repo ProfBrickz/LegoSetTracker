@@ -192,7 +192,7 @@ app.on("window-all-closed", () => {
 
 // IPC
 ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
-	if (page === "add-set") {
+	if (page === "add-lego-set") {
 		pageParams.legoSetThemes = legoSetThemes;
 	}
 
@@ -204,7 +204,7 @@ ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
 		}, 10);
 	}
-	if (page == "sets") {
+	if (page == "lego-sets") {
 		params.tableRows = getLegoSetsTableRows();
 	}
 

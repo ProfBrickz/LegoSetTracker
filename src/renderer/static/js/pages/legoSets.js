@@ -8,7 +8,7 @@ document.addEventListener("pageLoad", (event) => {
 	/** @type {import("../../../../types.js").LegoSetsTableRow[]} */
 	let tableRows = event.detail.params.tableRows;
 
-	if (page !== "sets") return;
+	if (page !== "lego-sets") return;
 
 	let dataTable = /** @type {DataTable} */ (document.getElementById("lego-sets"));
 
