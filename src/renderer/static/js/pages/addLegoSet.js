@@ -1,6 +1,7 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
 
+
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
@@ -46,7 +47,7 @@ document.addEventListener("pageLoad", (event) => {
 				addButton.innerText = "Add Set";
 
 				addButton.onclick = () => {
-					window.electronAPI.addSet(row.getValue("setNumber"));
+					window.electronAPI.addSet(/** @type {string} */(row.original.setNumber));
 				};
 
 				return addButton;

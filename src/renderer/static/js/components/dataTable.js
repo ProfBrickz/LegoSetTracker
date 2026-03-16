@@ -9,6 +9,9 @@ import { createTable, getCoreRowModel } from "@tanstack/table-core";
 /**
  * @typedef {import("@tanstack/table-core").ColumnDef<TableRow, any>} TableColumn
  */
+/**
+ * @typedef {import("@tanstack/table-core").Cell<TableRow, unknown>} TableCell
+ */
 
 
 // Web Component
@@ -91,12 +94,19 @@ export class DataTable extends HTMLElement {
    }
 
    /**
-    * @param {import("@tanstack/table-core").Cell<TableRow, unknown>} cell
+    * @param {TableCell} cell
     */
    #createCell(cell) {
       let td = document.createElement("td");
+      td.classList.add(cell.column.id);
 
-      let { type, onChange, min, max } = cell.column.columnDef.meta || {};
+      let { type, onChange, min, max, classList } = cell.column.columnDef.meta || {};
+
+      if (typeof classList === "string") {
+         td.classList.add(classList);
+      } else if (typeof classList === "function") {
+         td.classList.add(...classList({ row: cell.row }));
+      }
 
       if (onChange && (type === "string" || type === "number")) {
          let input = document.createElement("input");
@@ -111,7 +121,12 @@ export class DataTable extends HTMLElement {
                this.table.options.data[cell.row.index][cell.column.id] = value;
 
                if (onChange) {
-                  onChange(cell.row.index, value);
+                  onChange({
+                     element: /** @type {HTMLTableCellElement} */ (element.parentElement),
+                     rowIndex: cell.row.index,
+                     value,
+                     row: cell.row
+                  });
                }
             };
          } else if (type === "number") {
@@ -125,8 +140,13 @@ export class DataTable extends HTMLElement {
                let value = element.valueAsNumber;
                this.table.options.data[cell.row.index][cell.column.id] = value;
 
-               if (cell.column.columnDef.meta?.onChange) {
-                  cell.column.columnDef.meta.onChange(cell.row.index, value);
+               if (onChange) {
+                  onChange({
+                     element: /** @type {HTMLTableCellElement} */ (element.parentElement),
+                     rowIndex: cell.row.index,
+                     value,
+                     row: cell.row
+                  });
                }
             };
          }

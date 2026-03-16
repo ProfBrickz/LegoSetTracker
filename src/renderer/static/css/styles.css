@@ -356,9 +356,58 @@ data-table input[type="number"] {
 
 data-table img {
 	--size: 15rem;
-	max-width: var(--size);
-	max-height: var(--size);
-	border-radius: 1rem;
+	width: var(--size);
+	height: var(--size);
+	object-fit: contain;
+}
+
+td.completion {
+	&.not-started {
+		svg.not-started {
+			display: block;
+		}
+	}
+
+	&.incomplete {
+		svg.incomplete {
+			display: block;
+		}
+	}
+
+	&.complete {
+		svg.complete {
+			display: block;
+		}
+	}
+
+	&.extra {
+		svg.extra {
+			display: block;
+		}
+	}
+
+	svg {
+		--size: 7rem;
+		display: none;
+		width: var(--size);
+		height: var(--size);
+
+		&.not-started {
+			color: var(--danger)
+		}
+
+		&.incomplete {
+			color: var(--warning);
+		}
+
+		&.complete {
+			color: var(--success);
+		}
+
+		&.extra {
+			color: var(--info);
+		}
+	}
 }
 
 /* Responsive Design */

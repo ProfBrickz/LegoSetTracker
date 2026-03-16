@@ -87,7 +87,12 @@ type IpcEventMap = {
 	];
 	changeSetCount: [
 		rowIndex: number,
-		value: number
+		setCount: number
+	];
+	changeAmountFound: [
+		legoSetId: number,
+		pieceId: number,
+		amountFound: number
 	];
 };
 

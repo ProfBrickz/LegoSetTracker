@@ -6,7 +6,7 @@ import path from "path";
 import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors, LegoPieces, LegoSets } from "./controllers.js";
 import { ipcMain } from "./ipcMain.js";
-import { LegoSet } from "./models.js";
+import { LegoSet, LegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
 
@@ -119,10 +119,11 @@ function getLegoSetsTableRows() {
 	let tableRows = [];
 
 	for (let legoSet of legoSets.values()) {
-		let image = fs.readFileSync(LegoSet.getImagePath(legoSet.setNumber)).toString("base64") || "";
+		let image = fs.readFileSync(legoSet.getImagePath()).toString("base64") || "";
 
 		tableRows.push({
 			image: `data:image/jpg;base64,${image}`,
+			databaseId: /** @type {number} */ (legoSet.databaseId),
 			name: legoSet.name,
 			setNumber: legoSet.setNumber,
 			theme: legoSet.theme,
@@ -130,6 +131,36 @@ function getLegoSetsTableRows() {
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
 			legoSetCount: legoSet.legoSetCount
+		});
+	}
+
+	return tableRows;
+}
+
+/**
+ * Gets the table rows for a Lego set
+ *
+ * @param {LegoSet} legoSet
+ */
+function getLegoSetTableRows(legoSet) {
+	/**
+	 * @type {import("./types.js").LegoSetTableRow[]}
+	 */
+	let tableRows = [];
+
+	for (let legoPiece of legoSet.normalPieces.values()) {
+		let image = fs.readFileSync(legoPiece.getImagePath()).toString("base64") || "";
+
+		tableRows.push({
+			image: `data:image/jpg;base64,${image}`,
+			pieceId: /** @type {number} */ (legoPiece.databaseId),
+			amountFound: legoPiece.amountFound,
+			amountLeft: legoPiece.amountNeeded * legoSet.legoSetCount - legoPiece.amountFound,
+			amountNeeded: legoPiece.amountNeeded * legoSet.legoSetCount,
+			bricklinkName: legoPiece.bricklinkName,
+			bricklinkId: legoPiece.bricklinkId,
+			color: legoPiece.color,
+			bricklinkCategory: legoPiece.bricklinkCategory
 		});
 	}
 
@@ -194,19 +225,24 @@ app.on("window-all-closed", () => {
 ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 	if (page === "add-lego-set") {
 		pageParams.legoSetThemes = legoSetThemes;
-	}
-
-
-	let html = renderPage(page, pageParams);
-
-	if (page === "settings") {
+	} else if (page == "lego-sets") {
+		params.tableRows = getLegoSetsTableRows();
+	} else if (page === "settings") {
 		setTimeout(() => {
 			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
 		}, 10);
+	} else if (page == "lego-set") {
+		let databaseId = /** @type {number} */ (params.databaseId);
+		delete params.databaseId;
+
+		let legoSet =/** @type {LegoSet} */(legoSets.get(databaseId));
+
+		pageParams.legoSetName = legoSet.name;
+		params.legoSetId = legoSet.databaseId;
+		params.tableRows = getLegoSetTableRows(legoSet);
 	}
-	if (page == "lego-sets") {
-		params.tableRows = getLegoSetsTableRows();
-	}
+
+	let html = renderPage(page, pageParams);
 
 	return { page, html, params };
 });
@@ -272,8 +308,15 @@ ipcMain.on("addSet", async (event, setNumber) => {
 	return true;
 });
 
-ipcMain.on("changeSetCount", (event, setId, value) => {
-	let legoSet = /** @type {LegoSet} */ (legoSets.get(setId));
+ipcMain.on("changeSetCount", (event, legoSetId, setCount) => {
+	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 
-	legoSet.legoSetCount = value;
+	legoSet.legoSetCount = setCount;
+});
+
+ipcMain.on("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
+	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
+	let legoPiece = /** @type {LegoSetPiece} */ (legoSet?.normalPieces.get(pieceId));
+
+	legoPiece.amountFound = amountFound;
 });

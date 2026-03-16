@@ -1,6 +1,7 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
 
+
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
@@ -48,15 +49,31 @@ document.addEventListener("pageLoad", (event) => {
 			header: "Amount",
 			accessorKey: "legoSetCount",
 			meta: {
-				editable: true,
 				type: "number",
 				min: 1,
-				onChange: (rowIndex, value) => {
-					if (typeof value !== "number") return;
+				onChange: ({ rowIndex, value: setCount }) => {
+					if (typeof setCount !== "number") return;
 
-					window.electronAPI.changeSetCount(rowIndex, value);
+					window.electronAPI.changeSetCount(rowIndex, setCount);
 				}
 			},
+		},
+		{
+			header: "Buttons",
+			cell: ({ row }) => {
+				let fragment = document.createDocumentFragment();
+
+				let viewButton = document.createElement("button");
+				viewButton.innerText = "View";
+
+				viewButton.onclick = () => window.electronAPI.loadPage("lego-set", { params: { databaseId: row.original.databaseId } });
+				fragment.appendChild(viewButton);
+
+				return fragment;
+			},
+			meta: {
+				type: "function"
+			}
 		}
 	];
 

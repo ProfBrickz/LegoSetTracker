@@ -1,5 +1,5 @@
 // Imports
-import { LegoSetPiece } from "./models.js";
+import { LegoColor, LegoSetPiece } from "./models.js";
 
 
 // Types
@@ -35,6 +35,7 @@ import { LegoSetPiece } from "./models.js";
 /**
  * @typedef {Object} LegoSetsTableRow
  * @property {string} image
+ * @property {number} databaseId
  * @property {string} name
  * @property {string} setNumber
  * @property {string} theme
@@ -42,4 +43,17 @@ import { LegoSetPiece } from "./models.js";
  * @property {number} pieceCount
  * @property {number} minifigCount
  * @property {number} legoSetCount
+ */
+
+/**
+ * @typedef {Object} LegoSetTableRow
+ * @property {string} image
+ * @property {number} pieceId
+ * @property {number} amountFound
+ * @property {number} amountLeft
+ * @property {number} amountNeeded
+ * @property {string} bricklinkName
+ * @property {string} bricklinkId
+ * @property {LegoColor | null} color
+ * @property {string} bricklinkCategory
  */

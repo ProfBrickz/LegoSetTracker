@@ -1,6 +1,6 @@
 // Imports
 import path from "path";
-import { SET_IMAGES_PATH } from "./constants.js";
+import { PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoPieces, LegoSetPieces } from "./controllers.js";
 
 
@@ -63,6 +63,12 @@ export class LegoPiece {
 		this.color = color;
 		this.bricklinkCategory = bricklinkCategory;
 	}
+
+	getImagePath() {
+		let colorId = this.color?.bricklinkId || 0;
+
+		return path.join(PIECE_IMAGES_PATH, colorId.toString(), `${this.bricklinkId}.jpg`);
+	}
 }
 
 export class LegoSetPiece {
@@ -109,6 +115,10 @@ export class LegoSetPiece {
 
 	get legoPiece() {
 		return this.#legoPiece;
+	}
+
+	getImagePath() {
+		return this.#legoPiece.getImagePath();
 	}
 }
 
@@ -199,6 +209,10 @@ export class LegoSet {
 
 	get counterpartPieces() {
 		return this.#counterpartPieces;
+	}
+
+	getImagePath() {
+		return path.join(SET_IMAGES_PATH, `${this.setNumber}.jpg`);
 	}
 
 	/**
