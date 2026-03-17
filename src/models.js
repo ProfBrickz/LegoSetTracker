@@ -250,7 +250,7 @@ export class LegoSet {
 
 				LegoSet.legoPieces.set(legoPieceId, legoPiece);
 			} else {
-				legoPiece = LegoSet.legoPieces.get(legoPieceId);
+				legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
 			}
 
 			pieces.set(pieces.size, new LegoSetPiece(

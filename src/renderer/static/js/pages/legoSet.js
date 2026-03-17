@@ -141,11 +141,9 @@ document.addEventListener("pageLoad", (event) => {
 		{
 			id: "color",
 			header: "Color",
-			/**
-			 * @param {import("../../../../types.js").LegoSetTableRow} row
-			 */
 			accessorFn: (row) => {
-				return row.color?.bricklinkName || "";
+				const legoSetRow = /** @type {import("../../../../types.js").LegoSetTableRow} */ (row);
+				return legoSetRow.color?.bricklinkName || "";
 			}
 		},
 		{

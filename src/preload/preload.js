@@ -9,9 +9,9 @@ export const ipcRenderer = electronIpcRenderer;
 // Context Bridge
 /** @type {import("../renderer/types/electronAPI.d.ts").ElectronAPI} */
 let electronAPI = {
-	loadPage: async (page, pageParams = {}, params = {}) => {
+	loadPage: async (page, { pageParams = {}, params = {} } = {}) => {
 		// call loadPage on server side
-		let { page: newPage, html, params: newParams } = await ipcRenderer.invoke("loadPage", page, pageParams, params);
+		let { page: newPage, html, params: newParams } = await ipcRenderer.invoke("loadPage", page, { pageParams, params });
 
 		const mainElement = document.getElementById("main");
 		if (!mainElement) return;
@@ -58,11 +58,14 @@ let electronAPI = {
 		let tableRows = await ipcRenderer.invoke("searchLegoSets", searchQuery, { themeId, startYear, endYear });
 		callback(tableRows);
 	},
-	addSet: (setNumber) => {
-		ipcRenderer.send("addSet", setNumber);
+	addLegoSet: (setNumber) => {
+		ipcRenderer.send("addLegoSet", setNumber);
 	},
-	changeSetCount: (legoSetId, setCount) => {
-		ipcRenderer.send("changeSetCount", legoSetId, setCount);
+	deleteLegoSet: async (databaseId) => {
+		await ipcRenderer.invoke("deleteLegoSet", databaseId);
+	},
+	changeLegoSetCount: (legoSetId, setCount) => {
+		ipcRenderer.send("changeLegoSetCount", legoSetId, setCount);
 	},
 	changeAmountFound: (legoSetId, pieceId, amountFound) => {
 		ipcRenderer.send("changeAmountFound", legoSetId, pieceId, amountFound);

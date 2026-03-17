@@ -47,7 +47,7 @@ document.addEventListener("pageLoad", (event) => {
 				addButton.innerText = "Add Set";
 
 				addButton.onclick = () => {
-					window.electronAPI.addSet(/** @type {string} */(row.original.setNumber));
+					window.electronAPI.addLegoSet(/** @type {string} */(row.original.setNumber));
 				};
 
 				return addButton;

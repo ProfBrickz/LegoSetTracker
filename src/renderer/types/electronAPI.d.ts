@@ -1,10 +1,11 @@
 import { LegoSetSearchResult, Theme } from "../types.js";
 
 export interface ElectronAPI {
-   loadPage(page: string, options?: { pageParams?: Object, params?: Object; }): void;
+   loadPage(page: string, options?: { pageParams?: Record<string, unknown>, params?: Record<string, unknown>; }): void;
    setTheme(theme: Theme): void;
    searchLegoSets(callback: (searchResults: (LegoSetSearchResult & { theme: string, image: string; })[]) => void): void;
-   addSet(setNumber: string): void;
-   changeSetCount(legoSetId: number, setCount: number): void;
+   addLegoSet(setNumber: string): void;
+   deleteLegoSet(databaseId: number): Promise<void>;
+   changeLegoSetCount(legoSetId: number, setCount: number): void;
    changeAmountFound(legoSetId: number, pieceId: number, amountFound: number): void;
 }

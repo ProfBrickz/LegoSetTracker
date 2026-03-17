@@ -54,7 +54,7 @@ document.addEventListener("pageLoad", (event) => {
 				onChange: ({ rowIndex, value: setCount }) => {
 					if (typeof setCount !== "number") return;
 
-					window.electronAPI.changeSetCount(rowIndex, setCount);
+					window.electronAPI.changeLegoSetCount(rowIndex, setCount);
 				}
 			},
 		},
@@ -65,9 +65,23 @@ document.addEventListener("pageLoad", (event) => {
 
 				let viewButton = document.createElement("button");
 				viewButton.innerText = "View";
-
-				viewButton.onclick = () => window.electronAPI.loadPage("lego-set", { params: { databaseId: row.original.databaseId } });
+				viewButton.onclick = () => window.electronAPI.loadPage(
+					"lego-set",
+					{ params: { databaseId: row.original.databaseId } }
+				);
 				fragment.appendChild(viewButton);
+
+				let deleteButton = document.createElement("button");
+				deleteButton.innerText = "Delete";
+				deleteButton.classList.add("danger");
+				deleteButton.onclick = async () => {
+					let confirmDelete = confirm(`Are you sure you want to delete ${row.original.name}`);
+					if (confirmDelete) {
+						await window.electronAPI.deleteLegoSet(/** @type {number} */(row.original.databaseId));
+						dataTable.deleteRow(row.index);
+					}
+				};
+				fragment.appendChild(deleteButton);
 
 				return fragment;
 			},

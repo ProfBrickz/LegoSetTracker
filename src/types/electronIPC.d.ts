@@ -76,7 +76,7 @@ declare global {
 }
 
 type IpcEventMap = {
-	addSet: [
+	addLegoSet: [
 		setNumber: string
 	];
 	setTheme: [
@@ -85,7 +85,7 @@ type IpcEventMap = {
 	themeChange: [
 		theme: Theme
 	];
-	changeSetCount: [
+	changeLegoSetCount: [
 		rowIndex: number,
 		setCount: number
 	];
@@ -121,5 +121,11 @@ type IpcRequestsMap = {
 			}
 		];
 		returns: (LegoSetSearchResult & { theme: string, image: string; })[];
+	};
+	deleteLegoSet: {
+		args: [
+			databaseId: number
+		];
+		returns: void;
 	};
 };

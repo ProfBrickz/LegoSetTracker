@@ -265,7 +265,7 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId, startYear
 	return await getSearchLegoSetsTableRows(searchResults);
 });
 
-ipcMain.on("addSet", async (event, setNumber) => {
+ipcMain.on("addLegoSet", async (event, setNumber) => {
 	if (!mainWindow) return;
 
 	let legoSetInfo;
@@ -308,7 +308,11 @@ ipcMain.on("addSet", async (event, setNumber) => {
 	return true;
 });
 
-ipcMain.on("changeSetCount", (event, legoSetId, setCount) => {
+ipcMain.handle("deleteLegoSet", (event, databaseId) => {
+	legoSets.delete(databaseId);
+});
+
+ipcMain.on("changeLegoSetCount", (event, legoSetId, setCount) => {
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 
 	legoSet.legoSetCount = setCount;

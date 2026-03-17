@@ -60,14 +60,20 @@ export class DataTable extends HTMLElement {
     * @param {TableColumn[]} columns
     */
    set columns(columns) {
-      this.table.options.columns = columns;
+      this.table.setOptions(previous => ({
+         ...previous,
+         columns
+      }));
    }
 
    /**
     * @param {TableRow[]} data
     */
    set data(data) {
-      this.table.options.data = data;
+      this.table.setOptions(previous => ({
+         ...previous,
+         data
+      }));
    }
 
    /**
@@ -118,7 +124,7 @@ export class DataTable extends HTMLElement {
                if (!element) return;
 
                let value = element.value;
-               this.table.options.data[cell.row.index][cell.column.id] = value;
+               this.data[cell.row.index][cell.column.id] = value;
 
                if (onChange) {
                   onChange({
@@ -138,7 +144,7 @@ export class DataTable extends HTMLElement {
                if (!element) return;
 
                let value = element.valueAsNumber;
-               this.table.options.data[cell.row.index][cell.column.id] = value;
+               this.data[cell.row.index][cell.column.id] = value;
 
                if (onChange) {
                   onChange({
@@ -205,6 +211,16 @@ export class DataTable extends HTMLElement {
       tableElement.appendChild(this.#createTbody());
 
       this.appendChild(tableElement);
+   }
+
+   /**
+    *
+    * @param {number} rowIndex
+    */
+   deleteRow(rowIndex) {
+      this.data = this.data.toSpliced(rowIndex, 1);
+
+      this.renderTable();
    }
 }
 

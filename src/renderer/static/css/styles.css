@@ -42,7 +42,6 @@ small {
 	font-size: var(--small);
 }
 
-
 body {
 	height: 100%;
 	width: 100%;
@@ -69,6 +68,10 @@ button {
 	cursor: pointer;
 	font-size: var(--p);
 	font-family: inherit;
+
+	&.danger {
+		background-color: var(--danger);
+	}
 
 	&:hover {
 		background-color: var(--highlight);
