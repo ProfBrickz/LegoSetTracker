@@ -12,6 +12,7 @@ export const VIEWS_PATH = path.join(SRC_PATH, "../renderer/views");
 export const PAGES_PATH = path.resolve(VIEWS_PATH, "pages");
 export const LAYOUTS_PATH = path.resolve(VIEWS_PATH, "layouts");
 export const DATA_PATH = IS_DEV_MODE ? path.resolve(".") : app.getPath("userData");
+export const DATABASE_PATH = path.join(DATA_PATH, "database");
 export const IMAGES_PATH = path.join(DATA_PATH, "images");
 export const SET_IMAGES_PATH = path.join(IMAGES_PATH, "sets");
 export const PIECE_IMAGES_PATH = path.join(IMAGES_PATH, "pieces");

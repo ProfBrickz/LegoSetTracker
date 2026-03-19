@@ -1,7 +1,8 @@
-node_modules
-out
-dist
-builds
-images
-release-notes.md
-coverage
+/node_modules
+/out
+/dist
+/builds
+/images
+/release-notes.md
+/coverage
+/database
