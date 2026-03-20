@@ -232,11 +232,11 @@ export default class WebScrapper {
 	 * for element selection.
 	 *
 	 * @public
-	 * @returns {Promise<LegoColors>} A promise that resolves to an array of `LegoColor` objects.
+	 * @returns {Promise<Omit<LegoColor, "#brand" | "databaseId">[]>} A promise that resolves to an array of `LegoColor` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
 	async getColors() {
-		let colors = new LegoColors();
+		let colors = [];
 
 		let document = await this.getWebpage("https://v2.bricklink.com/en-us/catalog/color-guide");
 
@@ -263,7 +263,7 @@ export default class WebScrapper {
 				let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
 				let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);
 
-				colors.set(bricklinkId, new LegoColor(null, bricklinkId, bricklinkName, legoId, legoName));
+				colors.push({ bricklinkId, bricklinkName, legoId, legoName });
 			}
 		}
 

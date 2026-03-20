@@ -12,22 +12,11 @@ const database = drizzle(client);
 
 
 // Functions
+/**
+ * @returns {Promise<Omit<LegoColor, "#brand">[]>}
+ */
 export async function getLegoColors() {
-   let colors = [];
-
-   let results = await database.select().from(legoColorsDBTable);
-
-   for (let result of results) {
-      colors.push(new LegoColor(
-         result.databaseId,
-         result.bricklinkId,
-         result.bricklinkName,
-         result.legoId,
-         result.legoName
-      ));
-   }
-
-   return colors;
+   return await database.select().from(legoColorsDBTable);
 }
 
 export default {

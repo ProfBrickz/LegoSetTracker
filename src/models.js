@@ -8,7 +8,7 @@ import { LegoPieces, LegoSetPieces } from "./controllers.js";
 export class LegoColor {
 	/** @type {string} */
 	#brand = "";
-	/** @type {number | null} */
+	/** @type {number} */
 	databaseId;
 	/** @type {number} */
 	bricklinkId;

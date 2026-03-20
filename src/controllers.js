@@ -1,7 +1,8 @@
 // Imports
 import { ClassMap } from "./classes.js";
+import database from "./database/database.js";
+import { webScrapper } from "./main.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
-
 
 
 // Classes
@@ -12,6 +13,40 @@ export class LegoColors extends ClassMap {
 	 */
 	constructor(iterable) {
 		super(LegoColor, iterable);
+	}
+
+	/**
+	 * @description Initializes the colors, by first checking the database then BrickLink
+	 */
+	async init() {
+		let databaseColors = await database.getLegoColors();
+
+		for (let color of databaseColors) {
+			this.set(color.databaseId, new LegoColor(
+				color.databaseId,
+				color.bricklinkId,
+				color.bricklinkName,
+				color.legoId,
+				color.legoName
+			));
+		}
+
+		console.log(this);
+		if (this.size > 0) return;
+
+		let webColors = await webScrapper.getColors();
+
+		for (let color of webColors) {
+			this.set(this.size, new LegoColor(
+				this.size,
+				color.bricklinkId,
+				color.bricklinkName,
+				color.legoId,
+				color.legoName
+			));
+		}
+
+		console.log(this);
 	}
 }
 

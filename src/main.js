@@ -14,12 +14,13 @@ import WebScrapper from "./webScrapper.js";
 /** @type {BrowserWindow | null} */
 let mainWindow;
 let colors = new LegoColors();
+let webScrapper = new WebScrapper(colors);
+export { webScrapper };
 let legoPieces = new LegoPieces();
 let legoSets = new LegoSets();
 LegoSet.legoPieces = legoPieces;
 /** @type {Map<string, string>} */
 let legoSetThemes = new Map();
-let webScrapper = new WebScrapper(colors);
 
 
 // Functions
@@ -75,6 +76,13 @@ function initializeFolders() {
 	}
 	let noColorImagePath = path.join(PIECE_IMAGES_PATH, "0");
 	if (!fs.existsSync(noColorImagePath)) fs.mkdirSync(noColorImagePath);
+}
+
+/**
+ * Initialize
+ */
+function initializeModels() {
+	colors.init();
 }
 
 /**
@@ -190,18 +198,15 @@ function createWindow() {
 	});
 }
 
+// Setup
+initializeModels();
+legoSetThemes = await webScrapper.getLegoSetThemes();
+webScrapper.setColors(colors);
+initializeFolders();
+
 
 // Event listeners
 app.whenReady().then(async () => {
-	legoSetThemes = await webScrapper.getLegoSetThemes();
-	colors = await webScrapper.getColors();
-	for (let [i, color] of colors.entries()) {
-		color.databaseId = i;
-	}
-	webScrapper.setColors(colors);
-
-	initializeFolders();
-
 	createWindow();
 
 	app.on("activate", () => {
