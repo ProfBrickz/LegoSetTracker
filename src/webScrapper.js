@@ -249,6 +249,7 @@ export default class WebScrapper {
 
 				let legoNameElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(2) span"));
 
+				/** @type {(string | null)[]} */
 				let [legoName, legoIdStr] = legoNameElement.textContent
 					.replace("LEGO", "")
 					.replace("Color: ", "")
@@ -257,6 +258,7 @@ export default class WebScrapper {
 				/** @type {number | null} */
 				let legoId = Number.parseInt(legoIdStr);
 				if (!Number.isInteger(legoId)) legoId = null;
+				if (!legoName) legoName = null;
 
 				let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
 				let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);

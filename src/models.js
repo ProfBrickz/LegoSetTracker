@@ -16,7 +16,7 @@ export class LegoColor {
 	bricklinkName;
 	/** @type {number | null} */
 	legoId;
-	/** @type {string} */
+	/** @type {string | null} */
 	legoName;
 
 	/**
@@ -24,7 +24,7 @@ export class LegoColor {
 	 * @param {number} bricklinkId
 	 * @param {string} bricklinkName
 	 * @param {number | null} legoId
-	 * @param {string} legoName
+	 * @param {string | null} legoName
 	 */
 	constructor(databaseId, bricklinkId, bricklinkName, legoId, legoName) {
 		this.databaseId = databaseId;
