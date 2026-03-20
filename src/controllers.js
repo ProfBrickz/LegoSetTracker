@@ -31,22 +31,38 @@ export class LegoColors extends ClassMap {
 			));
 		}
 
-		console.log(this);
 		if (this.size > 0) return;
+		console.log("scrapping");
+
 
 		let webColors = await webScrapper.getColors();
 
 		for (let color of webColors) {
-			this.set(this.size, new LegoColor(
-				this.size,
+			this.add(
 				color.bricklinkId,
 				color.bricklinkName,
 				color.legoId,
 				color.legoName
-			));
+			);
 		}
+	}
 
-		console.log(this);
+	/**
+	 * @param {number} bricklinkId
+	 * @param {string} bricklinkName
+	 * @param {number | null} legoId
+	 * @param {string | null} legoName
+	 */
+	async add(bricklinkId, bricklinkName, legoId, legoName) {
+		let databaseId =
+			await database.addLegoColor(bricklinkId, bricklinkName, legoId, legoName);
+
+		this.set(
+			databaseId,
+			new LegoColor(databaseId, bricklinkId, bricklinkName, legoId, legoName)
+		);
+
+		return this;
 	}
 }
 

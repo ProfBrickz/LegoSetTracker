@@ -19,6 +19,30 @@ export async function getLegoColors() {
    return await database.select().from(legoColorsDBTable);
 }
 
+/**
+ * @param {number} bricklinkId
+ * @param {string} bricklinkName
+ * @param {number | null} legoId
+ * @param {string | null} legoName
+ */
+export async function addLegoColor(bricklinkId, bricklinkName, legoId, legoName) {
+   let result = await database.insert(legoColorsDBTable)
+      .values({
+         bricklinkId,
+         bricklinkName,
+         legoId,
+         legoName
+      })
+      .returning({ databaseId: legoColorsDBTable.databaseId });
+
+   if (!result || result.length === 0) {
+      throw new Error("Insert failed: no ID returned");
+   }
+
+   return result[0].databaseId;
+}
+
 export default {
-   getLegoColors
+   getLegoColors,
+   addLegoColor
 };
