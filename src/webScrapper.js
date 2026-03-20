@@ -201,8 +201,7 @@ export default class WebScrapper {
 			let nameAndColor = nameElement.textContent.trim();
 			// Remove repeated spaces
 			nameAndColor = nameAndColor
-				.replace(/\s+/g, " ")
-				.replace("Bluish", "Blueish");
+				.replace(/\s+/g, " ");
 
 			let categoryElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(4) a:nth-of-type(3)"));
 			let bricklinkCategory = categoryElement.textContent.trim();

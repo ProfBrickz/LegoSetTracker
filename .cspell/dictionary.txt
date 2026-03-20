@@ -8,6 +8,7 @@ electronuserland
 ERRORLEVEL
 findstr
 flathub
+iamsajid
 innercontent
 joshwcomeau
 minifig
@@ -16,9 +17,11 @@ Minifigure
 minifigures
 nsis
 pacman
+pglite
 piccalil
 seccomp
+smallserial
 tailwindlabs
 textareas
-winstaller
 webscraper
+winstaller
