@@ -10,12 +10,18 @@ export const legoColorsDBTable = pgTable("lego_colors", {
    databaseId: smallserial("id").primaryKey(),
    bricklinkId: smallint("bricklink_id").unique().notNull(),
    bricklinkName: varchar("bricklink_name", { length: 64 }).notNull(),
-   legoId: smallint("lego_id").unique(),
-   legoName: varchar("lego_name", { length: 64 }).unique()
+   legoId: smallint("lego_id"),
+   legoName: varchar("lego_name", { length: 64 })
+});
+
+export const legoSetThemesDBTable = pgTable("lego_set_themes", {
+   databaseId: smallserial("id").primaryKey(),
+   bricklinkId: varchar("bricklink_id", { length: 8 }).unique().notNull(),
+   bricklinkName: varchar("bricklink_name", { length: 64 }).notNull()
 });
 
 export const legoPiecesDBTable = pgTable("lego_pieces", {
-   id: serial("id").primaryKey(),
+   databaseId: serial("id").primaryKey(),
    bricklinkId: varchar("bricklink_id", { length: 16 }).notNull(),
    colorId: smallint("color_id").notNull().references(() => legoColorsDBTable.databaseId),
    name: varchar("bricklink_name", { length: 512 }).notNull(),
@@ -23,10 +29,10 @@ export const legoPiecesDBTable = pgTable("lego_pieces", {
 });
 
 export const legoSetsDBTable = pgTable("lego_sets", {
-   id: serial("id").primaryKey(),
+   databaseId: serial("id").primaryKey(),
    setNumber: varchar("set_number", { length: 16 }).unique().notNull(),
    name: varchar("name", { length: 256 }).notNull(),
-   theme: varchar("theme", { length: 256 }).notNull(),
+   themeId: smallint("theme_id").notNull().references(() => legoSetThemesDBTable.databaseId),
    yearReleased: smallint("year_released").notNull(),
    pieceCount: smallint("piece_count").notNull().default(0),
    minifigCount: smallint("minifig_count").notNull().default(0),
@@ -34,9 +40,9 @@ export const legoSetsDBTable = pgTable("lego_sets", {
 });
 
 export const legoSetPiecesDBTable = pgTable("lego_set_pieces", {
-   id: serial("id").primaryKey(),
-   legoSetId: integer("lego_set_id").notNull().references(() => legoSetsDBTable.id),
-   pieceId: integer("piece_id").notNull().references(() => legoSetsDBTable.id),
+   databaseId: serial("id").primaryKey(),
+   legoSetId: integer("lego_set_id").notNull().references(() => legoSetsDBTable.databaseId),
+   pieceId: integer("piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
    setPieceType: legoSetPieceDBType("set_piece_type").notNull(),
    amountNeeded: smallint("amount_needed").notNull(),
    amountFound: smallint("amount_Found").notNull()

@@ -281,12 +281,16 @@ export default class WebScrapper {
 	 * Fetches the categories for LEGO sets.
 	 *
 	 * @public
-	 * @returns {Promise<Map<string, string>>}
-	 * A promise that resolves to a map where the keys are category names and the values are category IDs.
+	 * A promise that resolves to a map where the keys are theme IDs and the values are theme names.
 	 */
 	async getLegoSetThemes() {
-		/** @type {Map<string, string>} */
-		let categories = new Map();
+		/**
+		 * @typedef {Object} themeObject
+		 * @property {string} bricklinkId
+		 * @property {string} bricklinkName
+		 */
+		/** @type {themeObject[]} */
+		let themes = [];
 
 		let document = await this.getWebpage("https://www.bricklink.com/catalogTree.asp?itemType=S");
 
@@ -306,10 +310,13 @@ export default class WebScrapper {
 
 			if (name == "{}" || name == "{more}") continue;
 
-			categories.set(id, name);
+			themes.push({
+				bricklinkId: id,
+				bricklinkName: name
+			});
 		}
 
-		return categories;
+		return themes;
 	}
 
 	/**

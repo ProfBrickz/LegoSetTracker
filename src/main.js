@@ -4,7 +4,7 @@ import { app, BrowserWindow, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
 import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
-import { LegoColors, LegoPieces, LegoSets } from "./controllers.js";
+import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./controllers.js";
 import { ipcMain } from "./ipcMain.js";
 import { LegoSet, LegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
@@ -19,8 +19,7 @@ export { webScrapper };
 let legoPieces = new LegoPieces();
 let legoSets = new LegoSets();
 LegoSet.legoPieces = legoPieces;
-/** @type {Map<string, string>} */
-let legoSetThemes = new Map();
+let legoSetThemes = new LegoSetThemes();
 
 
 // Functions
@@ -81,8 +80,9 @@ function initializeFolders() {
 /**
  * Initialize
  */
-function initializeModels() {
+async function initializeModels() {
 	colors.init();
+	// legoSetThemes.init();
 }
 
 /**
@@ -199,10 +199,8 @@ function createWindow() {
 }
 
 // Setup
-initializeModels();
-legoSetThemes = await webScrapper.getLegoSetThemes();
-webScrapper.setColors(colors);
 initializeFolders();
+initializeModels();
 
 
 // Event listeners

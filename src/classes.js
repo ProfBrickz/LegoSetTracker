@@ -20,7 +20,6 @@ export class ClassMap extends Map {
 	/**
 	 * @param {K} key
 	 * @param {V} value
-	 * @returns {this}
 	 * @throws {TypeError} if value is not an instance of classTyp
 	 */
 	set(key, value) {

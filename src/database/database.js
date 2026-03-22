@@ -3,7 +3,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { DATABASE_PATH } from "../constants.js";
 import { LegoColor } from "../models.js";
-import { legoColorsDBTable } from "./schema.js";
+import { legoColorsDBTable, legoSetThemesDBTable } from "./schema.js";
 
 
 // Setup
@@ -42,7 +42,32 @@ export async function addLegoColor(bricklinkId, bricklinkName, legoId, legoName)
    return result[0].databaseId;
 }
 
+export async function getLegoSetThemes() {
+   return await database.select({
+      bricklinkId: legoSetThemesDBTable.bricklinkId,
+      bricklinkName: legoSetThemesDBTable.bricklinkName
+   }).from(legoSetThemesDBTable);
+}
+
+/**
+ * @param {string} bricklinkId
+ * @param {string} bricklinkName
+ */
+export async function addLegoSetTheme(bricklinkId, bricklinkName) {
+   return await database.insert(legoSetThemesDBTable)
+      .values({
+         bricklinkId,
+         bricklinkName
+      })
+      .returning({
+         databaseId: legoSetThemesDBTable.databaseId
+      });
+}
+
+
 export default {
    getLegoColors,
-   addLegoColor
+   addLegoColor,
+   getLegoSetThemes,
+   addLegoSetTheme
 };

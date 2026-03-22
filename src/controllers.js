@@ -16,7 +16,7 @@ export class LegoColors extends ClassMap {
 	}
 
 	/**
-	 * @description Initializes the colors, by first checking the database then BrickLink
+	 * Initializes the colors, by first checking the database then BrickLink
 	 */
 	async init() {
 		let databaseColors = await database.getLegoColors();
@@ -31,9 +31,7 @@ export class LegoColors extends ClassMap {
 			));
 		}
 
-		if (this.size > 0) return;
-		console.log("scrapping");
-
+		if (this.size > 0) return this;
 
 		let webColors = await webScrapper.getColors();
 
@@ -45,6 +43,8 @@ export class LegoColors extends ClassMap {
 				color.legoName
 			);
 		}
+
+		return this;
 	}
 
 	/**
@@ -54,15 +54,44 @@ export class LegoColors extends ClassMap {
 	 * @param {string | null} legoName
 	 */
 	async add(bricklinkId, bricklinkName, legoId, legoName) {
-		let databaseId =
-			await database.addLegoColor(bricklinkId, bricklinkName, legoId, legoName);
+		let databaseId = await database.addLegoColor(bricklinkId, bricklinkName, legoId, legoName);
 
-		this.set(
+		return this.set(
 			databaseId,
 			new LegoColor(databaseId, bricklinkId, bricklinkName, legoId, legoName)
 		);
+	}
+}
+
+
+/** @extends {Map<string, string>} */
+export class LegoSetThemes extends Map {
+	async init() {
+		let databaseThemes = await database.getLegoSetThemes();
+
+		for (let { bricklinkId, bricklinkName } of databaseThemes) {
+			this.set(bricklinkId, bricklinkName);
+		}
+
+		if (this.size > 0) return this;
+
+		let webThemes = await webScrapper.getLegoSetThemes();
+
+		for (let { bricklinkId, bricklinkName } of webThemes) {
+			this.add(bricklinkId, bricklinkName);
+		}
 
 		return this;
+	}
+
+	/**
+	 * @param {string} bricklinkId
+	 * @param {string} bricklinkName
+	 */
+	async add(bricklinkId, bricklinkName) {
+		await database.addLegoSetTheme(bricklinkId, bricklinkName);
+
+		return this.set(bricklinkId, bricklinkName);
 	}
 }
 
