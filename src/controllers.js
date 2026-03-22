@@ -106,6 +106,45 @@ export class LegoPieces extends ClassMap {
 	}
 
 	/**
+	 * @param {LegoColors} colors
+	 */
+	async init(colors) {
+		let databaseLegoPieces = await database.getLegoPieces();
+
+		for (let legoPiece of databaseLegoPieces) {
+			this.set(legoPiece.databaseId, new LegoPiece(
+				legoPiece.databaseId,
+				legoPiece.bricklinkId,
+				legoPiece.bricklinkName,
+				/** @type {LegoColor} */(colors.get(legoPiece.colorId)),
+				legoPiece.bricklinkCategory
+			));
+		}
+
+		if (this.size > 0) return this;
+
+		return this;
+	}
+
+	/**
+	 * @param {string} bricklinkId
+	 * @param {string} bricklinkName
+	 * @param {LegoColor} color
+	 * @param {string} bricklinkCategory
+	 */
+	async add(bricklinkId, bricklinkName, color, bricklinkCategory) {
+		let databaseId = await database.addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory);
+
+		return this.set(databaseId, new LegoPiece(
+			databaseId,
+			bricklinkId,
+			bricklinkName,
+			color,
+			bricklinkCategory
+		));
+	}
+
+	/**
 	 *
 	 * @param {string} bricklinkId
 	 * @param {string} bricklinkName

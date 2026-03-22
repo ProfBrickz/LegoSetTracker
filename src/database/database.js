@@ -3,7 +3,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { DATABASE_PATH } from "../constants.js";
 import { LegoColor } from "../models.js";
-import { legoColorsDBTable, legoSetThemesDBTable } from "./schema.js";
+import { legoColorsDBTable, legoPiecesDBTable, legoSetThemesDBTable } from "./schema.js";
 
 
 // Setup
@@ -12,9 +12,6 @@ const database = drizzle(client);
 
 
 // Functions
-/**
- * @returns {Promise<Omit<LegoColor, "#brand">[]>}
- */
 export async function getLegoColors() {
    return await database.select().from(legoColorsDBTable);
 }
@@ -55,13 +52,34 @@ export async function getLegoSetThemes() {
  */
 export async function addLegoSetTheme(bricklinkId, bricklinkName) {
    return await database.insert(legoSetThemesDBTable)
-      .values({
-         bricklinkId,
-         bricklinkName
-      })
+      .values({ bricklinkId, bricklinkName })
       .returning({
          databaseId: legoSetThemesDBTable.databaseId
       });
+}
+
+export async function getLegoPieces() {
+   return await database.select().from(legoPiecesDBTable);
+}
+
+/**
+    * @param {string} bricklinkId
+    * @param {string} bricklinkName
+    * @param {LegoColor} color
+    * @param {string} bricklinkCategory
+    */
+export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory) {
+   let result = await database.insert(legoPiecesDBTable)
+      .values({
+         bricklinkId,
+         bricklinkName,
+         colorId: color.databaseId,
+         bricklinkCategory
+      }).returning({
+         databaseId: legoPiecesDBTable.databaseId
+      });
+
+   return result[0].databaseId;
 }
 
 
@@ -69,5 +87,7 @@ export default {
    getLegoColors,
    addLegoColor,
    getLegoSetThemes,
-   addLegoSetTheme
+   addLegoSetTheme,
+   getLegoPieces,
+   addLegoPiece
 };

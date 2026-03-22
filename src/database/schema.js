@@ -24,8 +24,8 @@ export const legoPiecesDBTable = pgTable("lego_pieces", {
    databaseId: serial("id").primaryKey(),
    bricklinkId: varchar("bricklink_id", { length: 16 }).notNull(),
    colorId: smallint("color_id").notNull().references(() => legoColorsDBTable.databaseId),
-   name: varchar("bricklink_name", { length: 512 }).notNull(),
-   category: varchar("category", { length: 256 }).notNull()
+   bricklinkName: varchar("bricklink_name", { length: 512 }).notNull(),
+   bricklinkCategory: varchar("bricklink_category", { length: 256 }).notNull()
 });
 
 export const legoSetsDBTable = pgTable("lego_sets", {

@@ -82,7 +82,7 @@ function initializeFolders() {
  */
 async function initializeModels() {
 	colors.init();
-	// legoSetThemes.init();
+	legoSetThemes.init();
 }
 
 /**

@@ -20,7 +20,7 @@ export class LegoColor {
 	legoName;
 
 	/**
-	 * @param {number | null} databaseId
+	 * @param {number} databaseId
 	 * @param {number} bricklinkId
 	 * @param {string} bricklinkName
 	 * @param {number | null} legoId
@@ -50,7 +50,7 @@ export class LegoPiece {
 	bricklinkCategory;
 
 	/**
-	 * @param {number | null} databaseId
+	 * @param {number} databaseId
 	 * @param {string} bricklinkId
 	 * @param {string} bricklinkName
 	 * @param {LegoColor | null} color
@@ -85,7 +85,7 @@ export class LegoSetPiece {
 
 	// Make the constructor with the jsdoc string
 	/**
-	 * @param {number | null} databaseId
+	 * @param {number} databaseId
 	 * @param {LegoPiece} legoPiece
 	 * @param {number} amountNeeded
 	 * @param {number} [amountFound=0]
@@ -154,7 +154,7 @@ export class LegoSet {
 	#counterpartPieces;
 
 	/**
-	 * @param {number | null} databaseId
+	 * @param {number} databaseId
 	 * @param {string} setNumber
 	 * @param {string} name
 	 * @param {string} theme
