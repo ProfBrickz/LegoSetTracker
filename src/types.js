@@ -7,7 +7,7 @@ import { LegoColor, LegoSetPiece } from "./models.js";
  * @typedef {Object} LegoSetInfo
  * @property {string} setNumber The unique identifier for the set
  * @property {string} name The official name of the LEGO set
- * @property {string} theme The theme of the LEGO set
+ * @property {string} themeId The id of the theme of the LEGO set
  * @property {number} releaseYear The release year
  * @property {number} pieceCount The total number of LEGO pieces in the set
  * @property {number} minifigCount The total number of minifigures in the set

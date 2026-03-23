@@ -78,14 +78,6 @@ function initializeFolders() {
 }
 
 /**
- * Initialize
- */
-async function initializeModels() {
-	colors.init();
-	legoSetThemes.init();
-}
-
-/**
  * Gets the rows for the Lego set search table
  *
  * @param {import("./types.js").LegoSetSearchResult[]} searchResults
@@ -99,7 +91,7 @@ async function getSearchLegoSetsTableRows(searchResults) {
 		let themes = [];
 
 		for (let themeId of themeIds) {
-			themes.push(legoSetThemes.get(themeId));
+			themes.push(legoSetThemes.getByBricklinkId(themeId));
 		}
 
 		let tableRow = {
@@ -199,8 +191,9 @@ function createWindow() {
 }
 
 // Setup
+await colors.init();
 initializeFolders();
-initializeModels();
+legoSetThemes.init();
 
 
 // Event listeners
@@ -289,12 +282,15 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 	// Get the pieces for this set
 	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
 
+	let theme = legoSetThemes.getByBricklinkId(legoSetInfo.themeId);
+	if (!theme) return false;
+
 	// Add Lego set
 	legoSet = new LegoSet(
 		legoSets.size,
 		legoSetInfo.setNumber,
 		legoSetInfo.name,
-		legoSetInfo.theme,
+		theme,
 		legoSetInfo.releaseYear,
 		legoSetInfo.pieceCount,
 		legoSetInfo.minifigCount

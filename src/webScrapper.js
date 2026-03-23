@@ -69,10 +69,8 @@ export default class WebScrapper {
 			"#content .innercontent table:first-of-type tr td:nth-child(1)"
 		));
 
-		let theme = Array.from(themeElement.children)
-			.slice(2)
-			.map(element => element.textContent)
-			.join(", ");
+		let themeElements = Array.from(/** @type {HTMLCollectionOf<HTMLLinkElement>} */(themeElement.children));
+		let themeId = this.#parseThemeIdFromLink(themeElements[themeElements.length - 1].href);
 
 		// Extracting the set number from the document
 		let setNumberElement = /** @type {HTMLSpanElement} */ (document.querySelector(
@@ -100,7 +98,7 @@ export default class WebScrapper {
 			}
 		}
 
-		return { name, setNumber, theme, releaseYear, pieceCount, minifigCount };
+		return { name, setNumber, themeId, releaseYear, pieceCount, minifigCount };
 	}
 
 	/**
@@ -302,9 +300,7 @@ export default class WebScrapper {
 		}
 
 		for (let link of links) {
-			let id = new URL(link.href, "https://bricklink.com").searchParams.get("catString") || "";
-			let ids = id.split(".");
-			id = ids[ids.length - 1];
+			let id = this.#parseThemeIdFromLink(link.href);
 
 			let name = link.textContent.trim();
 
@@ -317,6 +313,17 @@ export default class WebScrapper {
 		}
 
 		return themes;
+	}
+
+	/**
+	 * @param {string} link
+	 */
+	#parseThemeIdFromLink(link) {
+		let id = new URL(link, "https://bricklink.com").searchParams.get("catString") || "";
+		let ids = id.split(".");
+		id = ids[ids.length - 1];
+
+		return id;
 	}
 
 	/**

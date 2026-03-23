@@ -1,5 +1,6 @@
 // Imports
 import { PGlite } from "@electric-sql/pglite";
+import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { DATABASE_PATH } from "../constants.js";
 import { LegoColor } from "../models.js";
@@ -41,6 +42,7 @@ export async function addLegoColor(bricklinkId, bricklinkName, legoId, legoName)
 
 export async function getLegoSetThemes() {
    return await database.select({
+      databaseId: legoSetThemesDBTable.databaseId,
       bricklinkId: legoSetThemesDBTable.bricklinkId,
       bricklinkName: legoSetThemesDBTable.bricklinkName
    }).from(legoSetThemesDBTable);
@@ -51,11 +53,30 @@ export async function getLegoSetThemes() {
  * @param {string} bricklinkName
  */
 export async function addLegoSetTheme(bricklinkId, bricklinkName) {
-   return await database.insert(legoSetThemesDBTable)
+   let existingRows = await database.select({
+      databaseId: legoSetThemesDBTable.databaseId
+   })
+      .from(legoSetThemesDBTable)
+      .where(
+         or(
+            eq(legoSetThemesDBTable.bricklinkId, bricklinkId),
+            eq(legoSetThemesDBTable.bricklinkName, bricklinkName)
+         )
+      );
+
+   if (existingRows.length > 0) return existingRows[0].databaseId;
+
+   let result = await database.insert(legoSetThemesDBTable)
       .values({ bricklinkId, bricklinkName })
       .returning({
          databaseId: legoSetThemesDBTable.databaseId
       });
+
+   if (!result || result.length === 0) {
+      throw new Error("Insert failed: no ID returned");
+   }
+
+   return result[0].databaseId;
 }
 
 export async function getLegoPieces() {
@@ -78,6 +99,10 @@ export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkC
       }).returning({
          databaseId: legoPiecesDBTable.databaseId
       });
+
+   if (!result || result.length === 0) {
+      throw new Error("Insert failed: no ID returned");
+   }
 
    return result[0].databaseId;
 }

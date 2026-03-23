@@ -38,7 +38,7 @@ export class LegoColor {
 export class LegoPiece {
 	/** @type {string} */
 	#brand = "";
-	/** @type {number | null} */
+	/** @type {number} */
 	databaseId;
 	/** @type {string} */
 	bricklinkId;
@@ -74,7 +74,7 @@ export class LegoPiece {
 export class LegoSetPiece {
 	/** @type {string} */
 	#brand = "";
-	/** @type {number | null} */
+	/** @type {number} */
 	databaseId;
 	/** @type {LegoPiece} */
 	#legoPiece;
@@ -122,13 +122,35 @@ export class LegoSetPiece {
 	}
 }
 
+export class LegoSetTheme {
+	/** @type {string} */
+	#brand = "";
+	/** @type {number} */
+	databaseId;
+	/** @type {string} */
+	bricklinkId;
+	/** @type {string} */
+	bricklinkName;
+
+	/**
+	 * @param {number} databaseId
+	 * @param {string} bricklinkId
+	 * @param {string} bricklinkName
+	 */
+	constructor(databaseId, bricklinkId, bricklinkName) {
+		this.databaseId = databaseId;
+		this.bricklinkId = bricklinkId;
+		this.bricklinkName = bricklinkName;
+	}
+}
+
 export class LegoSet {
 	/** @type {LegoPieces} */
 	static legoPieces;
 
 	/** @type {string} */
 	#brand = "";
-	/** @type {number | null} */
+	/** @type {number} */
 	databaseId;
 	/** @type {string} */
 	setNumber;
@@ -157,7 +179,7 @@ export class LegoSet {
 	 * @param {number} databaseId
 	 * @param {string} setNumber
 	 * @param {string} name
-	 * @param {string} theme
+	 * @param {LegoSetTheme} theme
 	 * @param {number} releaseYear
 	 * @param {number} pieceCount
 	 * @param {number} minifigCount

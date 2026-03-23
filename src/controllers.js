@@ -2,7 +2,7 @@
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { webScrapper } from "./main.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
 
 
 // Classes
@@ -64,13 +64,20 @@ export class LegoColors extends ClassMap {
 }
 
 
-/** @extends {Map<string, string>} */
-export class LegoSetThemes extends Map {
+/** @extends {ClassMap<number, LegoSetTheme>} */
+export class LegoSetThemes extends ClassMap {
+	/**
+	 * @param {Iterable<readonly [number, LegoSetTheme]>} [iterable]
+	 */
+	constructor(iterable) {
+		super(LegoSetTheme, iterable);
+	}
+
 	async init() {
 		let databaseThemes = await database.getLegoSetThemes();
 
-		for (let { bricklinkId, bricklinkName } of databaseThemes) {
-			this.set(bricklinkId, bricklinkName);
+		for (let { databaseId, bricklinkId, bricklinkName } of databaseThemes) {
+			this.set(databaseId, new LegoSetTheme(databaseId, bricklinkId, bricklinkName));
 		}
 
 		if (this.size > 0) return this;
@@ -78,8 +85,10 @@ export class LegoSetThemes extends Map {
 		let webThemes = await webScrapper.getLegoSetThemes();
 
 		for (let { bricklinkId, bricklinkName } of webThemes) {
-			this.add(bricklinkId, bricklinkName);
+			await this.add(bricklinkId, bricklinkName);
 		}
+
+		console.log("hi");
 
 		return this;
 	}
@@ -89,9 +98,23 @@ export class LegoSetThemes extends Map {
 	 * @param {string} bricklinkName
 	 */
 	async add(bricklinkId, bricklinkName) {
-		await database.addLegoSetTheme(bricklinkId, bricklinkName);
+		let databaseId = await database.addLegoSetTheme(bricklinkId, bricklinkName);
 
-		return this.set(bricklinkId, bricklinkName);
+		return this.set(
+			databaseId,
+			new LegoSetTheme(databaseId, bricklinkId, bricklinkName)
+		);
+	}
+
+	/**
+	 * @param {string} bricklinkId
+	 */
+	getByBricklinkId(bricklinkId) {
+		for (let legoSetTheme of this.values()) {
+			if (legoSetTheme.bricklinkId = bricklinkId) return legoSetTheme;
+		}
+
+		return null;
 	}
 }
 
