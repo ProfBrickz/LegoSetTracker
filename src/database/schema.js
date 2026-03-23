@@ -23,7 +23,7 @@ export const legoSetThemesDBTable = pgTable("lego_set_themes", {
 export const legoPiecesDBTable = pgTable("lego_pieces", {
    databaseId: serial("id").primaryKey(),
    bricklinkId: varchar("bricklink_id", { length: 16 }).notNull(),
-   colorId: smallint("color_id").notNull().references(() => legoColorsDBTable.databaseId),
+   colorId: smallint("color_id").references(() => legoColorsDBTable.databaseId),
    bricklinkName: varchar("bricklink_name", { length: 512 }).notNull(),
    bricklinkCategory: varchar("bricklink_category", { length: 256 }).notNull()
 });

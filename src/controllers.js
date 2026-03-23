@@ -36,7 +36,7 @@ export class LegoColors extends ClassMap {
 		let webColors = await webScrapper.getColors();
 
 		for (let color of webColors) {
-			this.add(
+			await this.add(
 				color.bricklinkId,
 				color.bricklinkName,
 				color.legoId,
@@ -56,10 +56,10 @@ export class LegoColors extends ClassMap {
 	async add(bricklinkId, bricklinkName, legoId, legoName) {
 		let databaseId = await database.addLegoColor(bricklinkId, bricklinkName, legoId, legoName);
 
-		return this.set(
-			databaseId,
-			new LegoColor(databaseId, bricklinkId, bricklinkName, legoId, legoName)
-		);
+		let legoColor = new LegoColor(databaseId, bricklinkId, bricklinkName, legoId, legoName);
+
+		this.set(databaseId, legoColor);
+		return legoColor;
 	}
 }
 
@@ -98,10 +98,10 @@ export class LegoSetThemes extends ClassMap {
 	async add(bricklinkId, bricklinkName) {
 		let databaseId = await database.addLegoSetTheme(bricklinkId, bricklinkName);
 
-		return this.set(
-			databaseId,
-			new LegoSetTheme(databaseId, bricklinkId, bricklinkName)
-		);
+		let legoSetTheme = new LegoSetTheme(databaseId, bricklinkId, bricklinkName);
+
+		this.set(databaseId, legoSetTheme);
+		return legoSetTheme;
 	}
 
 	/**
@@ -133,16 +133,17 @@ export class LegoPieces extends ClassMap {
 		let databaseLegoPieces = await database.getLegoPieces();
 
 		for (let legoPiece of databaseLegoPieces) {
+			let color = null;
+			if (legoPiece.colorId) color = /** @type {LegoColor} */ (colors.get(legoPiece.colorId));
+
 			this.set(legoPiece.databaseId, new LegoPiece(
 				legoPiece.databaseId,
 				legoPiece.bricklinkId,
 				legoPiece.bricklinkName,
-				/** @type {LegoColor} */(colors.get(legoPiece.colorId)),
+				color,
 				legoPiece.bricklinkCategory
 			));
 		}
-
-		if (this.size > 0) return this;
 
 		return this;
 	}
@@ -150,19 +151,22 @@ export class LegoPieces extends ClassMap {
 	/**
 	 * @param {string} bricklinkId
 	 * @param {string} bricklinkName
-	 * @param {LegoColor} color
+	 * @param {LegoColor | null} color
 	 * @param {string} bricklinkCategory
 	 */
 	async add(bricklinkId, bricklinkName, color, bricklinkCategory) {
 		let databaseId = await database.addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory);
 
-		return this.set(databaseId, new LegoPiece(
+		let legoPiece = new LegoPiece(
 			databaseId,
 			bricklinkId,
 			bricklinkName,
 			color,
 			bricklinkCategory
-		));
+		);
+
+		this.set(databaseId, legoPiece);
+		return legoPiece;
 	}
 
 	/**

@@ -86,7 +86,7 @@ export async function getLegoPieces() {
 /**
     * @param {string} bricklinkId
     * @param {string} bricklinkName
-    * @param {LegoColor} color
+    * @param {LegoColor | null} color
     * @param {string} bricklinkCategory
     */
 export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory) {
@@ -94,7 +94,7 @@ export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkC
       .values({
          bricklinkId,
          bricklinkName,
-         colorId: color.databaseId,
+         colorId: color?.databaseId || null,
          bricklinkCategory
       }).returning({
          databaseId: legoPiecesDBTable.databaseId

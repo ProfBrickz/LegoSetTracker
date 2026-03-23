@@ -194,6 +194,7 @@ function createWindow() {
 await colors.init();
 initializeFolders();
 legoSetThemes.init();
+legoPieces.init(colors);
 
 
 // Event listeners
@@ -296,10 +297,10 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 		legoSetInfo.minifigCount
 	);
 
-	legoSet.addNormalPieces(legoSetPieces.normalPieces);
-	legoSet.addMinifigs(legoSetPieces.minifigs);
-	legoSet.addExtraPieces(legoSetPieces.extraPieces);
-	legoSet.addCounterpartPieces(legoSetPieces.counterparts);
+	await legoSet.addNormalPieces(legoSetPieces.normalPieces);
+	await legoSet.addMinifigs(legoSetPieces.minifigs);
+	await legoSet.addExtraPieces(legoSetPieces.extraPieces);
+	await legoSet.addCounterpartPieces(legoSetPieces.counterparts);
 	legoSets.set(legoSets.size, legoSet);
 
 	webScrapper.downloadLegoSetImages(legoSet);

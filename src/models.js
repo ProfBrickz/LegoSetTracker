@@ -248,7 +248,7 @@ export class LegoSet {
 	 * @param {LegoSetPieces} pieces
 	 * @param {LegoSetPiece[]} newSetPieces
 	 */
-	addPieces(pieces, newSetPieces) {
+	async addPieces(pieces, newSetPieces) {
 		for (let newSetPiece of newSetPieces) {
 			let legoPieceId = LegoSet.legoPieces.getDatabaseId(
 				newSetPiece.bricklinkId,
@@ -256,21 +256,17 @@ export class LegoSet {
 				newSetPiece.color,
 				newSetPiece.bricklinkCategory
 			);
+
 			/** @type {LegoPiece | null} */
 			let legoPiece = null;
 
 			if (legoPieceId == null) {
-				legoPieceId = LegoSet.legoPieces.size;
-
-				legoPiece = new LegoPiece(
-					legoPieceId,
+				legoPiece = await LegoSet.legoPieces.add(
 					newSetPiece.bricklinkId,
 					newSetPiece.bricklinkName,
 					newSetPiece.color,
 					newSetPiece.bricklinkCategory
 				);
-
-				LegoSet.legoPieces.set(legoPieceId, legoPiece);
 			} else {
 				legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
 			}
@@ -287,28 +283,28 @@ export class LegoSet {
 	/**
 	 * @param {LegoSetPiece[]} newSetPieces
 	 */
-	addNormalPieces(newSetPieces) {
-		this.addPieces(this.#normalPieces, newSetPieces);
+	async addNormalPieces(newSetPieces) {
+		await this.addPieces(this.#normalPieces, newSetPieces);
 	}
 
 	/**
 	 * @param {LegoSetPiece[]} newSetPieces
 	 */
-	addMinifigs(newSetPieces) {
-		this.addPieces(this.#minifigs, newSetPieces);
+	async addMinifigs(newSetPieces) {
+		await this.addPieces(this.#minifigs, newSetPieces);
 	}
 
 	/**
 	 * @param {LegoSetPiece[]} newSetPieces
 	 */
-	addExtraPieces(newSetPieces) {
-		this.addPieces(this.#extraPieces, newSetPieces);
+	async addExtraPieces(newSetPieces) {
+		await this.addPieces(this.#extraPieces, newSetPieces);
 	}
 
 	/**
 	 * @param {LegoSetPiece[]} newSetPieces
 	 */
-	addCounterpartPieces(newSetPieces) {
-		this.addPieces(this.#counterpartPieces, newSetPieces);
+	async addCounterpartPieces(newSetPieces) {
+		await this.addPieces(this.#counterpartPieces, newSetPieces);
 	}
 }
