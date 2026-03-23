@@ -3,6 +3,7 @@ import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { webScrapper } from "./main.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
+/** @import {LegoSetPieceType} from "./types.js" */
 
 
 // Classes
@@ -193,11 +194,40 @@ export class LegoPieces extends ClassMap {
 
 /** @extends {ClassMap<number, LegoSetPiece>}  */
 export class LegoSetPieces extends ClassMap {
+	/** @type {LegoSetPieceType} */
+	legoSetPieceType;
+
 	/**
+	 * @param {LegoSetPieceType} legoSetPieceType
 	 * @param {Iterable<readonly [number, LegoSetPiece]>} [iterable]
 	 */
-	constructor(iterable) {
+	constructor(legoSetPieceType, iterable) {
 		super(LegoSetPiece, iterable);
+
+		this.legoSetPieceType = legoSetPieceType;
+	}
+
+	/**
+	 * @param {LegoSet} legoSet
+	 * @param {LegoPiece} legoPiece
+	 * @param {number} amountNeeded
+	 * @param {number} amountFound
+	*/
+	async add(legoSet, legoPiece, amountNeeded, amountFound) {
+		let databaseId = await database.addLegoSetPiece(
+			legoSet.databaseId,
+			legoPiece.databaseId,
+			this.legoSetPieceType,
+			amountNeeded,
+			amountFound
+		);
+
+		return this.set(databaseId, new LegoSetPiece(
+			databaseId,
+			legoPiece,
+			amountNeeded,
+			amountFound
+		));
 	}
 }
 

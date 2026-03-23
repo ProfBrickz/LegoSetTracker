@@ -4,7 +4,7 @@ import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { DATABASE_PATH } from "../constants.js";
 import { LegoColor } from "../models.js";
-import { legoColorsDBTable, legoPiecesDBTable, legoSetThemesDBTable } from "./schema.js";
+import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetThemesDBTable } from "./schema.js";
 
 
 // Setup
@@ -107,6 +107,32 @@ export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkC
    return result[0].databaseId;
 }
 
+/**
+ * @param {number} legoSetId
+ * @param {number} legoPieceId
+ * @param {import("../types.js").LegoSetPieceType} legoSetPieceType
+ * @param {number} amountNeeded
+ * @param {number} amountFound
+ */
+export async function addLegoSetPiece(legoSetId, legoPieceId, legoSetPieceType, amountNeeded, amountFound) {
+   let result = await database.insert(legoSetPiecesDBTable)
+      .values({
+         legoSetId,
+         legoPieceId,
+         legoSetPieceType,
+         amountNeeded,
+         amountFound
+      }).returning({
+         databaseId: legoSetPiecesDBTable.databaseId
+      });
+
+   if (!result || result.length === 0) {
+      throw new Error("Insert failed: no ID returned");
+   }
+
+   return result[0].databaseId;
+}
+
 
 export default {
    getLegoColors,
@@ -114,5 +140,6 @@ export default {
    getLegoSetThemes,
    addLegoSetTheme,
    getLegoPieces,
-   addLegoPiece
+   addLegoPiece,
+   addLegoSetPiece
 };

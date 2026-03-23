@@ -156,7 +156,7 @@ export class LegoSet {
 	setNumber;
 	/** @type {string} */
 	name;
-	/** @type {string} */
+	/** @type {LegoSetTheme} */
 	theme;
 	/** @type {number} */
 	releaseYear;
@@ -198,10 +198,10 @@ export class LegoSet {
 		pieceCount,
 		minifigCount,
 		legoSetCount = 1,
-		normalPieces = new LegoSetPieces(),
-		minifigs = new LegoSetPieces(),
-		extraPieces = new LegoSetPieces(),
-		counterpartPieces = new LegoSetPieces()
+		normalPieces = new LegoSetPieces("normal"),
+		minifigs = new LegoSetPieces("minifig"),
+		extraPieces = new LegoSetPieces("extra"),
+		counterpartPieces = new LegoSetPieces("counterpart")
 	) {
 		this.databaseId = databaseId;
 		this.setNumber = setNumber;
@@ -245,16 +245,16 @@ export class LegoSet {
 	}
 
 	/**
-	 * @param {LegoSetPieces} pieces
-	 * @param {LegoSetPiece[]} newSetPieces
+	 * @param {LegoSetPieces} legoSetPieces
+	 * @param {LegoSetPiece[]} newLegoSetPieces
 	 */
-	async addPieces(pieces, newSetPieces) {
-		for (let newSetPiece of newSetPieces) {
+	async addPieces(legoSetPieces, newLegoSetPieces) {
+		for (let newLegoSetPiece of newLegoSetPieces) {
 			let legoPieceId = LegoSet.legoPieces.getDatabaseId(
-				newSetPiece.bricklinkId,
-				newSetPiece.bricklinkName,
-				newSetPiece.color,
-				newSetPiece.bricklinkCategory
+				newLegoSetPiece.bricklinkId,
+				newLegoSetPiece.bricklinkName,
+				newLegoSetPiece.color,
+				newLegoSetPiece.bricklinkCategory
 			);
 
 			/** @type {LegoPiece | null} */
@@ -262,21 +262,16 @@ export class LegoSet {
 
 			if (legoPieceId == null) {
 				legoPiece = await LegoSet.legoPieces.add(
-					newSetPiece.bricklinkId,
-					newSetPiece.bricklinkName,
-					newSetPiece.color,
-					newSetPiece.bricklinkCategory
+					newLegoSetPiece.bricklinkId,
+					newLegoSetPiece.bricklinkName,
+					newLegoSetPiece.color,
+					newLegoSetPiece.bricklinkCategory
 				);
 			} else {
 				legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
 			}
 
-			pieces.set(pieces.size, new LegoSetPiece(
-				pieces.size,
-				legoPiece,
-				newSetPiece.amountNeeded,
-				newSetPiece.amountFound
-			));
+			await legoSetPieces.add(this, legoPiece, newLegoSetPiece.amountNeeded, newLegoSetPiece.amountFound);
 		}
 	}
 

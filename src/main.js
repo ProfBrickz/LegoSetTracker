@@ -126,7 +126,7 @@ function getLegoSetsTableRows() {
 			databaseId: /** @type {number} */ (legoSet.databaseId),
 			name: legoSet.name,
 			setNumber: legoSet.setNumber,
-			theme: legoSet.theme,
+			theme: legoSet.theme.bricklinkName,
 			releaseYear: legoSet.releaseYear,
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,

@@ -33,6 +33,10 @@ import { LegoColor, LegoSetPiece } from "./models.js";
  */
 
 /**
+ * @typedef {"normal" | "minifig" | "extra" | "counterpart"} LegoSetPieceType
+ */
+
+/**
  * @typedef {Object} LegoSetsTableRow
  * @property {string} image
  * @property {number} databaseId

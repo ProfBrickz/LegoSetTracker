@@ -42,8 +42,8 @@ export const legoSetsDBTable = pgTable("lego_sets", {
 export const legoSetPiecesDBTable = pgTable("lego_set_pieces", {
    databaseId: serial("id").primaryKey(),
    legoSetId: integer("lego_set_id").notNull().references(() => legoSetsDBTable.databaseId),
-   pieceId: integer("piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
-   setPieceType: legoSetPieceDBType("set_piece_type").notNull(),
+   legoPieceId: integer("piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
+   legoSetPieceType: legoSetPieceDBType("set_piece_type").notNull(),
    amountNeeded: smallint("amount_needed").notNull(),
    amountFound: smallint("amount_Found").notNull()
 });
