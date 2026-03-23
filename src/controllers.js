@@ -110,7 +110,7 @@ export class LegoSetThemes extends ClassMap {
 	 */
 	getByBricklinkId(bricklinkId) {
 		for (let legoSetTheme of this.values()) {
-			if (legoSetTheme.bricklinkId = bricklinkId) return legoSetTheme;
+			if (legoSetTheme.bricklinkId == bricklinkId) return legoSetTheme;
 		}
 
 		return null;
@@ -239,6 +239,53 @@ export class LegoSets extends ClassMap {
 	 */
 	constructor(iterable) {
 		super(LegoSet, iterable);
+	}
+
+	/**
+	 * @param {string} setNumber
+	 * @param {string} name
+	 * @param {LegoSetTheme} theme
+	 * @param {number} releaseYear
+	 * @param {number} pieceCount
+	 * @param {number} minifigCount
+	 * @param {number} legoSetCount
+	 */
+	async add(
+		setNumber,
+		name,
+		theme,
+		releaseYear,
+		pieceCount,
+		minifigCount,
+		legoSetCount,
+		// normalPieces,
+		// minifigs,
+		// extraPieces,
+		// counterparts
+	) {
+		let databaseId = await database.addLegoSet(
+			setNumber,
+			name,
+			theme.databaseId,
+			releaseYear,
+			pieceCount,
+			minifigCount,
+			legoSetCount
+		);
+
+		let legoSet = new LegoSet(
+			databaseId,
+			setNumber,
+			name,
+			theme,
+			releaseYear,
+			pieceCount,
+			minifigCount,
+			legoSetCount
+		);
+
+		this.set(databaseId, legoSet);
+		return legoSet;
 	}
 
 	/**

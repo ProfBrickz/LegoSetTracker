@@ -33,10 +33,10 @@ export const legoSetsDBTable = pgTable("lego_sets", {
    setNumber: varchar("set_number", { length: 16 }).unique().notNull(),
    name: varchar("name", { length: 256 }).notNull(),
    themeId: smallint("theme_id").notNull().references(() => legoSetThemesDBTable.databaseId),
-   yearReleased: smallint("year_released").notNull(),
+   releaseYear: smallint("release_year").notNull(),
    pieceCount: smallint("piece_count").notNull().default(0),
    minifigCount: smallint("minifig_count").notNull().default(0),
-   setCount: smallint("set_count").notNull().default(1)
+   legoSetCount: smallint("lego_set_count").notNull().default(1)
 });
 
 export const legoSetPiecesDBTable = pgTable("lego_set_pieces", {

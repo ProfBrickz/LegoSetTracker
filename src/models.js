@@ -2,6 +2,7 @@
 import path from "path";
 import { PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoPieces, LegoSetPieces } from "./controllers.js";
+/** @import { LegoSetPieceInfo } from "./types.js" */
 
 
 // Classes
@@ -246,7 +247,7 @@ export class LegoSet {
 
 	/**
 	 * @param {LegoSetPieces} legoSetPieces
-	 * @param {LegoSetPiece[]} newLegoSetPieces
+	 * @param {LegoSetPieceInfo[]} newLegoSetPieces
 	 */
 	async addPieces(legoSetPieces, newLegoSetPieces) {
 		for (let newLegoSetPiece of newLegoSetPieces) {
@@ -276,28 +277,28 @@ export class LegoSet {
 	}
 
 	/**
-	 * @param {LegoSetPiece[]} newSetPieces
+	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addNormalPieces(newSetPieces) {
 		await this.addPieces(this.#normalPieces, newSetPieces);
 	}
 
 	/**
-	 * @param {LegoSetPiece[]} newSetPieces
+	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addMinifigs(newSetPieces) {
 		await this.addPieces(this.#minifigs, newSetPieces);
 	}
 
 	/**
-	 * @param {LegoSetPiece[]} newSetPieces
+	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addExtraPieces(newSetPieces) {
 		await this.addPieces(this.#extraPieces, newSetPieces);
 	}
 
 	/**
-	 * @param {LegoSetPiece[]} newSetPieces
+	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addCounterpartPieces(newSetPieces) {
 		await this.addPieces(this.#counterpartPieces, newSetPieces);

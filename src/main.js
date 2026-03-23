@@ -87,19 +87,15 @@ async function getSearchLegoSetsTableRows(searchResults) {
 	let tableRows = [];
 
 	for (let searchResult of searchResults) {
-		let themeIds = searchResult.themeId.split(".");
-		let themes = [];
-
-		for (let themeId of themeIds) {
-			themes.push(legoSetThemes.getByBricklinkId(themeId));
-		}
-
 		let tableRow = {
 			...searchResult,
 			theme: "",
 			image: ""
 		};
-		tableRow.theme = themes.join(": ");
+
+		let theme = legoSetThemes.getByBricklinkId(searchResult.themeId);
+		if (theme) tableRow.theme = theme.bricklinkName;
+
 		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
 		tableRow.image = `data:image/jpg;base64,${image}`;
 
@@ -287,21 +283,19 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 	if (!theme) return false;
 
 	// Add Lego set
-	legoSet = new LegoSet(
-		legoSets.size,
+	legoSet = await legoSets.add(
 		legoSetInfo.setNumber,
 		legoSetInfo.name,
 		theme,
 		legoSetInfo.releaseYear,
 		legoSetInfo.pieceCount,
-		legoSetInfo.minifigCount
+		legoSetInfo.minifigCount,
+		1
 	);
-
 	await legoSet.addNormalPieces(legoSetPieces.normalPieces);
 	await legoSet.addMinifigs(legoSetPieces.minifigs);
 	await legoSet.addExtraPieces(legoSetPieces.extraPieces);
 	await legoSet.addCounterpartPieces(legoSetPieces.counterparts);
-	legoSets.set(legoSets.size, legoSet);
 
 	webScrapper.downloadLegoSetImages(legoSet);
 

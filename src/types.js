@@ -14,11 +14,15 @@ import { LegoColor, LegoSetPiece } from "./models.js";
 */
 
 /**
- * @typedef {Object} LegoSetPieceInfo
- * @property {LegoSetPiece[]} normalPieces The normal pieces in the set
- * @property {LegoSetPiece[]} minifigs The minifigures in the set
- * @property {LegoSetPiece[]} extraPieces The extra pieces in the set
- * @property {LegoSetPiece[]} counterparts The counterpart pieces in the set
+ * @typedef {Omit<LegoSetPiece, "#brand" | "getImagePath" | "databaseId" | "legoPiece">} LegoSetPieceInfo
+ */
+
+/**
+ * @typedef {Object} LegoSetPiecesInfo
+ * @property {LegoSetPieceInfo[]} normalPieces The normal pieces in the set
+ * @property {LegoSetPieceInfo[]} minifigs The minifigures in the set
+ * @property {LegoSetPieceInfo[]} extraPieces The extra pieces in the set
+ * @property {LegoSetPieceInfo[]} counterparts The counterpart pieces in the set
  */
 
 /**

@@ -5,8 +5,8 @@ import { JSDOM } from "jsdom";
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./controllers.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
-/** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult} from "./types.js" */
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
+/** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult} from "./types.js" */
 
 
 // Functions
@@ -111,7 +111,7 @@ export default class WebScrapper {
 	 *
 	 * @public
 	 * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
-	 * @returns {Promise<LegoSetPieceInfo>} A Promise that resolves to an object containing categorized piece data.
+	 * @returns {Promise<LegoSetPiecesInfo>} A Promise that resolves to an object containing categorized piece data.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
 	async getLegoSetPieces(setNumber) {
@@ -139,7 +139,7 @@ export default class WebScrapper {
 	 * @param {string} section The name of the section to extract (e.g., "Regular Items:").
 	 * @param {HTMLTableRowElement[]} rows An array of table rows to search through.
 	 * @param {NodeListOf<HTMLTableRowElement>} categories A list of category rows used to identify section boundaries.
-	 * @returns {LegoSetPiece[]} An array of piece data objects corresponding to the specified section.
+	 * @returns {LegoSetPieceInfo[]} An array of piece data objects corresponding to the specified section.
 	 * @throws {Error} If the specified section cannot be found in the categories.
 	 */
 	getSection(section, rows, categories) {
@@ -185,10 +185,10 @@ export default class WebScrapper {
 	 *
 	 * @private
 	 * @param {HTMLTableRowElement[]} sectionRows An array of table rows containing piece details.
-	 * @returns {LegoSetPiece[]} An array of `SetPiece` objects representing the extracted piece data.
+	 * @returns {LegoSetPieceInfo[]} An array of `SetPiece` objects representing the extracted piece data.
 	 */
 	getSectionPieces(sectionRows) {
-		/** @type {LegoSetPiece[]} */
+		/** @type {LegoSetPieceInfo[]} */
 		let legoSetPieces = [];
 
 		for (let row of sectionRows) {
@@ -211,11 +211,14 @@ export default class WebScrapper {
 			let bricklinkName = nameAndColor;
 			if (color) bricklinkName = nameAndColor.replace(color.bricklinkName, "").trim();
 
-			legoSetPieces.push(new LegoSetPiece(
-				null,
-				new LegoPiece(null, bricklinkId, bricklinkName, color, bricklinkCategory),
-				amountNeeded
-			));
+			legoSetPieces.push({
+				bricklinkId,
+				bricklinkName,
+				color,
+				bricklinkCategory,
+				amountNeeded,
+				amountFound: 0
+			});
 		}
 
 		return legoSetPieces;
@@ -277,15 +280,10 @@ export default class WebScrapper {
 
 	/**
 	 * Fetches the categories for LEGO sets.
-	 *
-	 * @public
-	 * A promise that resolves to a map where the keys are theme IDs and the values are theme names.
 	 */
 	async getLegoSetThemes() {
 		/**
-		 * @typedef {Object} themeObject
-		 * @property {string} bricklinkId
-		 * @property {string} bricklinkName
+		 * @typedef {Omit<LegoSetTheme, "#brand" | "databaseId">} themeObject
 		 */
 		/** @type {themeObject[]} */
 		let themes = [];
@@ -380,10 +378,13 @@ export default class WebScrapper {
 		if (result.typeList[0]) items = result.typeList[0].items;
 
 		for (let item of items) {
+			let themeIds = item.strCategory.split(".");
+			let themeId = themeIds[themeIds.length - 1];
+
 			legoSets.push({
 				setNumber: item.strItemNo,
 				name: item.strItemName,
-				themeId: item.strCategory,
+				themeId
 			});
 		}
 
