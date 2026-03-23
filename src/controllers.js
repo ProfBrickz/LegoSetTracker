@@ -88,8 +88,6 @@ export class LegoSetThemes extends ClassMap {
 			await this.add(bricklinkId, bricklinkName);
 		}
 
-		console.log("hi");
-
 		return this;
 	}
 
