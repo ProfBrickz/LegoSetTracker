@@ -109,6 +109,15 @@ export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkC
 
 /**
  * @param {number} legoSetId
+ */
+export async function getLegoSetPieces(legoSetId) {
+   return await database.select()
+      .from(legoSetPiecesDBTable)
+      .where(eq(legoSetPiecesDBTable.legoSetId, legoSetId));
+}
+
+/**
+ * @param {number} legoSetId
  * @param {number} legoPieceId
  * @param {import("../types.js").LegoSetPieceType} legoSetPieceType
  * @param {number} amountNeeded
@@ -131,6 +140,10 @@ export async function addLegoSetPiece(legoSetId, legoPieceId, legoSetPieceType, 
    }
 
    return result[0].databaseId;
+}
+
+export async function getLegoSets() {
+   return await database.select().from(legoSetsDBTable);
 }
 
 /**
@@ -172,6 +185,8 @@ export default {
    addLegoSetTheme,
    getLegoPieces,
    addLegoPiece,
+   getLegoSetPieces,
    addLegoSetPiece,
+   getLegoSets,
    addLegoSet
 };

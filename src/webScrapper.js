@@ -207,7 +207,7 @@ export default class WebScrapper {
 			let amountNeededElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(2)"));
 			let amountNeeded = Number.parseInt(amountNeededElement.textContent);
 
-			let color = this.#colors.get(bricklinkColorId) || null;
+			let color = this.#colors.getByBricklinkId(bricklinkColorId);
 			let bricklinkName = nameAndColor;
 			if (color) bricklinkName = nameAndColor.replace(color.bricklinkName, "").trim();
 

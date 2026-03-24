@@ -62,6 +62,17 @@ export class LegoColors extends ClassMap {
 		this.set(databaseId, legoColor);
 		return legoColor;
 	}
+
+	/**
+	 * @param {number} bricklinkId
+	 */
+	getByBricklinkId(bricklinkId) {
+		for (let legoColor of this.values()) {
+			if (legoColor.bricklinkId == bricklinkId) return legoColor;
+		}
+
+		return null;
+	}
 }
 
 
@@ -135,7 +146,8 @@ export class LegoPieces extends ClassMap {
 
 		for (let legoPiece of databaseLegoPieces) {
 			let color = null;
-			if (legoPiece.colorId) color = /** @type {LegoColor} */ (colors.get(legoPiece.colorId));
+			if (legoPiece.colorId) color = (colors.get(legoPiece.colorId));
+			if (!color) throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
 
 			this.set(legoPiece.databaseId, new LegoPiece(
 				legoPiece.databaseId,
@@ -239,6 +251,51 @@ export class LegoSets extends ClassMap {
 	 */
 	constructor(iterable) {
 		super(LegoSet, iterable);
+	}
+
+	/**
+	 * @param {LegoSetThemes} legoSetThemes
+	 * @param {LegoPieces} legoPieces
+	 */
+	async init(legoSetThemes, legoPieces) {
+		let databaseLegoSets = await database.getLegoSets();
+
+		for (let databaseLegoSet of databaseLegoSets) {
+			let theme = legoSetThemes.get(databaseLegoSet.themeId);
+			if (!theme) throw new Error(`There is no theme with id ${databaseLegoSet.themeId} in database.`);
+
+			let legoSet = new LegoSet(
+				databaseLegoSet.databaseId,
+				databaseLegoSet.setNumber,
+				databaseLegoSet.name,
+				theme,
+				databaseLegoSet.releaseYear,
+				databaseLegoSet.pieceCount,
+				databaseLegoSet.minifigCount,
+				databaseLegoSet.legoSetCount
+			);
+
+			this.set(databaseLegoSet.databaseId, legoSet);
+
+			let databaseLegoSetPieces = await database.getLegoSetPieces(databaseLegoSet.databaseId);
+
+			for (let legoSetPiece of databaseLegoSetPieces) {
+				let legoPiece = legoPieces.get(legoSetPiece.legoPieceId);
+				if (!legoPiece) throw new Error(`There is no Lego piece with the id ${legoSetPiece} in database.`);
+
+				legoSet.normalPieces.set(
+					legoSetPiece.databaseId,
+					new LegoSetPiece(
+						legoSetPiece.databaseId,
+						legoPiece,
+						legoSetPiece.amountNeeded,
+						legoSetPiece.amountFound
+					)
+				);
+			}
+		}
+
+		return this;
 	}
 
 	/**

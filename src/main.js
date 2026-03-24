@@ -60,6 +60,16 @@ function loadLayout(layout) {
 }
 
 /**
+ * Initializes all models
+ */
+async function initializeModels() {
+	await colors.init();
+	await legoSetThemes.init();
+	await legoPieces.init(colors);
+	await legoSets.init(legoSetThemes, legoPieces);
+}
+
+/**
  * Initializes all necessary folders.
  */
 function initializeFolders() {
@@ -187,10 +197,8 @@ function createWindow() {
 }
 
 // Setup
-await colors.init();
+await initializeModels();
 initializeFolders();
-legoSetThemes.init();
-legoPieces.init(colors);
 
 
 // Event listeners
@@ -261,19 +269,19 @@ ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId, startYear
 ipcMain.on("addLegoSet", async (event, setNumber) => {
 	if (!mainWindow) return;
 
-	let legoSetInfo;
-	try {
-		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
-	} catch (error) {
-		return false;
-	}
-
 	let legoSet = legoSets.getBySetNumber(setNumber);
 
 	// Increment set count if it already exists
 	if (legoSet) {
 		legoSet.legoSetCount++;
 		return true;
+	}
+
+	let legoSetInfo;
+	try {
+		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
+	} catch (error) {
+		return false;
 	}
 
 	// Get the pieces for this set
