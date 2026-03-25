@@ -51,10 +51,11 @@ document.addEventListener("pageLoad", (event) => {
 			meta: {
 				type: "number",
 				min: 1,
-				onChange: ({ rowIndex, value: setCount }) => {
+				onChange: ({ row, value: setCount }) => {
 					if (typeof setCount !== "number") return;
+					let databaseId = /** @type {number} */ (row.original.databaseId);
 
-					window.electronAPI.changeLegoSetCount(rowIndex, setCount);
+					window.electronAPI.changeLegoSetCount(databaseId, setCount);
 				}
 			},
 		},
