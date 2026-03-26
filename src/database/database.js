@@ -2,14 +2,10 @@
 import { PGlite } from "@electric-sql/pglite";
 import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
+import { migrate } from "drizzle-orm/pglite/migrator";
 import { DATABASE_PATH } from "../constants.js";
-import { LegoColor } from "../models.js";
 import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable } from "./schema.js";
-
-
-// Setup
-const client = new PGlite(DATABASE_PATH);
-const database = drizzle(client);
+/** @import { LegoColor, LegoSet, LegoSetPiece } from "../models.js" */
 
 
 // Functions
@@ -177,7 +173,46 @@ export async function addLegoSet(setNumber, name, themeId, releaseYear, pieceCou
    return result[0].databaseId;
 }
 
+/**
+ * @param {LegoSet} legoSet
+ */
+export async function saveLegoSet(legoSet) {
+   await database.update(legoSetsDBTable)
+      .set({
+         setNumber: legoSet.setNumber,
+         name: legoSet.name,
+         themeId: legoSet.theme.databaseId,
+         releaseYear: legoSet.releaseYear,
+         pieceCount: legoSet.pieceCount,
+         minifigCount: legoSet.minifigCount,
+         legoSetCount: legoSet.legoSetCount
+      })
+      .where(eq(legoSetsDBTable.databaseId, legoSet.databaseId));
+}
 
+/**
+ * @param {LegoSetPiece} legoSetPiece
+ */
+export async function saveLegoSetPiece(legoSetPiece) {
+   await database.update(legoSetPiecesDBTable)
+      .set({
+         amountNeeded: legoSetPiece.amountNeeded,
+         amountFound: legoSetPiece.amountFound
+      })
+      .where(eq(legoSetPiecesDBTable.databaseId, legoSetPiece.databaseId));
+}
+
+
+// Setup
+const client = await PGlite.create(DATABASE_PATH);
+const database = drizzle(client);
+
+console.log("Migrating database...");
+await migrate(database, { migrationsFolder: "./drizzle" });
+console.log("database migrated");
+
+
+// Default export
 export default {
    getLegoColors,
    addLegoColor,
@@ -188,5 +223,7 @@ export default {
    getLegoSetPieces,
    addLegoSetPiece,
    getLegoSets,
-   addLegoSet
+   addLegoSet,
+   saveLegoSet,
+   saveLegoSetPiece
 };

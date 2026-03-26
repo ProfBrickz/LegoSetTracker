@@ -8,7 +8,6 @@ export default defineConfig({
 	dialect: "postgresql",
 	driver: "pglite",
 	casing: "snake_case",
-	breakpoints: false,
 	dbCredentials: {
 		url: "file:./database"
 	}

@@ -315,10 +315,6 @@ export class LegoSets extends ClassMap {
 		pieceCount,
 		minifigCount,
 		legoSetCount,
-		// normalPieces,
-		// minifigs,
-		// extraPieces,
-		// counterparts
 	) {
 		let databaseId = await database.addLegoSet(
 			setNumber,

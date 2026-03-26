@@ -11,7 +11,7 @@ import { LegoColor, LegoSetPiece } from "./models.js";
  * @property {number} releaseYear The release year
  * @property {number} pieceCount The total number of LEGO pieces in the set
  * @property {number} minifigCount The total number of minifigures in the set
-*/
+ */
 
 /**
  * @typedef {Omit<LegoSetPiece, "#brand" | "getImagePath" | "databaseId" | "legoPiece">} LegoSetPieceInfo

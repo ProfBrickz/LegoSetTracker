@@ -318,11 +318,13 @@ ipcMain.on("changeLegoSetCount", (event, legoSetId, setCount) => {
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 
 	legoSet.legoSetCount = setCount;
+	legoSet.save();
 });
 
 ipcMain.on("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
-	let legoPiece = /** @type {LegoSetPiece} */ (legoSet?.normalPieces.get(pieceId));
+	let legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.normalPieces.get(pieceId));
 
-	legoPiece.amountFound = amountFound;
+	legoSetPiece.amountFound = amountFound;
+	legoSetPiece.save();
 });

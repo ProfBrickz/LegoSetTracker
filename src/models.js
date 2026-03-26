@@ -2,6 +2,7 @@
 import path from "path";
 import { PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoPieces, LegoSetPieces } from "./controllers.js";
+import database from "./database/database.js";
 /** @import { LegoSetPieceInfo } from "./types.js" */
 
 
@@ -118,6 +119,10 @@ export class LegoSetPiece {
 		return this.#legoPiece;
 	}
 
+	async save() {
+		await database.saveLegoSetPiece(this);
+	}
+
 	getImagePath() {
 		return this.#legoPiece.getImagePath();
 	}
@@ -232,6 +237,10 @@ export class LegoSet {
 
 	get counterpartPieces() {
 		return this.#counterpartPieces;
+	}
+
+	async save() {
+		await database.saveLegoSet(this);
 	}
 
 	getImagePath() {
