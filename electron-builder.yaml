@@ -6,6 +6,7 @@ files:
   - out/**/*
   - LICENSE
   - RELEASE_NOTES.md
+  - drizzle
 
 win:
   artifactName: "${productName}_${version}_Windows_${arch}.${ext}"
