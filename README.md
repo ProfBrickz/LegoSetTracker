@@ -46,6 +46,3 @@ This project uses a **custom versioning system** based on the `Major.Minor.Patch
 
 ## License
 This project is licensed under the [GNU General Public License v2.0 only](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
-
-> [!IMPORTANT]
-> The favicon used in this application are not part of the main project license and are sourced from the [Electron Website](https://github.com/electron/website). It is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html). These icons are provided as a temporary solution and may be replaced in a future update (maybe).

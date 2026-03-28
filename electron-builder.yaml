@@ -9,7 +9,7 @@ files:
 
 win:
   artifactName: "${productName}_${version}_Windows_${arch}.${ext}"
-  icon: assets/logo.ico
+  icon: assets/icon.ico
   target:
     - target: nsis
       arch: [x64, arm64]
@@ -28,8 +28,8 @@ win:
 nsis:
   artifactName: "${productName}_${version}_Windows_Installer.exe"
   oneClick: false
-  installerIcon: assets/logo.ico
-  uninstallerIcon: assets/logo.ico
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
   license: LICENSE
   allowToChangeInstallationDirectory: true
 nsisWeb:
@@ -42,7 +42,7 @@ msi:
 linux:
   artifactName: "${productName}_${version}_Linux_${arch}.${ext}"
   category: Utility
-  icon: assets/512x512.png
+  icon: assets/icon-512.png
   target:
     - target: AppImage
       arch: [x64, arm64]
