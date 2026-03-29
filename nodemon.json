@@ -1,0 +1,10 @@
+{
+	"watch": [
+		"./src/**/*"
+	],
+	"ext": "html,ejs,css,js",
+	"exec": "electron-vite dev",
+	"env": {
+		"NODE_ENV": "development"
+	}
+}

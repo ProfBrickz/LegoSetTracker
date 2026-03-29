@@ -1,0 +1,41 @@
+<h1>Add Set</h1>
+
+<button onclick="electronAPI.loadPage('lego-sets')">Back</button>
+
+<form id="set-search-form">
+	<div class="input-container">
+		<label for="search-query">Search Query</label>
+		<p class="input-description">Enter the name or set number of the LEGO set you want to add</p>
+		<input type="text" id="search-query" minlength="2" name="search-query" placeholder="e.g. Hogwarts Castle 71043"
+			required>
+	</div>
+
+	<div class="input-container">
+		<label for="theme">Theme</label>
+		<p class="input-description">Select the theme of the LEGO set</p>
+		<select id="theme" name="theme">
+			<option value="">All Themes</option>
+			<% for (let {bricklinkId, bricklinkName} of legoSetThemes.values()) { %>
+				<option value="<%= bricklinkId %>">
+					<%= bricklinkName %>
+				</option>
+				<% } %>
+		</select>
+	</div>
+
+	<div class="input-container">
+		<label for="start-year">Start Year</label>
+		<p class="input-description">Select the earliest year the set was released</p>
+		<input type="number" id="start-year" name="start-year" min="1949" placeholder="e.g. 2010">
+	</div>
+
+	<div class="input-container">
+		<label for="end-year">End Year</label>
+		<p class="input-description">Select the latest year the set was released</p>
+		<input type="number" id="end-year" name="end-year" min="1949" placeholder="e.g. 2020">
+	</div>
+
+	<button type="submit">Search Sets</button>
+</form>
+
+<data-table id="lego-set-search-results" hide-on-empty></data-table>

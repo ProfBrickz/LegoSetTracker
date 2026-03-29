@@ -1,9 +1,7 @@
-node_modules
-images/*
-sets/*
-settings.json
-excelMaker/bin
-excelMaker/obj
-.vscode
-set.json
-*.sln
+/node_modules
+/out
+/dist
+/builds
+/release-notes.md
+/coverage
+/data

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Lego Set Tracker</title>
+
+	<link rel="stylesheet" href="../../static/css/reset.css" />
+	<link rel="stylesheet" href="../../static/css/themes.css" />
+	<link rel="stylesheet" href="../../static/css/styles.css" />
+
+	<script type="module" src="../../static/js/main.js"></script>
+	<script type="module" src="../../static/js/components/dataTable.js"></script>
+</head>
+
+<body data-theme="light">
+	<header>
+		<nav class="navbar">
+			<!-- TODO -->
+			<!-- <div class="menu-section">
+				<button class="nav-link"><i data-lucide="menu"></i></button>
+			</div> -->
+			<div class="nav-links-section">
+				<button class="nav-link" onclick="electronAPI.loadPage('home')">
+					<i data-lucide="house"></i>
+					<span>Home</span>
+				</button>
+				<button class="nav-link" onclick="electronAPI.loadPage('lego-sets')">
+					<i data-lucide="toy-brick"></i>
+					<span>Sets</span>
+				</button>
+				<!-- <button class="nav-link" onclick="electronAPI.loadPage('total-pieces')">
+					<i data-lucide="bar-chart"></i>
+					<span>Total Pieces</span>
+				</button> -->
+				<button class="nav-link" onclick="electronAPI.loadPage('settings')">
+					<i data-lucide="settings"></i>
+					<span>Settings</span>
+				</button>
+			</div>
+		</nav>
+	</header>
+
+	<my-counter></my-counter>
+
+	<main id="main">
+		<!-- Rendered page content will appear here -->
+	</main>
+</body>
+
+</html>

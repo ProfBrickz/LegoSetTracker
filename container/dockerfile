@@ -1,0 +1,23 @@
+FROM docker.io/electronuserland/builder:22-wine
+USER root
+
+RUN apt-get update
+RUN apt-get install -y flatpak flatpak-builder
+
+RUN flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+RUN flatpak install -y org.freedesktop.Platform/x86_64/24.08
+RUN flatpak install -y org.freedesktop.Sdk/x86_64/24.08
+RUN flatpak install -y org.electronjs.Electron2.BaseApp/x86_64/24.08
+
+RUN flatpak install -y org.freedesktop.Platform/aarch64/24.08
+RUN flatpak install -y org.freedesktop.Sdk/aarch64/24.08
+RUN flatpak install -y org.electronjs.Electron2.BaseApp/aarch64/24.08
+
+RUN npm install -g npm
+RUN npm install -g pnpm
+
+RUN pnpm config set store-dir /.pnpm-store
+
+RUN apt-get autoremove -y
+RUN rm -rf /var/lib/apt/lists/*

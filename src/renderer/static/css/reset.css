@@ -1,0 +1,183 @@
+/*
+	Based on:
+	- A Modern CSS Reset: https: //www.joshwcomeau.com/css/custom-css-reset/
+	- A (more) Modern CSS Reset: https: //piccalil.li/blog/a-more-modern-css-reset/
+	- Tailwindcss Preflight: https: //github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
+*/
+
+
+/* Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+
+* {
+	/* Remove default margin */
+	margin: 0;
+	/* Add accessible line-height */
+	line-height: calc(1em + 0.5rem);
+}
+
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role="list"],
+ol[role="list"] {
+	list-style: none;
+}
+
+
+/* Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		interpolate-size: allow-keywords;
+	}
+}
+
+
+/* Prevent font size inflation */
+html {
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+
+body {
+	/* Add accessible line-height */
+	/* line-height: 1.5; */
+	/* Improve text rendering */
+	-webkit-font-smoothing: antialiased;
+}
+
+
+/* Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+
+/* Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+
+/* Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+
+/* Improve line wrapping */
+p {
+	text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
+
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+	font-family: inherit;
+	font-size: inherit;
+}
+
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+	min-height: 10em
+}
+
+
+/* Reset links to optimize for opt-in styling instead of opt-out. */
+a {
+	color: inherit;
+	-webkit-text-decoration: inherit;
+	text-decoration: inherit;
+}
+
+
+/* Add the correct font weight in Edge and Safari. */
+b,
+strong {
+	font-weight: bolder;
+}
+
+
+/* Prevent `sub` and `sup` elements from affecting the line height in all browsers. */
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+sup {
+	top: -0.5em;
+}
+
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+	scroll-margin-block: 5ex;
+}
+
+
+table {
+	/* Remove text indentation from table contents in Chrome and Safari. (https: //bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297) */
+	text-indent: 0;
+	/* Correct table border color inheritance in all Chrome and Safari. (https: //bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016) */
+	border-color: inherit;
+	/* Remove gaps between table borders by default. */
+	border-collapse: collapse;
+}
+
+
+/* Use the modern Firefox focus style for all focusable elements. */
+:-moz-focusring {
+	outline: auto;
+}
+
+
+/* Add the correct vertical alignment in Chrome and Firefox. */
+progress {
+	vertical-align: baseline;
+}
+
+
+/* Add the correct display in Chrome and Safari. */
+summary {
+	display: list-item;
+}
