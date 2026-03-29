@@ -1,8 +1,8 @@
 // Imports
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
-import { LegoPieces, LegoSetPieces } from "./controllers.js";
 import database from "./database/database.js";
+import { LegoPieces, LegoSetPieces } from "./dataMaps.js";
 /** @import { LegoSetPieceInfo } from "./types.js" */
 
 
