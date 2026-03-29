@@ -3,8 +3,9 @@ import ejs from "ejs";
 import { app, BrowserWindow, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
+import { DATA_PATH, IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./controllers.js";
+import database from "./database/database.js";
 import { ipcMain } from "./ipcMain.js";
 import { LegoSet, LegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
@@ -197,6 +198,8 @@ function createWindow() {
 }
 
 // Setup
+if (IS_DEV_MODE && !fs.existsSync(DATA_PATH)) fs.mkdirSync(DATA_PATH);
+await database.init();
 await initializeModels();
 initializeFolders();
 

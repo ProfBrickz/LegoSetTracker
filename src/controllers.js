@@ -3,7 +3,7 @@ import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { webScrapper } from "./main.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
-/** @import {LegoSetPieceType} from "./types.js" */
+/** @import { LegoSetPieceType } from "./types.js" */
 
 
 // Classes

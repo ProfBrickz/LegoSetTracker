@@ -15,7 +15,7 @@ export default defineConfig({
 					main: path.resolve(__dirname, "src/main.js")
 				}
 			}
-		},
+		}
 	},
 	preload: {
 		build: {

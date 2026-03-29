@@ -3,12 +3,25 @@ import { PGlite } from "@electric-sql/pglite";
 import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
-import { DATABASE_PATH } from "../constants.js";
+import { DATABASE_PATH, MIGRATIONS_PATH } from "../constants.js";
 import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable } from "./schema.js";
 /** @import { LegoColor, LegoSet, LegoSetPiece } from "../models.js" */
+/** @import { PgliteDatabase } from "drizzle-orm/pglite" */
 
+
+/** @type {PgliteDatabase} */
+let database;
 
 // Functions
+export async function init() {
+   let client = await PGlite.create(DATABASE_PATH);
+   database = drizzle(client);
+
+   console.log("Migrating database...");
+   await migrate(database, { migrationsFolder: MIGRATIONS_PATH });
+   console.log("database migrated");
+}
+
 export async function getLegoColors() {
    return await database.select().from(legoColorsDBTable);
 }
@@ -203,17 +216,9 @@ export async function saveLegoSetPiece(legoSetPiece) {
 }
 
 
-// Setup
-const client = await PGlite.create(DATABASE_PATH);
-const database = drizzle(client);
-
-console.log("Migrating database...");
-await migrate(database, { migrationsFolder: "./drizzle" });
-console.log("database migrated");
-
-
 // Default export
 export default {
+   init,
    getLegoColors,
    addLegoColor,
    getLegoSetThemes,

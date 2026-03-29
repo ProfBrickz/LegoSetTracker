@@ -6,7 +6,7 @@ import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./controllers.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
-/** @import {LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult} from "./types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult } from "./types.js" */
 
 
 // Functions

@@ -1,6 +1,6 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
-/** @import {TableRow} from "../components/dataTable.js" */
+/** @import { TableRow } from "../components/dataTable.js" */
 
 
 /**
