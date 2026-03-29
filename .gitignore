@@ -2,7 +2,6 @@
 /out
 /dist
 /builds
-/images
 /release-notes.md
 /coverage
-/database
+/data

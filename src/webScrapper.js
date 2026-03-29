@@ -461,8 +461,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
 	async downloadLegoSetImage(setNumber) {
-		// await this.downloadImage(`https://img.bricklink.com/S/${setNumber}.jpg`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
-		await this.downloadImage(`https://img.bricklink.com/ItemImage/SN/0/${setNumber}.png`, path.join(SET_IMAGES_PATH, `${setNumber}.jpg`));
+		await this.downloadImage(`https://img.bricklink.com/ItemImage/SN/0/${setNumber}.png`, path.join(SET_IMAGES_PATH, `${setNumber}.png`));
 	}
 
 	/**
@@ -475,7 +474,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadLegoPieceImage(pieceId, colorId) {
-		await this.downloadImage(`https://img.bricklink.com/P/${colorId}/${pieceId}.jpg`, path.join(PIECE_IMAGES_PATH, colorId.toString(), `${pieceId}.jpg`));
+		await this.downloadImage(`https://img.bricklink.com/ItemImage/PN/${colorId}/${pieceId}.png`, path.join(PIECE_IMAGES_PATH, colorId.toString(), `${pieceId}.png`));
 	}
 
 	/**
@@ -487,7 +486,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
 	async downloadMinifigImage(minifigId) {
-		await this.downloadImage(`https://img.bricklink.com/M/${minifigId}.jpg`, path.join(MINIFIG_IMAGES_PATH, `${minifigId}.jpg`));
+		await this.downloadImage(`https://img.bricklink.com/ItemImage/MN/0/${minifigId}.png`, path.join(MINIFIG_IMAGES_PATH, `${minifigId}.png`));
 	}
 
 	/**

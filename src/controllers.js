@@ -146,8 +146,8 @@ export class LegoPieces extends ClassMap {
 
 		for (let legoPiece of databaseLegoPieces) {
 			let color = null;
-			if (legoPiece.colorId) color = (colors.get(legoPiece.colorId));
-			if (!color) throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
+			if (legoPiece.colorId != null) color = colors.get(legoPiece.colorId);
+			if (typeof color == "undefined") throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
 
 			this.set(legoPiece.databaseId, new LegoPiece(
 				legoPiece.databaseId,
@@ -283,7 +283,13 @@ export class LegoSets extends ClassMap {
 				let legoPiece = legoPieces.get(legoSetPiece.legoPieceId);
 				if (!legoPiece) throw new Error(`There is no Lego piece with the id ${legoSetPiece} in database.`);
 
-				legoSet.normalPieces.set(
+				let legoSetPieces;
+				if (legoSetPiece.legoSetPieceType == "minifig") legoSetPieces = legoSet.minifigs;
+				else if (legoSetPiece.legoSetPieceType == "extra") legoSetPieces = legoSet.extraPieces;
+				else if (legoSetPiece.legoSetPieceType == "counterpart") legoSetPieces = legoSet.counterpartPieces;
+				else legoSetPieces = legoSet.normalPieces;
+
+				legoSetPieces.set(
 					legoSetPiece.databaseId,
 					new LegoSetPiece(
 						legoSetPiece.databaseId,

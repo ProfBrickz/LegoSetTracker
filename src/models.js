@@ -1,6 +1,6 @@
 // Imports
 import path from "path";
-import { PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
+import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoPieces, LegoSetPieces } from "./controllers.js";
 import database from "./database/database.js";
 /** @import { LegoSetPieceInfo } from "./types.js" */
@@ -69,7 +69,11 @@ export class LegoPiece {
 	getImagePath() {
 		let colorId = this.color?.bricklinkId || 0;
 
-		return path.join(PIECE_IMAGES_PATH, colorId.toString(), `${this.bricklinkId}.jpg`);
+		return path.join(PIECE_IMAGES_PATH, colorId.toString(), `${this.bricklinkId}.png`);
+	}
+
+	getMinifigImagePath() {
+		return path.join(MINIFIG_IMAGES_PATH, `${this.bricklinkId}.png`);
 	}
 }
 
@@ -125,6 +129,10 @@ export class LegoSetPiece {
 
 	getImagePath() {
 		return this.#legoPiece.getImagePath();
+	}
+
+	getMinifigImagePath() {
+		return this.#legoPiece.getMinifigImagePath();
 	}
 }
 
@@ -244,14 +252,14 @@ export class LegoSet {
 	}
 
 	getImagePath() {
-		return path.join(SET_IMAGES_PATH, `${this.setNumber}.jpg`);
+		return path.join(SET_IMAGES_PATH, `${this.setNumber}.png`);
 	}
 
 	/**
 	 * @param {string} setNumber
 	 */
 	static getImagePath(setNumber) {
-		return path.join(SET_IMAGES_PATH, `${setNumber}.jpg`);
+		return path.join(SET_IMAGES_PATH, `${setNumber}.png`);
 	}
 
 	/**

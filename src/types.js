@@ -14,7 +14,7 @@ import { LegoColor, LegoSetPiece } from "./models.js";
  */
 
 /**
- * @typedef {Omit<LegoSetPiece, "#brand" | "getImagePath" | "databaseId" | "legoPiece">} LegoSetPieceInfo
+ * @typedef {Omit<LegoSetPiece, "#brand" | "databaseId" | "legoPiece" | "save" | "getImagePath" | "getMinifigImagePath" >} LegoSetPieceInfo
  */
 
 /**
