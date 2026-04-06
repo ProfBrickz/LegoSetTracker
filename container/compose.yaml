@@ -1,6 +1,6 @@
 services:
   builder:
-    container_name: LegoSetTracker-builder
+    container_name: BrickRecover-builder
     build:
       context: .
       dockerfile: dockerfile

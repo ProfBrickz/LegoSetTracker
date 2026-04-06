@@ -1,4 +1,4 @@
-# LegoSetTracker
+# BrickRecover
 Have you ever taken a bunch of Lego sets apart and put them in the same bin?
 Do you want to rebuild one of the sets?
 
@@ -6,7 +6,7 @@ This Electron application helps you track your Lego sets and pieces with an easy
 
 
 ## Installation
-Download the latest release from the [Releases page](https://github.com/ProfBrickz/LegoSetTracker/releases) and:
+Download the latest release from the [Releases page](https://github.com/ProfBrickz/BrickRecover/releases) and:
 - Run the installer (`.exe` or `.msi` file) for Windows
 - Extract the archive (`.zip`, `.7z`, or `.tar.gz` file) and run the application
 
