@@ -1,4 +1,4 @@
-# BrickRecover
+# Brick recover
 Have you ever taken a bunch of Lego sets apart and put them in the same bin?
 Do you want to rebuild one of the sets?
 
