@@ -207,9 +207,7 @@ select:disabled {
 	max-width: 70rem;
 }
 
-.description,
-.how-to-use,
-.features {
+.introduction section {
 	margin-bottom: 2rem;
 	padding: 1.5rem;
 	background-color: var(--bg-light);
@@ -226,33 +224,19 @@ select:disabled {
 	margin: 0;
 }
 
-.how-to-use ul,
-.features ul {
-	list-style: none;
-	padding: 0;
+ul {
 	margin: 0;
+	padding-left: 2.5rem;
 }
 
-.how-to-use li,
-.features li {
+li {
 	padding: 0.75rem 0;
 	color: var(--text-muted);
 	font-size: var(--p);
 	line-height: 1.7;
 }
 
-.how-to-use li:before,
-.features li:before {
-	content: "•";
-	color: var(--primary);
-	font-weight: bold;
-	display: inline-block;
-	width: 1rem;
-	margin-left: -1rem;
-}
-
-.how-to-use strong,
-.features strong {
+strong {
 	color: var(--text);
 	font-weight: 600;
 }
@@ -411,6 +395,22 @@ td.completion {
 			color: var(--info);
 		}
 	}
+}
+
+.danger {
+	color: var(--danger)
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.success {
+	color: var(--success);
+}
+
+.info {
+	color: var(--info);
 }
 
 /* Responsive Design */

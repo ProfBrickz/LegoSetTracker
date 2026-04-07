@@ -1,4 +1,4 @@
-# LegoSetTracker
+# Brick recover
 Have you ever taken a bunch of Lego sets apart and put them in the same bin?
 Do you want to rebuild one of the sets?
 
@@ -6,24 +6,29 @@ This Electron application helps you track your Lego sets and pieces with an easy
 
 
 ## Installation
-Download the latest release from the [Releases page](https://github.com/username/LegoSetTracker/releases) and:
+Download the latest release from the [Releases page](https://github.com/ProfBrickz/BrickRecover/releases) and:
 - Run the installer (`.exe` or `.msi` file) for Windows
 - Extract the archive (`.zip`, `.7z`, or `.tar.gz` file) and run the application
 
 For development:
 - Install [Node.js](https://nodejs.org/) from the official website
 - Download or clone this repository
-- Install dependencies:
-  - For npm use `npm install`
-  - For pnpm use `pnpm install`
-- Start the application using `npm start` or `electron .`
+- Install dependencies using pnpm:
+  - `pnpm install`
+- Start the application using `pnpm dev` or `pnpm start`
 
 
 ## Development
 This is an Electron application with the following structure:
 - `src/main.js` - Main Electron process
-- `src/views/` - HTML templates and pages
-- `src/static/` - CSS styles and JavaScript files
+- `src/renderer/views/pages/` - HTML templates and pages
+- `src/renderer/views/layouts/` - Layout templates
+- `src/static/` - Client side CSS styles and JavaScript files
+- `src/database/` - Database related files
+- `src/classes.js` - Custom classes
+- `src/constants.js` - Application constants
+- `src/preload/preload.js` - Preload script for Electron
+- `tests/` - Unit test files and fixtures
 
 
 > [!Note]

@@ -12,7 +12,7 @@ import path from "path";
 
 
 // Constants
-let CONTAINER_NAME = "LegoSetTracker-builder";
+let CONTAINER_NAME = "BrickRecover-builder";
 
 
 // Functions
@@ -47,7 +47,7 @@ function checkContainerExists() {
 		return execSync(
 			`${containerRuntime} ps -a --format="{{.Names}}"`,
 			{ encoding: "utf8", stdio: "inherit" }
-		).split("\n").includes("LegoSetTracker-builder");
+		).split("\n").includes("BrickRecover-builder");
 	} catch (error) {
 		return false;
 	}
@@ -59,7 +59,7 @@ function checkContainerExists() {
  * @returns {void}
  */
 function createContainer() {
-	console.log("Creating LegoSetTracker-builder container...");
+	console.log("Creating BrickRecover-builder container...");
 	execSync(`${containerRuntime} compose -f ${currentFolder}/container/compose.yaml up -d`, { stdio: "inherit" });
 }
 
@@ -93,7 +93,7 @@ function manageContainer() {
 		return;
 	}
 
-	console.log("Starting LegoSetTracker-builder container...");
+	console.log("Starting BrickRecover-builder container...");
 	execSync(`${containerRuntime} start ${CONTAINER_NAME}`, { stdio: "inherit" });
 }
 
@@ -131,7 +131,7 @@ manageContainer();
 console.log("Checking and installing dependencies...");
 
 try {
-	execSync(`${containerRuntime} exec --env CI=true LegoSetTracker-builder pnpm install --frozen-lockfile`, { stdio: "inherit" });
+	execSync(`${containerRuntime} exec --env CI=true BrickRecover-builder pnpm install --frozen-lockfile`, { stdio: "inherit" });
 } catch (error) {
 	console.log("Failed to install dependencies!");
 	process.exit(1);
@@ -139,7 +139,7 @@ try {
 
 // Run build
 console.log("Running electron-builder...");
-execSync(`${containerRuntime} exec --env CI=true LegoSetTracker-builder pnpm run electron-build`, { stdio: "inherit" });
+execSync(`${containerRuntime} exec --env CI=true BrickRecover-builder pnpm run electron-build`, { stdio: "inherit" });
 
 // Stop container
-execSync(`${containerRuntime} stop LegoSetTracker-builder`, { stdio: "inherit" });
+execSync(`${containerRuntime} stop BrickRecover-builder`, { stdio: "inherit" });
