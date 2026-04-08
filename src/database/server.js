@@ -9,7 +9,7 @@ const databasePort = 5432;
 
 
 // Create a PGlite instance
-const database = new PGlite(path.join(import.meta.dirname, "../../database"));
+const database = new PGlite(path.join(import.meta.dirname, "../../data/database"));
 
 
 // Create and start a socket server
