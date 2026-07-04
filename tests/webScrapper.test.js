@@ -5,7 +5,7 @@ import { LegoColors } from "../src/dataMaps.js";
 import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult, WebLegoColor } from "../src/types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
 
 
 // Variables
@@ -82,8 +82,8 @@ describe("getColors", () => {
 		let colors = await webScrapper.getColors();
 
 		// Verify that the returned value is the correct array of colors
-		expect(colors).toBeInstanceOf(Array);
-		expect(colors.length).toEqual(7);
+		expect(Array.isArray(colors)).toEqual(true);
+		expect(colors).toHaveLength(7);
 		expect(colors).toEqual(result);
 	});
 
@@ -107,41 +107,39 @@ describe("getColors", () => {
 
 		// Verify that the function returns an empty array
 		expect(colors).toBeInstanceOf(Array);
-		expect(colors.length).toEqual(0);
+		expect(colors).toHaveLength(0);
 		expect(colors).toEqual([]);
 	});
 });
 
 describe("getLegoSetThemes", () => {
 	test("Returns an Map of categories with id's and name's", async () => {
-		/** @type {Map<string, string>} */
-		let result = new Map([
-			["143", "(Other)"],
-			["516", "4 Juniors"],
-			["516.178", "Jack Stone"],
-			["516.61", "Pirates"],
-			["516.469", "Spider-Man"],
-			["609", "Agents"],
-			["1370", "Education"],
-			["166", "Educational & Dacta"],
-			["166.167", "DUPLO"],
-			["166.167.173", "Action Wheelers"],
-			["166.167.612", "Town"],
-			["166.167.612.325", "Airport"]
-		]);
+		/** @type {WebLegoSetTheme[]} */
+		let result = [
+			{ bricklinkId: "143", bricklinkName: "(Other)" },
+			{ bricklinkId: "516", bricklinkName: "4 Juniors" },
+			{ bricklinkId: "178", bricklinkName: "Jack Stone" },
+			{ bricklinkId: "61", bricklinkName: "Pirates" },
+			{ bricklinkId: "469", bricklinkName: "Spider-Man" },
+			{ bricklinkId: "609", bricklinkName: "Agents" },
+			{ bricklinkId: "1370", bricklinkName: "Education" },
+			{ bricklinkId: "166", bricklinkName: "Educational & Dacta" },
+			{ bricklinkId: "167", bricklinkName: "DUPLO" },
+			{ bricklinkId: "173", bricklinkName: "Action Wheelers" },
+			{ bricklinkId: "612", bricklinkName: "Town" },
+			{ bricklinkId: "325", bricklinkName: "Airport" },
+		];
 
 		let html = readTextFile("./fixtures/getLegoSetThemes/success.html");
 
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetCategories = await webScrapper.getLegoSetThemes();
-
+		let legoSetThemes = await webScrapper.getLegoSetThemes();
 		// Verify that the returned value is the correct array of colors
-		expect(legoSetCategories).toBeInstanceOf(Map);
-		// expect(legoSetCategories.length).toEqual(7);
-		// expect(legoSetCategories[0]).toBeInstanceOf(LegoColor);
-		expect(legoSetCategories).toEqual(result);
+		expect(Array.isArray(legoSetThemes)).toEqual(true);
+		expect(legoSetThemes).toHaveLength(12);
+		expect(legoSetThemes).toEqual(result);
 	});
 });
 
@@ -185,7 +183,7 @@ describe("searchLegoSets", () => {
 
 		let searchResults = await webScrapper.searchLegoSets("destroyer", { themeId: "65", startYear: "2014", endYear: "2017" });
 
-		expect(searchResults.length).toEqual(7);
+		expect(searchResults).toHaveLength(7);
 		expect(searchResults).toEqual(result);
 	});
 
