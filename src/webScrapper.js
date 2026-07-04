@@ -440,8 +440,7 @@ export default class WebScrapper {
 		let response = await fetch(url);
 
 		if (!response.ok) {
-			return;
-			// throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 
 		let imageData = await response.arrayBuffer();
