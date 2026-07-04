@@ -18,7 +18,7 @@ if (typeof process.versions.electron === "string" && process.versions.electron !
 	const { app } = await import("electron");
 	tempDataPath = app.getPath("userData");
 } else {
-	tempDataPath = path.resolve(SRC_PATH, "../../data");
+	tempDataPath = path.resolve(SRC_PATH, "../data");
 }
 
 export const DATA_PATH = tempDataPath;

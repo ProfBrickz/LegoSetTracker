@@ -1,6 +1,7 @@
 // Imports
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import fs from "fs";
+import { LegoColors } from "../src/dataMaps.js";
 import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
@@ -8,7 +9,7 @@ import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 
 
 // Variables
-/** @type {LegoColor[]} */
+/** @type {LegoColors} */
 let colors;
 /** @type {LegoPiece[]} */
 let legoPieces;
@@ -22,9 +23,9 @@ let fetchMock;
 // Setup / Teardown
 beforeEach(() => {
 	fetchMock = jest.spyOn(global, "fetch");
-	colors = [];
+	colors = new LegoColors();
 	legoPieces = [];
-	webScrapper = new WebScrapper(colors, legoPieces);
+	webScrapper = new WebScrapper(colors);
 });
 
 afterEach(() => {

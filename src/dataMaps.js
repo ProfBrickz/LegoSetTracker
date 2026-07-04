@@ -1,8 +1,8 @@
 // Imports
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
-import { webScrapper } from "./main.js";
 import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
+import WebScrapper from "./webScrapper.js";
 /** @import { LegoSetPieceType } from "./types.js" */
 
 
@@ -18,8 +18,9 @@ export class LegoColors extends ClassMap {
 
 	/**
 	 * Initializes the colors, by first checking the database then BrickLink
+	 * @param {WebScrapper} webScrapper
 	 */
-	async init() {
+	async init(webScrapper) {
 		let databaseColors = await database.getLegoColors();
 
 		for (let color of databaseColors) {
@@ -85,7 +86,11 @@ export class LegoSetThemes extends ClassMap {
 		super(LegoSetTheme, iterable);
 	}
 
-	async init() {
+	/**
+	 * Initializes the themes, by first checking the database then BrickLink
+	 * @param {WebScrapper} webScrapper
+	 */
+	async init(webScrapper) {
 		let databaseThemes = await database.getLegoSetThemes();
 
 		for (let { databaseId, bricklinkId, bricklinkName } of databaseThemes) {
