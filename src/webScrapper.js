@@ -272,13 +272,6 @@ export default class WebScrapper {
 	}
 
 	/**
-	 * @param {LegoColors} colors A map of Lego colors
-	 */
-	setColors(colors) {
-		this.#colors = colors;
-	}
-
-	/**
 	 * Fetches the categories for LEGO sets.
 	 */
 	async getLegoSetThemes() {
