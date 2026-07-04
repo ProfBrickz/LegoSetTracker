@@ -2,10 +2,10 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import fs from "fs";
 import { LegoColors } from "../src/dataMaps.js";
-import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
+import { LegoColor, LegoPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
 
 
 // Variables
@@ -249,70 +249,95 @@ describe("getLegoSetInfo", () => {
 
 describe("getLegoSetPieces", () => {
 	beforeEach(() => {
-		colors.push(
-			new LegoColor(1, 1, "White", 1, "White"),
-			new LegoColor(2, 85, "Dark Blueish Gray", 199, "Dark Stone Grey"),
-			new LegoColor(3, 11, "Black", 26, "Black"),
-			new LegoColor(4, 2, "Tan", 5, "Brick Yellow"),
-			new LegoColor(5, 14, "Trans-Dark Blue", 43, "Tr. Blue")
-		);
+		colors.set(0, new LegoColor(0, 1, "White", 1, "White"));
+		colors.set(1, new LegoColor(1, 85, "Dark Blueish Gray", 199, "Dark Stone Grey"),);
+		colors.set(2, new LegoColor(2, 11, "Black", 26, "Black"),);
+		colors.set(3, new LegoColor(3, 2, "Tan", 5, "Brick Yellow"),);
+		colors.set(4, new LegoColor(4, 14, "Trans-Dark Blue", 43, "Tr. Blue"));
 	});
 
 	test("Successfully fetch Lego set pieces", async () => {
-		/** @type {LegoSetPieceInfo} */
+		/** @type {LegoSetPiecesInfo} */
 		let result = {
 			normalPieces: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4738a", "Container, Treasure Chest Bottom with Slots in Back", colors[2], "Container"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4739a", "Container, Treasure Chest Lid Curved with Thick Hinge", colors[2], "Container"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "92338", "Chain 5 Links", colors[1], "Chain"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "3068pb0906", "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern", colors[3], "Tile, Decorated"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "30153", "Rock 1 x 1 Jewel 24 Facet", colors[4], "Rock"),
-					2
-				),
+				{
+					bricklinkId: "4738a",
+					bricklinkName: "Container, Treasure Chest Bottom with Slots in Back",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "4739a",
+					bricklinkName: "Container, Treasure Chest Lid Curved with Thick Hinge",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "92338",
+					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					color: colors.get(1) || null,
+					bricklinkCategory: "Chain",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "3068pb0906",
+					bricklinkName: "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
+					color: colors.get(3) || null,
+					bricklinkCategory: "Tile, Decorated",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "30153",
+					bricklinkName: "Rock 1 x 1 Jewel 24 Facet",
+					color: colors.get(4) || null,
+					bricklinkCategory: "Rock",
+					amountNeeded: 2,
+					amountFound: 0
+				}
 			],
 			minifigs: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "pi146", "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull", null, "Pirates"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "gen067", "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back", null, "Pirates"),
-					10
-				)
+				{
+					bricklinkId: "pi146",
+					bricklinkName: "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull",
+					color: null,
+					bricklinkCategory: "Pirates",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "gen067",
+					bricklinkName: "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back",
+					color: null,
+					bricklinkCategory: "Pirates",
+					amountNeeded: 10,
+					amountFound: 0
+				}
 			],
 			extraPieces: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "92338", "Chain 5 Links", colors[1], "Chain"),
-					1
-				)
+				{
+					bricklinkId: "92338",
+					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					color: colors.get(1) || null,
+					bricklinkCategory: "Chain",
+					amountNeeded: 1,
+					amountFound: 0
+				}
 			],
 			counterparts: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4738ac01", "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)", colors[2], "Container"),
-					1
-				)
+				{
+					bricklinkId: "4738ac01",
+					bricklinkName: "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				}
 			]
 		};
 
