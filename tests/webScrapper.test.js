@@ -221,7 +221,7 @@ describe("getLegoSetInfo", () => {
 		let result = {
 			setNumber: "10679-1",
 			name: "Pirate Treasure Hunt",
-			theme: "Juniors, Pirates, Pirates III",
+			themeId: "841",
 			releaseYear: 2015,
 			pieceCount: 46,
 			minifigCount: 2
