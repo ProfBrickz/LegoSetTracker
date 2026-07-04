@@ -5,8 +5,8 @@ import { JSDOM } from "jsdom";
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./dataMaps.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult } from "./types.js" */
+import { LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "./types.js" */
 
 
 // Functions
@@ -233,7 +233,7 @@ export default class WebScrapper {
 	 * for element selection.
 	 *
 	 * @public
-	 * @returns {Promise<Omit<LegoColor, "#brand" | "databaseId">[]>} A promise that resolves to an array of `LegoColor` objects.
+	 * @returns {Promise<WebLegoColor[]>} A promise that resolves to an array of `LegoColor` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
 	async getColors() {
@@ -282,10 +282,7 @@ export default class WebScrapper {
 	 * Fetches the categories for LEGO sets.
 	 */
 	async getLegoSetThemes() {
-		/**
-		 * @typedef {Omit<LegoSetTheme, "#brand" | "databaseId">} themeObject
-		 */
-		/** @type {themeObject[]} */
+		/** @type {WebLegoSetTheme[]} */
 		let themes = [];
 
 		let document = await this.getWebpage("https://www.bricklink.com/catalogTree.asp?itemType=S");

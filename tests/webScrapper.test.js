@@ -5,7 +5,7 @@ import { LegoColors } from "../src/dataMaps.js";
 import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult } from "../src/types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult, WebLegoColor } from "../src/types.js" */
 
 
 // Variables
@@ -64,14 +64,15 @@ describe("getWebpage", () => {
 
 describe("getColors", () => {
 	test("Returns an array of colors", async () => {
+		/** @type {WebLegoColor[]} */
 		let result = [
-			new LegoColor(null, 1, "White", 1, "White"),
-			new LegoColor(null, 5, "Red", 21, "Bright Red"),
-			new LegoColor(null, 48, "Sand Green", 151, "Sand Green"),
-			new LegoColor(null, 12, "Trans-Clear", 40, "Transparent"),
-			new LegoColor(null, 17, "Trans-Red", 41, "Tr. Red"),
-			new LegoColor(null, 14, "Trans-Dark Blue", 43, "Tr. Blue"),
-			new LegoColor(null, 122, "Chrome Black", null, "")
+			{ bricklinkId: 1, bricklinkName: "White", legoId: 1, legoName: "White" },
+			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
+			{ bricklinkId: 48, bricklinkName: "Sand Green", legoId: 151, legoName: "Sand Green" },
+			{ bricklinkId: 12, bricklinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
+			{ bricklinkId: 17, bricklinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
+			{ bricklinkId: 14, bricklinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
+			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null },
 		];
 
 		let html = readTextFile("./fixtures/getColors/colors.html");
@@ -83,7 +84,6 @@ describe("getColors", () => {
 		// Verify that the returned value is the correct array of colors
 		expect(colors).toBeInstanceOf(Array);
 		expect(colors.length).toEqual(7);
-		expect(colors[0]).toBeInstanceOf(LegoColor);
 		expect(colors).toEqual(result);
 	});
 
