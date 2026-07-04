@@ -150,38 +150,41 @@ describe("searchLegoSets", () => {
 			{
 				name: "Star Destroyer",
 				setNumber: "75033-1",
-				themeId: "65.806.258",
+				themeId: "258",
 			}, {
 				name: "Imperial Star Destroyer",
 				setNumber: "75055-1",
-				themeId: "65.258",
+				themeId: "258",
 			}, {
 				name: "First Order Star Destroyer",
 				setNumber: "75190-1",
-				themeId: "65.923",
+				themeId: "923",
 			}, {
 				name: "First Order Star Destroyer - Mini polybag",
 				setNumber: "30277-1",
-				themeId: "65.481.858",
+				themeId: "858",
 			}, {
 				name: "Star Destroyer + TIE Fighter - Mini foil pack",
 				setNumber: "911510-1",
-				themeId: "65.481.258",
+				themeId: "258",
 			}, {
 				name: "Mini Star Destroyer - Star Wars Celebration Anaheim 2015",
 				setNumber: "CELEB2015SD-1",
-				themeId: "65.983",
+				themeId: "983",
 			}, {
 				name: "Advent Calendar 2015, Star Wars (Day 11) - Star Destroyer",
 				setNumber: "75097-12",
-				themeId: "390.715.65",
+				themeId: "65",
 			},
 		];
 
 		let json = readTextFile("./fixtures/searchLegoSets/success.json");
 		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
 
-		let searchResults = await webScrapper.searchLegoSets("destroyer", { themeId: "65", startYear: "2014", endYear: "2017" });
+		let searchResults = await webScrapper.searchLegoSets(
+			"destroyer",
+			{ themeId: "65", startYear: 2014, endYear: 2017 }
+		);
 
 		expect(searchResults).toHaveLength(7);
 		expect(searchResults).toEqual(result);
