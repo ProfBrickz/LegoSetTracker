@@ -64,8 +64,8 @@ function loadLayout(layout) {
  * Initializes all models
  */
 async function initializeModels() {
-	await colors.init();
-	await legoSetThemes.init();
+	await colors.init(webScrapper);
+	await legoSetThemes.init(webScrapper);
 	await legoPieces.init(colors);
 	await legoSets.init(legoSetThemes, legoPieces);
 }
