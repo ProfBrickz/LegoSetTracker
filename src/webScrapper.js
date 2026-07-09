@@ -13,6 +13,8 @@ import { LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
 export default class WebScrapper {
 	/** @type {LegoColors} */
 	#colors;
+	/** @type {string|null} */
+	#cookie = null;
 
 	/**
 	 * @public
@@ -20,6 +22,32 @@ export default class WebScrapper {
 	 */
 	constructor(colors) {
 		this.#colors = colors;
+	}
+
+	async init() {
+		await this.getCookie();
+	}
+
+	/**
+	 * @private
+	 */
+	async getCookie() {
+		let { BrowserWindow, app } = await import("electron");
+
+		await app.whenReady();
+		let window = new BrowserWindow({ show: false });
+		await window.loadURL("https://www.bricklink.com");
+
+		let cookies = await window.webContents.session.cookies.get({});
+		window.close();
+
+		this.#cookie = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join("; ");
+		// for (let index = 0; index < cookies.length; index++) {
+		// 	let cookie = cookies[index];
+
+		// 	if (index > 0) this.#cookie += "; ";
+		// 	this.#cookie += `${cookie.name}=${cookie.value}`;
+		// }
 	}
 
 	/**
@@ -31,7 +59,9 @@ export default class WebScrapper {
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
 	 */
 	async getWebpage(url) {
-		let response = await fetch(url);
+		const headers = new Headers();
+		headers.append("Cookie", this.#cookie || "");
+		let response = await fetch(url, { headers });
 
 		if (!response.ok) {
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
@@ -115,7 +145,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
 	async getLegoSetPieces(setNumber) {
-		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&bt=0&sortAsc=a`);
+		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&sortAsc=A&bt=0`);
 		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
 		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], tr[bgcolor='#C0C0C0']"));
