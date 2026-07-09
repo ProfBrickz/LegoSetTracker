@@ -2,8 +2,6 @@ appId: com.electron.brick_recover
 productName: Brick_Recover
 afterAllArtifactBuild: ./scripts/afterAllArtifactBuild.js
 publish: null
-env:
-  IS_BUILT: "true"
 
 files:
   - out/**/*
@@ -48,6 +46,7 @@ linux:
   artifactName: "${productName}_${version}_Linux_${arch}.${ext}"
   category: Utility
   icon: assets/icon-512.png
+  syncDesktopName: true
   target:
     - target: AppImage
       arch: [x64, arm64]
