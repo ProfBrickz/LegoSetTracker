@@ -4,7 +4,13 @@ import path from "path";
 
 // Constants
 export const IS_DEV_MODE = process.env.IS_DEV_MODE === "true";
-export const IS_BUILT = process.env.IS_BUILT === "true";
+
+let tempIsBuilt = false;
+{
+	const { app } = await import("electron");
+	tempIsBuilt = app.isPackaged;
+}
+export const IS_BUILT = tempIsBuilt;
 
 export const SRC_PATH = import.meta.dirname;
 export const PRELOAD_FILE = path.join(SRC_PATH, "../preload/preload.js");

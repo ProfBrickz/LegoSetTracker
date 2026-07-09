@@ -5,6 +5,7 @@
 - Fixed BrickLink web scrapping by using session cookie
 - Fixed database server
 - Fixed WebScrapper tests
+- Fixed build process
 
 **Full Changelog**: <https://github.com/ProfBrickz/BrickRecover/commits/1.0.3>
 

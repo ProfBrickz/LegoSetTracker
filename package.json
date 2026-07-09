@@ -16,6 +16,7 @@
 	},
 	"main": "out/main/main.js",
 	"type": "module",
+	"desktopName": "com.electron.brick_recover.desktop",
 	"scripts": {
 		"start": "electron-vite preview",
 		"start-database-server": "node src/database/server.js",
