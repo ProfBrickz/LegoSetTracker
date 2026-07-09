@@ -1,5 +1,5 @@
 // Imports
-import { LegoColor, LegoSetPiece } from "./models.js";
+import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
 
 
 // Types
@@ -15,6 +15,12 @@ import { LegoColor, LegoSetPiece } from "./models.js";
 
 /**
  * @typedef {Omit<LegoSetPiece, "#brand" | "databaseId" | "legoPiece" | "save" | "getImagePath" | "getMinifigImagePath" >} LegoSetPieceInfo
+ */
+/**
+ * @typedef {Omit<LegoColor, "#brand" | "databaseId">} WebLegoColor
+ */
+/**
+ * @typedef {Omit<LegoSetTheme, "#brand" | "databaseId">} WebLegoSetTheme
  */
 
 /**

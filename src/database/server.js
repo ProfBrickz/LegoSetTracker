@@ -5,24 +5,26 @@ import path from "path";
 
 
 // Constants
-const databasePort = 5432;
+const DATABASE_HOST = '127.0.0.1';;
+const DATABASE_PORT = 5432;
 
 
 // Create a PGlite instance
-const database = new PGlite(path.join(import.meta.dirname, "../../database"));
+const database = new PGlite(path.join(import.meta.dirname, "../../data/database"));
 
 
 // Create and start a socket server
 const server = new PGLiteSocketServer({
 	db: database,
-	port: databasePort,
-	host: '127.0.0.1',
+	host: DATABASE_HOST,
+	port: DATABASE_PORT,
 	inspect: true,
-	debug: true
+	debug: true,
+	maxConnections: 10
 });
 
 await server.start();
-console.log(`Server started on 127.0.0.1:${databasePort}`);
+console.log(`Server started on ${DATABASE_HOST}:${DATABASE_PORT}`);
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {

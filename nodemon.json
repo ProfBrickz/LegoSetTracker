@@ -5,6 +5,6 @@
 	"ext": "html,ejs,css,js",
 	"exec": "electron-vite dev",
 	"env": {
-		"NODE_ENV": "development"
+		"IS_DEV_MODE": "true"
 	}
 }

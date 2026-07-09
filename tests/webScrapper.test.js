@@ -1,14 +1,15 @@
 // Imports
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import fs from "fs";
-import { LegoColor, LegoPiece, LegoSetPiece } from "../src/models.js";
+import { LegoColors } from "../src/dataMaps.js";
+import { LegoColor, LegoPiece } from "../src/models.js";
 import WebScrapper from "../src/webScrapper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetSearchResult } from "../src/types.js" */
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
 
 
 // Variables
-/** @type {LegoColor[]} */
+/** @type {LegoColors} */
 let colors;
 /** @type {LegoPiece[]} */
 let legoPieces;
@@ -22,9 +23,9 @@ let fetchMock;
 // Setup / Teardown
 beforeEach(() => {
 	fetchMock = jest.spyOn(global, "fetch");
-	colors = [];
+	colors = new LegoColors();
 	legoPieces = [];
-	webScrapper = new WebScrapper(colors, legoPieces);
+	webScrapper = new WebScrapper(colors);
 });
 
 afterEach(() => {
@@ -63,14 +64,15 @@ describe("getWebpage", () => {
 
 describe("getColors", () => {
 	test("Returns an array of colors", async () => {
+		/** @type {WebLegoColor[]} */
 		let result = [
-			new LegoColor(null, 1, "White", 1, "White"),
-			new LegoColor(null, 5, "Red", 21, "Bright Red"),
-			new LegoColor(null, 48, "Sand Green", 151, "Sand Green"),
-			new LegoColor(null, 12, "Trans-Clear", 40, "Transparent"),
-			new LegoColor(null, 17, "Trans-Red", 41, "Tr. Red"),
-			new LegoColor(null, 14, "Trans-Dark Blue", 43, "Tr. Blue"),
-			new LegoColor(null, 122, "Chrome Black", null, "")
+			{ bricklinkId: 1, bricklinkName: "White", legoId: 1, legoName: "White" },
+			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
+			{ bricklinkId: 48, bricklinkName: "Sand Green", legoId: 151, legoName: "Sand Green" },
+			{ bricklinkId: 12, bricklinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
+			{ bricklinkId: 17, bricklinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
+			{ bricklinkId: 14, bricklinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
+			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null },
 		];
 
 		let html = readTextFile("./fixtures/getColors/colors.html");
@@ -80,9 +82,8 @@ describe("getColors", () => {
 		let colors = await webScrapper.getColors();
 
 		// Verify that the returned value is the correct array of colors
-		expect(colors).toBeInstanceOf(Array);
-		expect(colors.length).toEqual(7);
-		expect(colors[0]).toBeInstanceOf(LegoColor);
+		expect(Array.isArray(colors)).toEqual(true);
+		expect(colors).toHaveLength(7);
 		expect(colors).toEqual(result);
 	});
 
@@ -106,41 +107,39 @@ describe("getColors", () => {
 
 		// Verify that the function returns an empty array
 		expect(colors).toBeInstanceOf(Array);
-		expect(colors.length).toEqual(0);
+		expect(colors).toHaveLength(0);
 		expect(colors).toEqual([]);
 	});
 });
 
 describe("getLegoSetThemes", () => {
 	test("Returns an Map of categories with id's and name's", async () => {
-		/** @type {Map<string, string>} */
-		let result = new Map([
-			["143", "(Other)"],
-			["516", "4 Juniors"],
-			["516.178", "Jack Stone"],
-			["516.61", "Pirates"],
-			["516.469", "Spider-Man"],
-			["609", "Agents"],
-			["1370", "Education"],
-			["166", "Educational & Dacta"],
-			["166.167", "DUPLO"],
-			["166.167.173", "Action Wheelers"],
-			["166.167.612", "Town"],
-			["166.167.612.325", "Airport"]
-		]);
+		/** @type {WebLegoSetTheme[]} */
+		let result = [
+			{ bricklinkId: "143", bricklinkName: "(Other)" },
+			{ bricklinkId: "516", bricklinkName: "4 Juniors" },
+			{ bricklinkId: "178", bricklinkName: "Jack Stone" },
+			{ bricklinkId: "61", bricklinkName: "Pirates" },
+			{ bricklinkId: "469", bricklinkName: "Spider-Man" },
+			{ bricklinkId: "609", bricklinkName: "Agents" },
+			{ bricklinkId: "1370", bricklinkName: "Education" },
+			{ bricklinkId: "166", bricklinkName: "Educational & Dacta" },
+			{ bricklinkId: "167", bricklinkName: "DUPLO" },
+			{ bricklinkId: "173", bricklinkName: "Action Wheelers" },
+			{ bricklinkId: "612", bricklinkName: "Town" },
+			{ bricklinkId: "325", bricklinkName: "Airport" },
+		];
 
 		let html = readTextFile("./fixtures/getLegoSetThemes/success.html");
 
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetCategories = await webScrapper.getLegoSetThemes();
-
+		let legoSetThemes = await webScrapper.getLegoSetThemes();
 		// Verify that the returned value is the correct array of colors
-		expect(legoSetCategories).toBeInstanceOf(Map);
-		// expect(legoSetCategories.length).toEqual(7);
-		// expect(legoSetCategories[0]).toBeInstanceOf(LegoColor);
-		expect(legoSetCategories).toEqual(result);
+		expect(Array.isArray(legoSetThemes)).toEqual(true);
+		expect(legoSetThemes).toHaveLength(12);
+		expect(legoSetThemes).toEqual(result);
 	});
 });
 
@@ -151,40 +150,43 @@ describe("searchLegoSets", () => {
 			{
 				name: "Star Destroyer",
 				setNumber: "75033-1",
-				themeId: "65.806.258",
+				themeId: "258",
 			}, {
 				name: "Imperial Star Destroyer",
 				setNumber: "75055-1",
-				themeId: "65.258",
+				themeId: "258",
 			}, {
 				name: "First Order Star Destroyer",
 				setNumber: "75190-1",
-				themeId: "65.923",
+				themeId: "923",
 			}, {
 				name: "First Order Star Destroyer - Mini polybag",
 				setNumber: "30277-1",
-				themeId: "65.481.858",
+				themeId: "858",
 			}, {
 				name: "Star Destroyer + TIE Fighter - Mini foil pack",
 				setNumber: "911510-1",
-				themeId: "65.481.258",
+				themeId: "258",
 			}, {
 				name: "Mini Star Destroyer - Star Wars Celebration Anaheim 2015",
 				setNumber: "CELEB2015SD-1",
-				themeId: "65.983",
+				themeId: "983",
 			}, {
 				name: "Advent Calendar 2015, Star Wars (Day 11) - Star Destroyer",
 				setNumber: "75097-12",
-				themeId: "390.715.65",
+				themeId: "65",
 			},
 		];
 
 		let json = readTextFile("./fixtures/searchLegoSets/success.json");
 		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
 
-		let searchResults = await webScrapper.searchLegoSets("destroyer", { themeId: "65", startYear: "2014", endYear: "2017" });
+		let searchResults = await webScrapper.searchLegoSets(
+			"destroyer",
+			{ themeId: "65", startYear: 2014, endYear: 2017 }
+		);
 
-		expect(searchResults.length).toEqual(7);
+		expect(searchResults).toHaveLength(7);
 		expect(searchResults).toEqual(result);
 	});
 
@@ -219,7 +221,7 @@ describe("getLegoSetInfo", () => {
 		let result = {
 			setNumber: "10679-1",
 			name: "Pirate Treasure Hunt",
-			theme: "Juniors, Pirates, Pirates III",
+			themeId: "841",
 			releaseYear: 2015,
 			pieceCount: 46,
 			minifigCount: 2
@@ -247,70 +249,95 @@ describe("getLegoSetInfo", () => {
 
 describe("getLegoSetPieces", () => {
 	beforeEach(() => {
-		colors.push(
-			new LegoColor(1, 1, "White", 1, "White"),
-			new LegoColor(2, 85, "Dark Blueish Gray", 199, "Dark Stone Grey"),
-			new LegoColor(3, 11, "Black", 26, "Black"),
-			new LegoColor(4, 2, "Tan", 5, "Brick Yellow"),
-			new LegoColor(5, 14, "Trans-Dark Blue", 43, "Tr. Blue")
-		);
+		colors.set(0, new LegoColor(0, 1, "White", 1, "White"));
+		colors.set(1, new LegoColor(1, 85, "Dark Blueish Gray", 199, "Dark Stone Grey"),);
+		colors.set(2, new LegoColor(2, 11, "Black", 26, "Black"),);
+		colors.set(3, new LegoColor(3, 2, "Tan", 5, "Brick Yellow"),);
+		colors.set(4, new LegoColor(4, 14, "Trans-Dark Blue", 43, "Tr. Blue"));
 	});
 
 	test("Successfully fetch Lego set pieces", async () => {
-		/** @type {LegoSetPieceInfo} */
+		/** @type {LegoSetPiecesInfo} */
 		let result = {
 			normalPieces: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4738a", "Container, Treasure Chest Bottom with Slots in Back", colors[2], "Container"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4739a", "Container, Treasure Chest Lid Curved with Thick Hinge", colors[2], "Container"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "92338", "Chain 5 Links", colors[1], "Chain"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "3068pb0906", "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern", colors[3], "Tile, Decorated"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "30153", "Rock 1 x 1 Jewel 24 Facet", colors[4], "Rock"),
-					2
-				),
+				{
+					bricklinkId: "4738a",
+					bricklinkName: "Container, Treasure Chest Bottom with Slots in Back",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "4739a",
+					bricklinkName: "Container, Treasure Chest Lid Curved with Thick Hinge",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "92338",
+					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					color: colors.get(1) || null,
+					bricklinkCategory: "Chain",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "3068pb0906",
+					bricklinkName: "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
+					color: colors.get(3) || null,
+					bricklinkCategory: "Tile, Decorated",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "30153",
+					bricklinkName: "Rock 1 x 1 Jewel 24 Facet",
+					color: colors.get(4) || null,
+					bricklinkCategory: "Rock",
+					amountNeeded: 2,
+					amountFound: 0
+				}
 			],
 			minifigs: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "pi146", "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull", null, "Pirates"),
-					1
-				),
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "gen067", "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back", null, "Pirates"),
-					10
-				)
+				{
+					bricklinkId: "pi146",
+					bricklinkName: "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull",
+					color: null,
+					bricklinkCategory: "Pirates",
+					amountNeeded: 1,
+					amountFound: 0
+				},
+				{
+					bricklinkId: "gen067",
+					bricklinkName: "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back",
+					color: null,
+					bricklinkCategory: "Pirates",
+					amountNeeded: 10,
+					amountFound: 0
+				}
 			],
 			extraPieces: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "92338", "Chain 5 Links", colors[1], "Chain"),
-					1
-				)
+				{
+					bricklinkId: "92338",
+					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					color: colors.get(1) || null,
+					bricklinkCategory: "Chain",
+					amountNeeded: 1,
+					amountFound: 0
+				}
 			],
 			counterparts: [
-				new LegoSetPiece(
-					null,
-					new LegoPiece(null, "4738ac01", "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)", colors[2], "Container"),
-					1
-				)
+				{
+					bricklinkId: "4738ac01",
+					bricklinkName: "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
+					color: colors.get(2) || null,
+					bricklinkCategory: "Container",
+					amountNeeded: 1,
+					amountFound: 0
+				}
 			]
 		};
 

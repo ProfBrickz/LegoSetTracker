@@ -2,6 +2,9 @@ appId: com.electron.brick_recover
 productName: Brick_Recover
 afterAllArtifactBuild: ./scripts/afterAllArtifactBuild.js
 publish: null
+env:
+  IS_BUILT: "true"
+
 files:
   - out/**/*
   - LICENSE

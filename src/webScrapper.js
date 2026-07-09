@@ -5,14 +5,16 @@ import { JSDOM } from "jsdom";
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./dataMaps.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
-/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult } from "./types.js" */
+import { LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
+/** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "./types.js" */
 
 
 // Functions
 export default class WebScrapper {
 	/** @type {LegoColors} */
 	#colors;
+	/** @type {string|null} */
+	#cookie = null;
 
 	/**
 	 * @public
@@ -20,6 +22,32 @@ export default class WebScrapper {
 	 */
 	constructor(colors) {
 		this.#colors = colors;
+	}
+
+	async init() {
+		await this.getCookie();
+	}
+
+	/**
+	 * @private
+	 */
+	async getCookie() {
+		let { BrowserWindow, app } = await import("electron");
+
+		await app.whenReady();
+		let window = new BrowserWindow({ show: false });
+		await window.loadURL("https://www.bricklink.com");
+
+		let cookies = await window.webContents.session.cookies.get({});
+		window.close();
+
+		this.#cookie = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join("; ");
+		// for (let index = 0; index < cookies.length; index++) {
+		// 	let cookie = cookies[index];
+
+		// 	if (index > 0) this.#cookie += "; ";
+		// 	this.#cookie += `${cookie.name}=${cookie.value}`;
+		// }
 	}
 
 	/**
@@ -31,7 +59,9 @@ export default class WebScrapper {
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
 	 */
 	async getWebpage(url) {
-		let response = await fetch(url);
+		const headers = new Headers();
+		headers.append("Cookie", this.#cookie || "");
+		let response = await fetch(url, { headers });
 
 		if (!response.ok) {
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
@@ -115,7 +145,7 @@ export default class WebScrapper {
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
 	async getLegoSetPieces(setNumber) {
-		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&bt=0&sortAsc=a`);
+		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&sortAsc=A&bt=0`);
 		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
 		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], tr[bgcolor='#C0C0C0']"));
@@ -233,7 +263,7 @@ export default class WebScrapper {
 	 * for element selection.
 	 *
 	 * @public
-	 * @returns {Promise<Omit<LegoColor, "#brand" | "databaseId">[]>} A promise that resolves to an array of `LegoColor` objects.
+	 * @returns {Promise<WebLegoColor[]>} A promise that resolves to an array of `LegoColor` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
 	async getColors() {
@@ -272,20 +302,10 @@ export default class WebScrapper {
 	}
 
 	/**
-	 * @param {LegoColors} colors A map of Lego colors
-	 */
-	setColors(colors) {
-		this.#colors = colors;
-	}
-
-	/**
 	 * Fetches the categories for LEGO sets.
 	 */
 	async getLegoSetThemes() {
-		/**
-		 * @typedef {Omit<LegoSetTheme, "#brand" | "databaseId">} themeObject
-		 */
-		/** @type {themeObject[]} */
+		/** @type {WebLegoSetTheme[]} */
 		let themes = [];
 
 		let document = await this.getWebpage("https://www.bricklink.com/catalogTree.asp?itemType=S");
@@ -443,8 +463,7 @@ export default class WebScrapper {
 		let response = await fetch(url);
 
 		if (!response.ok) {
-			return;
-			// throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 
 		let imageData = await response.arrayBuffer();
