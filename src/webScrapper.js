@@ -5,7 +5,7 @@ import { JSDOM } from "jsdom";
 import path from "path";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./dataMaps.js";
-import { LegoPiece, LegoSet, LegoSetPiece } from "./models.js";
+import { LegoPiece, LegoSet } from "./models.js";
 /** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "./types.js" */
 
 
@@ -132,20 +132,20 @@ export default class WebScrapper {
 	}
 
 	/**
-	 * Fetches and parses Lego set pieces information from BrickLink's catalog.
+	 * Fetches and parses LEGO set inventory data from BrickLink's website.
 	 *
-	 * This function retrieves detailed information about all items in a LEGO set,
+	 * This function retrieves detailed inventory information about items in a LEGO set,
 	 * categorized into "Regular Items", "Minifigures", "Extra Items", and "Counterparts".
 	 * It parses the HTML table structure from BrickLink's inventory page to extract
-	 * the relevant data for each category.
+	 * the relevant piece data for each category.
 	 *
 	 * @public
-	 * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
-	 * @returns {Promise<LegoSetPiecesInfo>} A Promise that resolves to an object containing categorized piece data.
-	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
+	 * @param {string} url The URL of the BrickLink inventory page (e.g., catalog item inventory URL).
+	 * @returns {Promise<{normalPieces: LegoSetPieceInfo[], minifigs: LegoSetPieceInfo[], extraPieces: LegoSetPieceInfo[], counterparts: LegoSetPieceInfo[]}>} A Promise that resolves to an object containing categorized piece data.
+	 * @throws {Error} If the webpage cannot be fetched or required elements are missing.
 	 */
-	async getLegoSetPieces(setNumber) {
-		let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&sortAsc=A&bt=0`);
+	async getCatalogItemInventory(url) {
+		let document = await this.getWebpage(url);
 		let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
 		let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
 		let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], tr[bgcolor='#C0C0C0']"));
@@ -156,6 +156,47 @@ export default class WebScrapper {
 		let counterparts = this.getSection("Counterparts:", rows, categories);
 
 		return { normalPieces, minifigs, extraPieces, counterparts };
+	}
+
+	/**
+	 * Fetches and parses Lego set pieces information from BrickLink's catalog.a
+	 *
+	 * @public
+	 * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
+	 * @returns {Promise<LegoSetPiecesInfo>} A Promise that resolves to an object containing categorized piece data.
+	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
+	 */
+	async getLegoSetPieces(setNumber) {
+		return await this.getCatalogItemInventory(
+			`https://www.bricklink.com/catalogItemInv.asp?S=${setNumber}&viewType=P&sortBy=0&sortAsc=A&bt=0`
+		);
+	}
+
+	/**
+ * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
+ *
+ * @public
+ * @param {LegoPiece} piece The BrickLink ID of the minifig (e.g., "3523").
+ * @returns {Promise<LegoSetPiecesInfo>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
+ */
+	async getMinifigPieces(piece) {
+		return await this.getCatalogItemInventory(
+			`https://www.bricklink.com/catalogItemInv.asp?M=${piece.bricklinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
+		);
+	}
+
+	/**
+	 * Fetches composite piece data for a specific LEGO part in a given color from BrickLink's catalog.
+	 *
+	 * @todo
+	 * @public
+	 * @param {LegoPiece} piece The piece object containing the `bricklinkId` and `color` properties.
+	 * @returns {Promise<LegoSetPiecesInfo>} A promise that resolves to a `SetPiece` object representing the piece in the specified color.
+	 */
+	async getCompositePieceComponents(piece) {
+		return await this.getCatalogItemInventory(
+			`https://www.bricklink.com/catalogItemInv.asp?P=${piece.bricklinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
+		);
 	}
 
 	/**
@@ -409,43 +450,6 @@ export default class WebScrapper {
 		}
 
 		return legoSets;
-	}
-
-	/**
-	 * Fetches minifig pieces data from BrickLink's catalog for a given minifig ID.
-	 *
-	 * @public
-	 * @param {string} minifigId The BrickLink ID of the minifig (e.g., "3523").
-	 * @returns {Promise<LegoSetPiece[]>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
-	 */
-	async getMinifigPieces(minifigId) {
-		throw new Error("TODO");
-
-		// let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?M=${minifigId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
-		// let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
-		// let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.children));
-		// let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (tbody.querySelectorAll("tr[bgcolor='#000000'], form > table tr[bgcolor='#C0C0C0']"));
-
-		// return this.getSection("Regular Items:", rows, categories);
-	}
-
-	/**
-	 * Fetches composite piece data for a specific LEGO part in a given color from BrickLink's catalog.
-	 *
-	 * @todo
-	 * @public
-	 * @param {LegoPiece} piece The piece object containing the `bricklinkId` and `color` properties.
-	 * @returns {Promise<LegoPiece>} A promise that resolves to a `SetPiece` object representing the piece in the specified color.
-	 */
-	async getCompositePiece(piece) {
-		throw new Error("TODO");
-
-		// let document = await this.getWebpage(`https://www.bricklink.com/catalogItemInv.asp?P=${piece.bricklinkId}&C=${piece.color.bricklinkId}&viewType=P&bt=0&sortBy=0&sortAsc=a`);
-		// let tbody = /** @type {HTMLTableSectionElement}*/ (document.querySelector("form > table tbody"));
-		// let rows = /** @type {HTMLTableRowElement[]} */ (Array.from(tbody.childNodes));
-		// let categories = /** @type {NodeListOf<HTMLTableRowElement>} */ (document.querySelectorAll("form > table tr[bgcolor='#000000'], form > table tr[bgcolor='#C0C0C0']"));
-
-		// let setPieces = this.getSection("Regular Items:", rows, categories);
 	}
 
 	/**
