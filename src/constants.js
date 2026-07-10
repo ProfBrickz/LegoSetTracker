@@ -6,10 +6,9 @@ import path from "path";
 export const IS_DEV_MODE = process.env.IS_DEV_MODE === "true";
 
 let tempIsBuilt = false;
-{
-	const { app } = await import("electron");
-	tempIsBuilt = app.isPackaged;
-}
+const { app } = await import("electron");
+if (app) tempIsBuilt = app.isPackaged;
+
 export const IS_BUILT = tempIsBuilt;
 
 export const SRC_PATH = import.meta.dirname;
