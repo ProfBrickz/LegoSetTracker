@@ -34,7 +34,7 @@ let legoSetThemes = new LegoSetThemes();
  */
 function renderPage(page, params = {}) {
 	let pagePath = PAGES_PATH;
-	if (process.env['ELECTRON_RENDERER_URL']) {
+	if (process.env["ELECTRON_RENDERER_URL"]) {
 		pagePath = path.resolve("src/renderer/views/pages");
 	}
 	pagePath = path.join(pagePath, `${page}.ejs`);
@@ -54,8 +54,8 @@ function renderPage(page, params = {}) {
 function loadLayout(layout) {
 	if (!mainWindow) return;
 
-	if (process.env['ELECTRON_RENDERER_URL']) {
-		mainWindow.loadURL(new URL(`views/layouts/${layout}.html`, process.env['ELECTRON_RENDERER_URL']).href);
+	if (process.env["ELECTRON_RENDERER_URL"]) {
+		mainWindow.loadURL(new URL(`views/layouts/${layout}.html`, process.env["ELECTRON_RENDERER_URL"]).href);
 	} else {
 		mainWindow.loadFile(path.join(LAYOUTS_PATH, `${layout}.html`));
 	}

@@ -41,13 +41,12 @@ export default class WebScrapper {
 		let cookies = await window.webContents.session.cookies.get({});
 		window.close();
 
-		this.#cookie = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join("; ");
-		// for (let index = 0; index < cookies.length; index++) {
-		// 	let cookie = cookies[index];
+		this.#cookie = "";
+		for (let cookie of cookies) {
+			if (this.#cookie) this.#cookie += "; ";
 
-		// 	if (index > 0) this.#cookie += "; ";
-		// 	this.#cookie += `${cookie.name}=${cookie.value}`;
-		// }
+			this.#cookie += `${cookie.name}=${cookie.value}`;
+		}
 	}
 
 	/**

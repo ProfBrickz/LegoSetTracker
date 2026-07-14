@@ -1,11 +1,12 @@
 // Imports
 import { PGlite } from "@electric-sql/pglite";
-import { PGLiteSocketServer } from '@electric-sql/pglite-socket';
+import { PGLiteSocketServer } from "@electric-sql/pglite-socket";
 import path from "path";
+;
 
 
 // Constants
-const DATABASE_HOST = '127.0.0.1';;
+const DATABASE_HOST = "127.0.0.1";
 const DATABASE_PORT = 5432;
 
 
@@ -27,9 +28,9 @@ await server.start();
 console.log(`Server started on ${DATABASE_HOST}:${DATABASE_PORT}`);
 
 // Handle graceful shutdown
-process.on('SIGINT', async () => {
+process.on("SIGINT", async () => {
 	await server.stop();
 	await database.close();
-	console.log('Server stopped and database closed');
+	console.log("Server stopped and database closed");
 	process.exit(0);
 });
