@@ -44,7 +44,7 @@ describe("getWebpage", () => {
 
 		let document = await webScrapper.getWebpage(url);
 
-		expect(fetch).toHaveBeenCalledWith(url);
+		expect(fetch).toHaveBeenCalledWith(url, expect.objectContaining({ headers: expect.any(Headers) }));
 		// Verify that the document is a valid HTML document and contains
 		expect(document.constructor.name).toEqual("Document");
 		expect(document.documentElement.tagName).toEqual("HTML");
