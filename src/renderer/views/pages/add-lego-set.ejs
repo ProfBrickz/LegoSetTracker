@@ -15,9 +15,9 @@
 		<p class="input-description">Select the theme of the LEGO set</p>
 		<select id="theme" name="theme">
 			<option value="">All Themes</option>
-			<% for (let {bricklinkId, bricklinkName} of legoSetThemes.values()) { %>
-				<option value="<%= bricklinkId %>">
-					<%= bricklinkName %>
+			<% for (let {brickLinkId, brickLinkName} of legoSetThemes.values()) { %>
+				<option value="<%= brickLinkId %>">
+					<%= brickLinkName %>
 				</option>
 				<% } %>
 		</select>

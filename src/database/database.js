@@ -27,16 +27,16 @@ export async function getLegoColors() {
 }
 
 /**
- * @param {number} bricklinkId
- * @param {string} bricklinkName
+ * @param {number} brickLinkId
+ * @param {string} brickLinkName
  * @param {number | null} legoId
  * @param {string | null} legoName
  */
-export async function addLegoColor(bricklinkId, bricklinkName, legoId, legoName) {
+export async function addLegoColor(brickLinkId, brickLinkName, legoId, legoName) {
    let result = await database.insert(legoColorsDBTable)
       .values({
-         bricklinkId,
-         bricklinkName,
+         brickLinkId,
+         brickLinkName,
          legoId,
          legoName
       })
@@ -52,31 +52,31 @@ export async function addLegoColor(bricklinkId, bricklinkName, legoId, legoName)
 export async function getLegoSetThemes() {
    return await database.select({
       databaseId: legoSetThemesDBTable.databaseId,
-      bricklinkId: legoSetThemesDBTable.bricklinkId,
-      bricklinkName: legoSetThemesDBTable.bricklinkName
+      brickLinkId: legoSetThemesDBTable.brickLinkId,
+      brickLinkName: legoSetThemesDBTable.brickLinkName
    }).from(legoSetThemesDBTable);
 }
 
 /**
- * @param {string} bricklinkId
- * @param {string} bricklinkName
+ * @param {string} brickLinkId
+ * @param {string} brickLinkName
  */
-export async function addLegoSetTheme(bricklinkId, bricklinkName) {
+export async function addLegoSetTheme(brickLinkId, brickLinkName) {
    let existingRows = await database.select({
       databaseId: legoSetThemesDBTable.databaseId
    })
       .from(legoSetThemesDBTable)
       .where(
          or(
-            eq(legoSetThemesDBTable.bricklinkId, bricklinkId),
-            eq(legoSetThemesDBTable.bricklinkName, bricklinkName)
+            eq(legoSetThemesDBTable.brickLinkId, brickLinkId),
+            eq(legoSetThemesDBTable.brickLinkName, brickLinkName)
          )
       );
 
    if (existingRows.length > 0) return existingRows[0].databaseId;
 
    let result = await database.insert(legoSetThemesDBTable)
-      .values({ bricklinkId, bricklinkName })
+      .values({ brickLinkId, brickLinkName })
       .returning({
          databaseId: legoSetThemesDBTable.databaseId
       });
@@ -93,18 +93,18 @@ export async function getLegoPieces() {
 }
 
 /**
-    * @param {string} bricklinkId
-    * @param {string} bricklinkName
+    * @param {string} brickLinkId
+    * @param {string} brickLinkName
     * @param {LegoColor | null} color
-    * @param {string} bricklinkCategory
+    * @param {string} brickLinkCategory
     */
-export async function addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory) {
+export async function addLegoPiece(brickLinkId, brickLinkName, color, brickLinkCategory) {
    let result = await database.insert(legoPiecesDBTable)
       .values({
-         bricklinkId,
-         bricklinkName,
+         brickLinkId,
+         brickLinkName,
          colorId: color?.databaseId || null,
-         bricklinkCategory
+         brickLinkCategory
       }).returning({
          databaseId: legoPiecesDBTable.databaseId
       });

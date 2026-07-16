@@ -77,9 +77,10 @@ export class DataTable extends HTMLElement {
    }
 
    /**
+    * @private
     * @param {import("@tanstack/table-core").Header<TableRow, unknown>} header
     */
-   #createHeader(header) {
+   createHeader(header) {
       let th = document.createElement("th");
 
       th.innerText = header.column.columnDef.header?.toString() || "";
@@ -87,22 +88,26 @@ export class DataTable extends HTMLElement {
       return th;
    }
 
-   #createThead() {
+   /**
+    * @private
+    */
+   createThead() {
       let thead = document.createElement("thead");
       let row = document.createElement("tr");
       thead.appendChild(row);
 
       for (let header of this.table.getFlatHeaders()) {
-         row.appendChild(this.#createHeader(header));
+         row.appendChild(this.createHeader(header));
       }
 
       return thead;
    }
 
    /**
+    * @private
     * @param {TableCell} cell
     */
-   #createCell(cell) {
+   createCell(cell) {
       let td = document.createElement("td");
       td.classList.add(cell.column.id);
 
@@ -175,23 +180,27 @@ export class DataTable extends HTMLElement {
    }
 
    /**
+    * @private
     * @param {import("@tanstack/table-core").Row<TableRow>} row
    */
-   #createRow(row) {
+   createRow(row) {
       let tr = document.createElement("tr");
 
       for (let cell of row.getAllCells()) {
-         tr.appendChild(this.#createCell(cell));
+         tr.appendChild(this.createCell(cell));
       }
 
       return tr;
    }
 
-   #createTbody() {
+   /**
+    * @private
+    */
+   createTbody() {
       let tbody = document.createElement("tbody");
 
       for (let row of this.table.getRowModel().rows) {
-         tbody.appendChild(this.#createRow(row));
+         tbody.appendChild(this.createRow(row));
       }
 
       return tbody;
@@ -207,8 +216,8 @@ export class DataTable extends HTMLElement {
       }
 
       let tableElement = document.createElement("table");
-      tableElement.appendChild(this.#createThead());
-      tableElement.appendChild(this.#createTbody());
+      tableElement.appendChild(this.createThead());
+      tableElement.appendChild(this.createTbody());
 
       this.appendChild(tableElement);
    }

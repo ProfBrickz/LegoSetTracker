@@ -5,8 +5,11 @@
  * @extends {Map<K, V>}
  */
 export class ClassMap extends Map {
-	/** @type {new (...args: any[]) => V} */
-	#classType;
+	/**
+	 * @private
+	 * @type {new (...args: any[]) => V}
+	 */
+	classType;
 
 	/**
 	 * @param {new (...args: any[]) => V} classType
@@ -14,7 +17,7 @@ export class ClassMap extends Map {
 	*/
 	constructor(classType, iterable) {
 		super(iterable);
-		this.#classType = classType;
+		this.classType = classType;
 	}
 
 	/**
@@ -23,10 +26,18 @@ export class ClassMap extends Map {
 	 * @throws {TypeError} if value is not an instance of classTyp
 	 */
 	set(key, value) {
-		if (!(value instanceof this.#classType)) {
-			throw new TypeError(`Value must be an instance of ${this.#classType.name}`);
+		if (!(value instanceof this.classType)) {
+			throw new TypeError(`Value must be an instance of ${this.classType.name}`);
 		}
 
 		return super.set(key, value);
 	}
+}
+
+export class TypedClass {
+	/**
+	 * @private
+	 * @type {Symbol}
+	 */
+	brand = Symbol("");
 }

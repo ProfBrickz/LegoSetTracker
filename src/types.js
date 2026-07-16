@@ -14,13 +14,13 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  */
 
 /**
- * @typedef {Omit<LegoSetPiece, "#brand" | "databaseId" | "legoPiece" | "save" | "getImagePath" | "getMinifigImagePath" >} LegoSetPieceInfo
+ * @typedef {Omit<LegoSetPiece, "brand" | "databaseId" | "legoPiece" | "save" | "getImagePath" | "getMinifigImagePath" >} LegoSetPieceInfo
  */
 /**
- * @typedef {Omit<LegoColor, "#brand" | "databaseId">} WebLegoColor
+ * @typedef {Omit<LegoColor, "brand" | "databaseId">} WebLegoColor
  */
 /**
- * @typedef {Omit<LegoSetTheme, "#brand" | "databaseId">} WebLegoSetTheme
+ * @typedef {Omit<LegoSetTheme, "brand" | "databaseId">} WebLegoSetTheme
  */
 
 /**
@@ -66,8 +66,8 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {number} amountFound
  * @property {number} amountLeft
  * @property {number} amountNeeded
- * @property {string} bricklinkName
- * @property {string} bricklinkId
+ * @property {string} brickLinkName
+ * @property {string} brickLinkId
  * @property {LegoColor | null} color
- * @property {string} bricklinkCategory
+ * @property {string} brickLinkCategory
  */

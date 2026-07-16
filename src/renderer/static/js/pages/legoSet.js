@@ -129,27 +129,27 @@ document.addEventListener("pageLoad", (event) => {
 			accessorKey: "amountNeeded"
 		},
 		{
-			id: "bricklinkName",
+			id: "brickLinkName",
 			header: "Name",
-			accessorKey: "bricklinkName"
+			accessorKey: "brickLinkName"
 		},
 		{
-			id: "bricklinkId",
+			id: "brickLinkId",
 			header: "Id",
-			accessorKey: "bricklinkId"
+			accessorKey: "brickLinkId"
 		},
 		{
 			id: "color",
 			header: "Color",
 			accessorFn: (row) => {
 				const legoSetRow = /** @type {import("../../../../types.js").LegoSetTableRow} */ (row);
-				return legoSetRow.color?.bricklinkName || "";
+				return legoSetRow.color?.brickLinkName || "";
 			}
 		},
 		{
-			id: "bricklinkCategory",
+			id: "brickLinkCategory",
 			header: "Category",
-			accessorKey: "bricklinkCategory"
+			accessorKey: "brickLinkCategory"
 		}
 	];
 

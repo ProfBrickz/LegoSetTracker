@@ -3,6 +3,8 @@ autoremove
 bgcolor
 bricklink
 Brickz
+Dacta
+DUPLO
 electronjs
 electronuserland
 ERRORLEVEL
@@ -19,6 +21,7 @@ nsis
 pacman
 pglite
 piccalil
+polybag
 seccomp
 smallserial
 tailwindlabs

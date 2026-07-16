@@ -8,24 +8,24 @@ export const legoSetPieceDBType = pgEnum("set_piece_type", ["normal", "minifig",
 // Database tables
 export const legoColorsDBTable = pgTable("lego_colors", {
    databaseId: smallserial("id").primaryKey(),
-   bricklinkId: smallint("bricklink_id").unique().notNull(),
-   bricklinkName: varchar("bricklink_name", { length: 64 }).notNull(),
+   brickLinkId: smallint("bricklink_id").unique().notNull(),
+   brickLinkName: varchar("bricklink_name", { length: 64 }).notNull(),
    legoId: smallint("lego_id"),
    legoName: varchar("lego_name", { length: 64 })
 });
 
 export const legoSetThemesDBTable = pgTable("lego_set_themes", {
    databaseId: smallserial("id").primaryKey(),
-   bricklinkId: varchar("bricklink_id", { length: 8 }).unique().notNull(),
-   bricklinkName: varchar("bricklink_name", { length: 64 }).notNull()
+   brickLinkId: varchar("bricklink_id", { length: 8 }).unique().notNull(),
+   brickLinkName: varchar("bricklink_name", { length: 64 }).notNull()
 });
 
 export const legoPiecesDBTable = pgTable("lego_pieces", {
    databaseId: serial("id").primaryKey(),
-   bricklinkId: varchar("bricklink_id", { length: 16 }).notNull(),
+   brickLinkId: varchar("bricklink_id", { length: 16 }).notNull(),
    colorId: smallint("color_id").references(() => legoColorsDBTable.databaseId),
-   bricklinkName: varchar("bricklink_name", { length: 512 }).notNull(),
-   bricklinkCategory: varchar("bricklink_category", { length: 256 }).notNull()
+   brickLinkName: varchar("bricklink_name", { length: 512 }).notNull(),
+   brickLinkCategory: varchar("bricklink_category", { length: 256 }).notNull()
 });
 
 export const legoSetsDBTable = pgTable("lego_sets", {

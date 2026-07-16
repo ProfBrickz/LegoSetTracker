@@ -66,13 +66,13 @@ describe("getColors", () => {
 	test("Returns an array of colors", async () => {
 		/** @type {WebLegoColor[]} */
 		let result = [
-			{ bricklinkId: 1, bricklinkName: "White", legoId: 1, legoName: "White" },
-			{ bricklinkId: 5, bricklinkName: "Red", legoId: 21, legoName: "Bright Red" },
-			{ bricklinkId: 48, bricklinkName: "Sand Green", legoId: 151, legoName: "Sand Green" },
-			{ bricklinkId: 12, bricklinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
-			{ bricklinkId: 17, bricklinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
-			{ bricklinkId: 14, bricklinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
-			{ bricklinkId: 122, bricklinkName: "Chrome Black", legoId: null, legoName: null },
+			{ brickLinkId: 1, brickLinkName: "White", legoId: 1, legoName: "White" },
+			{ brickLinkId: 5, brickLinkName: "Red", legoId: 21, legoName: "Bright Red" },
+			{ brickLinkId: 48, brickLinkName: "Sand Green", legoId: 151, legoName: "Sand Green" },
+			{ brickLinkId: 12, brickLinkName: "Trans-Clear", legoId: 40, legoName: "Transparent" },
+			{ brickLinkId: 17, brickLinkName: "Trans-Red", legoId: 41, legoName: "Tr. Red" },
+			{ brickLinkId: 14, brickLinkName: "Trans-Dark Blue", legoId: 43, legoName: "Tr. Blue" },
+			{ brickLinkId: 122, brickLinkName: "Chrome Black", legoId: null, legoName: null },
 		];
 
 		let html = readTextFile("./fixtures/getColors/colors.html");
@@ -116,18 +116,18 @@ describe("getLegoSetThemes", () => {
 	test("Returns an Map of categories with id's and name's", async () => {
 		/** @type {WebLegoSetTheme[]} */
 		let result = [
-			{ bricklinkId: "143", bricklinkName: "(Other)" },
-			{ bricklinkId: "516", bricklinkName: "4 Juniors" },
-			{ bricklinkId: "178", bricklinkName: "Jack Stone" },
-			{ bricklinkId: "61", bricklinkName: "Pirates" },
-			{ bricklinkId: "469", bricklinkName: "Spider-Man" },
-			{ bricklinkId: "609", bricklinkName: "Agents" },
-			{ bricklinkId: "1370", bricklinkName: "Education" },
-			{ bricklinkId: "166", bricklinkName: "Educational & Dacta" },
-			{ bricklinkId: "167", bricklinkName: "DUPLO" },
-			{ bricklinkId: "173", bricklinkName: "Action Wheelers" },
-			{ bricklinkId: "612", bricklinkName: "Town" },
-			{ bricklinkId: "325", bricklinkName: "Airport" },
+			{ brickLinkId: "143", brickLinkName: "(Other)" },
+			{ brickLinkId: "516", brickLinkName: "4 Juniors" },
+			{ brickLinkId: "178", brickLinkName: "Jack Stone" },
+			{ brickLinkId: "61", brickLinkName: "Pirates" },
+			{ brickLinkId: "469", brickLinkName: "Spider-Man" },
+			{ brickLinkId: "609", brickLinkName: "Agents" },
+			{ brickLinkId: "1370", brickLinkName: "Education" },
+			{ brickLinkId: "166", brickLinkName: "Educational & Dacta" },
+			{ brickLinkId: "167", brickLinkName: "DUPLO" },
+			{ brickLinkId: "173", brickLinkName: "Action Wheelers" },
+			{ brickLinkId: "612", brickLinkName: "Town" },
+			{ brickLinkId: "325", brickLinkName: "Airport" },
 		];
 
 		let html = readTextFile("./fixtures/getLegoSetThemes/success.html");
@@ -261,80 +261,80 @@ describe("getLegoSetPieces", () => {
 		let result = {
 			normalPieces: [
 				{
-					bricklinkId: "4738a",
-					bricklinkName: "Container, Treasure Chest Bottom with Slots in Back",
+					brickLinkId: "4738a",
+					brickLinkName: "Container, Treasure Chest Bottom with Slots in Back",
 					color: colors.get(2) || null,
-					bricklinkCategory: "Container",
+					brickLinkCategory: "Container",
 					amountNeeded: 1,
 					amountFound: 0
 				},
 				{
-					bricklinkId: "4739a",
-					bricklinkName: "Container, Treasure Chest Lid Curved with Thick Hinge",
+					brickLinkId: "4739a",
+					brickLinkName: "Container, Treasure Chest Lid Curved with Thick Hinge",
 					color: colors.get(2) || null,
-					bricklinkCategory: "Container",
+					brickLinkCategory: "Container",
 					amountNeeded: 1,
 					amountFound: 0
 				},
 				{
-					bricklinkId: "92338",
-					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					brickLinkId: "92338",
+					brickLinkName: "Dark Bluish Gray Chain 5 Links",
 					color: colors.get(1) || null,
-					bricklinkCategory: "Chain",
+					brickLinkCategory: "Chain",
 					amountNeeded: 1,
 					amountFound: 0
 				},
 				{
-					bricklinkId: "3068pb0906",
-					bricklinkName: "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
+					brickLinkId: "3068pb0906",
+					brickLinkName: "Tile 2 x 2 with Map Blue Water, Lime Land, Sailing Ship, Treasure Chest and Red 'X' Pattern",
 					color: colors.get(3) || null,
-					bricklinkCategory: "Tile, Decorated",
+					brickLinkCategory: "Tile, Decorated",
 					amountNeeded: 1,
 					amountFound: 0
 				},
 				{
-					bricklinkId: "30153",
-					bricklinkName: "Rock 1 x 1 Jewel 24 Facet",
+					brickLinkId: "30153",
+					brickLinkName: "Rock 1 x 1 Jewel 24 Facet",
 					color: colors.get(4) || null,
-					bricklinkCategory: "Rock",
+					brickLinkCategory: "Rock",
 					amountNeeded: 2,
 					amountFound: 0
 				}
 			],
 			minifigs: [
 				{
-					bricklinkId: "pi146",
-					bricklinkName: "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull",
+					brickLinkId: "pi146",
+					brickLinkName: "Pirate Blue Jacket, Black Leg with Peg Leg, Black Pirate Hat with Skull",
 					color: null,
-					bricklinkCategory: "Pirates",
+					brickLinkCategory: "Pirates",
 					amountNeeded: 1,
 					amountFound: 0
 				},
 				{
-					bricklinkId: "gen067",
-					bricklinkName: "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back",
+					brickLinkId: "gen067",
+					brickLinkName: "Skeleton - Standard Skull, Floppy Arms, Red Bandana with Double Tail in Back",
 					color: null,
-					bricklinkCategory: "Pirates",
+					brickLinkCategory: "Pirates",
 					amountNeeded: 10,
 					amountFound: 0
 				}
 			],
 			extraPieces: [
 				{
-					bricklinkId: "92338",
-					bricklinkName: "Dark Bluish Gray Chain 5 Links",
+					brickLinkId: "92338",
+					brickLinkName: "Dark Bluish Gray Chain 5 Links",
 					color: colors.get(1) || null,
-					bricklinkCategory: "Chain",
+					brickLinkCategory: "Chain",
 					amountNeeded: 1,
 					amountFound: 0
 				}
 			],
 			counterparts: [
 				{
-					bricklinkId: "4738ac01",
-					bricklinkName: "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
+					brickLinkId: "4738ac01",
+					brickLinkName: "Container, Treasure Chest with Slots in Back and (Same Color) Thick Hinge Curved Lid (4738a / 4739a)",
 					color: colors.get(2) || null,
-					bricklinkCategory: "Container",
+					brickLinkCategory: "Container",
 					amountNeeded: 1,
 					amountFound: 0
 				}
@@ -347,15 +347,15 @@ describe("getLegoSetPieces", () => {
 
 		let legoSetPieceInfo = await webScrapper.getLegoSetPieces("10679-1");
 
-		expect(legoSetPieceInfo.normalPieces[0].bricklinkId).toEqual(result.normalPieces[0].bricklinkId);
-		expect(legoSetPieceInfo.normalPieces[0].bricklinkName).toEqual(result.normalPieces[0].bricklinkName);
+		expect(legoSetPieceInfo.normalPieces[0].brickLinkId).toEqual(result.normalPieces[0].brickLinkId);
+		expect(legoSetPieceInfo.normalPieces[0].brickLinkName).toEqual(result.normalPieces[0].brickLinkName);
 		expect(legoSetPieceInfo.normalPieces[0].color).toBe(result.normalPieces[0].color);
-		expect(legoSetPieceInfo.normalPieces[0].bricklinkCategory).toEqual(result.normalPieces[0].bricklinkCategory);
+		expect(legoSetPieceInfo.normalPieces[0].brickLinkCategory).toEqual(result.normalPieces[0].brickLinkCategory);
 		expect(legoSetPieceInfo).toEqual(result);
 	});
 
 	test("Return empty array if no pieces are found", async () => {
-		/** @type {LegoSetPieceInfo} */
+		/** @type {LegoSetPiecesInfo} */
 		let result = {
 			normalPieces: [],
 			minifigs: [],

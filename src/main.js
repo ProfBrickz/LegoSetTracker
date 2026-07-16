@@ -81,7 +81,7 @@ function initializeFolders() {
 	if (!fs.existsSync(MINIFIG_IMAGES_PATH)) fs.mkdirSync(MINIFIG_IMAGES_PATH);
 
 	for (let color of colors.values()) {
-		let colorImagePath = path.join(PIECE_IMAGES_PATH, color.bricklinkId.toString());
+		let colorImagePath = path.join(PIECE_IMAGES_PATH, color.brickLinkId.toString());
 
 		if (!fs.existsSync(colorImagePath)) fs.mkdirSync(colorImagePath);
 	}
@@ -106,7 +106,7 @@ async function getSearchLegoSetsTableRows(searchResults) {
 		};
 
 		let theme = legoSetThemes.getByBricklinkId(searchResult.themeId);
-		if (theme) tableRow.theme = theme.bricklinkName;
+		if (theme) tableRow.theme = theme.brickLinkName;
 
 		let image = fs.readFileSync(LegoSet.getImagePath(searchResult.setNumber)).toString("base64") || "";
 		tableRow.image = `data:image/png;base64,${image}`;
@@ -134,7 +134,7 @@ function getLegoSetsTableRows() {
 			databaseId: /** @type {number} */ (legoSet.databaseId),
 			name: legoSet.name,
 			setNumber: legoSet.setNumber,
-			theme: legoSet.theme.bricklinkName,
+			theme: legoSet.theme.brickLinkName,
 			releaseYear: legoSet.releaseYear,
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
@@ -164,10 +164,10 @@ function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 		amountFound: legoSetPiece.amountFound,
 		amountLeft: legoSetPiece.amountNeeded * legoSet.legoSetCount - legoSetPiece.amountFound,
 		amountNeeded: legoSetPiece.amountNeeded * legoSet.legoSetCount,
-		bricklinkName: legoSetPiece.bricklinkName,
-		bricklinkId: legoSetPiece.bricklinkId,
+		brickLinkName: legoSetPiece.brickLinkName,
+		brickLinkId: legoSetPiece.brickLinkId,
 		color: legoSetPiece.color,
-		bricklinkCategory: legoSetPiece.bricklinkCategory
+		brickLinkCategory: legoSetPiece.brickLinkCategory
 	};
 }
 

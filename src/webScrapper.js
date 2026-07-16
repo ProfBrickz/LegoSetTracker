@@ -11,17 +11,23 @@ import { LegoPiece, LegoSet } from "./models.js";
 
 // Functions
 export default class WebScrapper {
-	/** @type {LegoColors} */
-	#colors;
-	/** @type {string|null} */
-	#cookie = null;
+	/**
+	 * @private
+	 * @type {LegoColors}
+	 */
+	colors;
+	/**
+	 * @private
+	 * @type {string|null}
+	 */
+	cookie = null;
 
 	/**
 	 * @public
 	 * @param {LegoColors} colors A map of Lego colors
 	 */
 	constructor(colors) {
-		this.#colors = colors;
+		this.colors = colors;
 	}
 
 	async init() {
@@ -40,11 +46,11 @@ export default class WebScrapper {
 
 		let cookies = await window.webContents.session.cookies.get({});
 
-		this.#cookie = "";
+		this.cookie = "";
 		for (let cookie of cookies) {
-			if (this.#cookie) this.#cookie += "; ";
+			if (this.cookie) this.cookie += "; ";
 
-			this.#cookie += `${cookie.name}=${cookie.value}`;
+			this.cookie += `${cookie.name}=${cookie.value}`;
 		}
 
 		window.close();
@@ -60,7 +66,7 @@ export default class WebScrapper {
 	 */
 	async getWebpage(url) {
 		const headers = new Headers();
-		headers.append("Cookie", this.#cookie || "");
+		headers.append("Cookie", this.cookie || "");
 		let response = await fetch(url, { headers });
 
 		if (!response.ok) {
@@ -100,7 +106,7 @@ export default class WebScrapper {
 		));
 
 		let themeElements = Array.from(/** @type {HTMLCollectionOf<HTMLLinkElement>} */(themeElement.children));
-		let themeId = this.#parseThemeIdFromLink(themeElements[themeElements.length - 1].href);
+		let themeId = this.parseThemeIdFromLink(themeElements[themeElements.length - 1].href);
 
 		// Extracting the set number from the document
 		let setNumberElement = /** @type {HTMLSpanElement} */ (document.querySelector(
@@ -181,7 +187,7 @@ export default class WebScrapper {
  */
 	async getMinifigPieces(piece) {
 		return await this.getCatalogItemInventory(
-			`https://www.bricklink.com/catalogItemInv.asp?M=${piece.bricklinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
+			`https://www.bricklink.com/catalogItemInv.asp?M=${piece.brickLinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
 		);
 	}
 
@@ -190,12 +196,12 @@ export default class WebScrapper {
 	 *
 	 * @todo
 	 * @public
-	 * @param {LegoPiece} piece The piece object containing the `bricklinkId` and `color` properties.
+	 * @param {LegoPiece} piece The piece object containing the `brickLinkId` and `color` properties.
 	 * @returns {Promise<LegoSetPiecesInfo>} A promise that resolves to a `SetPiece` object representing the piece in the specified color.
 	 */
 	async getCompositePieceComponents(piece) {
 		return await this.getCatalogItemInventory(
-			`https://www.bricklink.com/catalogItemInv.asp?P=${piece.bricklinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
+			`https://www.bricklink.com/catalogItemInv.asp?P=${piece.brickLinkId}&viewType=P&sortBy=0&sortAsc=A&bt=0`
 		);
 	}
 
@@ -250,7 +256,7 @@ export default class WebScrapper {
 	 * Extracts piece data from an array of table rows.
 	 *
 	 * This function processes each row to extract detailed information about a LEGO piece,
-	 * including its bricklink ID, image URL, name, color, category, quantity needed, and
+	 * including its BrickLink ID, image URL, name, color, category, quantity needed, and
 	 * color mapping from a predefined color list. It constructs and returns an array of
 	 * `SetPiece` objects representing the extracted data.
 	 *
@@ -263,9 +269,9 @@ export default class WebScrapper {
 		let legoSetPieces = [];
 
 		for (let row of sectionRows) {
-			let bricklinkIdElement = /** @type {HTMLAnchorElement} */ (row.querySelector("td:nth-of-type(3) a"));
-			let bricklinkColorId = Number((new URL(bricklinkIdElement.href, "https://bricklink.com")).searchParams.get("idColor"));
-			let bricklinkId = bricklinkIdElement.textContent.trim();
+			let brickLinkIdElement = /** @type {HTMLAnchorElement} */ (row.querySelector("td:nth-of-type(3) a"));
+			let brickLinkColorId = Number((new URL(brickLinkIdElement.href, "https://bricklink.com")).searchParams.get("idColor"));
+			let brickLinkId = brickLinkIdElement.textContent.trim();
 			let nameElement = /** @type {HTMLElement} */ (row.querySelector("td:nth-of-type(4) b"));
 			let nameAndColor = nameElement.textContent.trim();
 			// Remove repeated spaces
@@ -273,20 +279,20 @@ export default class WebScrapper {
 				.replace(/\s+/g, " ");
 
 			let categoryElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(4) a:nth-of-type(3)"));
-			let bricklinkCategory = categoryElement.textContent.trim();
+			let brickLinkCategory = categoryElement.textContent.trim();
 
 			let amountNeededElement = /** @type {HTMLTableCellElement} */ (row.querySelector("td:nth-of-type(2)"));
 			let amountNeeded = Number.parseInt(amountNeededElement.textContent);
 
-			let color = this.#colors.getByBricklinkId(bricklinkColorId);
-			let bricklinkName = nameAndColor;
-			if (color) bricklinkName = nameAndColor.replace(color.bricklinkName, "").trim();
+			let color = this.colors.getByBricklinkId(brickLinkColorId);
+			let brickLinkName = nameAndColor;
+			if (color) brickLinkName = nameAndColor.replace(color.brickLinkName, "").trim();
 
 			legoSetPieces.push({
-				bricklinkId,
-				bricklinkName,
+				brickLinkId,
+				brickLinkName,
 				color,
-				bricklinkCategory,
+				brickLinkCategory,
 				amountNeeded,
 				amountFound: 0
 			});
@@ -316,8 +322,8 @@ export default class WebScrapper {
 
 		for (let section of sections) {
 			for (let tr of section.children) {
-				let bricklinkNameElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(2) p"));
-				let bricklinkName = bricklinkNameElement.textContent.trim();
+				let brickLinkNameElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(2) p"));
+				let brickLinkName = brickLinkNameElement.textContent.trim();
 
 				let legoNameElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(2) span"));
 
@@ -332,10 +338,10 @@ export default class WebScrapper {
 				if (!Number.isInteger(legoId)) legoId = null;
 				if (!legoName) legoName = null;
 
-				let bricklinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
-				let bricklinkId = Number.parseInt(bricklinkIdElement.textContent);
+				let brickLinkIdElement = /** @type {HTMLParagraphElement} */(tr.querySelector("td:nth-of-type(8)"));
+				let brickLinkId = Number.parseInt(brickLinkIdElement.textContent);
 
-				colors.push({ bricklinkId, bricklinkName, legoId, legoName });
+				colors.push({ brickLinkId, brickLinkName, legoId, legoName });
 			}
 		}
 
@@ -359,15 +365,15 @@ export default class WebScrapper {
 		}
 
 		for (let link of links) {
-			let id = this.#parseThemeIdFromLink(link.href);
+			let id = this.parseThemeIdFromLink(link.href);
 
 			let name = link.textContent.trim();
 
 			if (name == "{}" || name == "{more}") continue;
 
 			themes.push({
-				bricklinkId: id,
-				bricklinkName: name
+				brickLinkId: id,
+				brickLinkName: name
 			});
 		}
 
@@ -375,9 +381,10 @@ export default class WebScrapper {
 	}
 
 	/**
+	 * @private
 	 * @param {string} link
 	 */
-	#parseThemeIdFromLink(link) {
+	parseThemeIdFromLink(link) {
 		let id = new URL(link, "https://bricklink.com").searchParams.get("catString") || "";
 		let ids = id.split(".");
 		id = ids[ids.length - 1];
@@ -524,15 +531,15 @@ export default class WebScrapper {
 		await Promise.all([
 			this.downloadLegoSetImage(legoSet.setNumber),
 			legoSet.normalPieces.forEach((setPiece) =>
-				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
+				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
 			),
 			legoSet.normalPieces.forEach((setPiece) =>
-				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
+				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
 			),
 			legoSet.counterpartPieces.forEach((setPiece) =>
-				this.downloadLegoPieceImage(setPiece.bricklinkId, setPiece.color?.bricklinkId || 0)
+				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
 			),
-			legoSet.minifigs.forEach((setPiece) => this.downloadMinifigImage(setPiece.bricklinkId))
+			legoSet.minifigs.forEach((setPiece) => this.downloadMinifigImage(setPiece.brickLinkId))
 		]);
 	}
 }

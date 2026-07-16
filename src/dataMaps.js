@@ -26,8 +26,8 @@ export class LegoColors extends ClassMap {
 		for (let color of databaseColors) {
 			this.set(color.databaseId, new LegoColor(
 				color.databaseId,
-				color.bricklinkId,
-				color.bricklinkName,
+				color.brickLinkId,
+				color.brickLinkName,
 				color.legoId,
 				color.legoName
 			));
@@ -39,8 +39,8 @@ export class LegoColors extends ClassMap {
 
 		for (let color of webColors) {
 			await this.add(
-				color.bricklinkId,
-				color.bricklinkName,
+				color.brickLinkId,
+				color.brickLinkName,
 				color.legoId,
 				color.legoName
 			);
@@ -50,26 +50,26 @@ export class LegoColors extends ClassMap {
 	}
 
 	/**
-	 * @param {number} bricklinkId
-	 * @param {string} bricklinkName
+	 * @param {number} brickLinkId
+	 * @param {string} brickLinkName
 	 * @param {number | null} legoId
 	 * @param {string | null} legoName
 	 */
-	async add(bricklinkId, bricklinkName, legoId, legoName) {
-		let databaseId = await database.addLegoColor(bricklinkId, bricklinkName, legoId, legoName);
+	async add(brickLinkId, brickLinkName, legoId, legoName) {
+		let databaseId = await database.addLegoColor(brickLinkId, brickLinkName, legoId, legoName);
 
-		let legoColor = new LegoColor(databaseId, bricklinkId, bricklinkName, legoId, legoName);
+		let legoColor = new LegoColor(databaseId, brickLinkId, brickLinkName, legoId, legoName);
 
 		this.set(databaseId, legoColor);
 		return legoColor;
 	}
 
 	/**
-	 * @param {number} bricklinkId
+	 * @param {number} brickLinkId
 	 */
-	getByBricklinkId(bricklinkId) {
+	getByBricklinkId(brickLinkId) {
 		for (let legoColor of this.values()) {
-			if (legoColor.bricklinkId == bricklinkId) return legoColor;
+			if (legoColor.brickLinkId == brickLinkId) return legoColor;
 		}
 
 		return null;
@@ -93,40 +93,40 @@ export class LegoSetThemes extends ClassMap {
 	async init(webScrapper) {
 		let databaseThemes = await database.getLegoSetThemes();
 
-		for (let { databaseId, bricklinkId, bricklinkName } of databaseThemes) {
-			this.set(databaseId, new LegoSetTheme(databaseId, bricklinkId, bricklinkName));
+		for (let { databaseId, brickLinkId, brickLinkName } of databaseThemes) {
+			this.set(databaseId, new LegoSetTheme(databaseId, brickLinkId, brickLinkName));
 		}
 
 		if (this.size > 0) return this;
 
 		let webThemes = await webScrapper.getLegoSetThemes();
 
-		for (let { bricklinkId, bricklinkName } of webThemes) {
-			await this.add(bricklinkId, bricklinkName);
+		for (let { brickLinkId, brickLinkName } of webThemes) {
+			await this.add(brickLinkId, brickLinkName);
 		}
 
 		return this;
 	}
 
 	/**
-	 * @param {string} bricklinkId
-	 * @param {string} bricklinkName
+	 * @param {string} brickLinkId
+	 * @param {string} brickLinkName
 	 */
-	async add(bricklinkId, bricklinkName) {
-		let databaseId = await database.addLegoSetTheme(bricklinkId, bricklinkName);
+	async add(brickLinkId, brickLinkName) {
+		let databaseId = await database.addLegoSetTheme(brickLinkId, brickLinkName);
 
-		let legoSetTheme = new LegoSetTheme(databaseId, bricklinkId, bricklinkName);
+		let legoSetTheme = new LegoSetTheme(databaseId, brickLinkId, brickLinkName);
 
 		this.set(databaseId, legoSetTheme);
 		return legoSetTheme;
 	}
 
 	/**
-	 * @param {string} bricklinkId
+	 * @param {string} brickLinkId
 	 */
-	getByBricklinkId(bricklinkId) {
+	getByBricklinkId(brickLinkId) {
 		for (let legoSetTheme of this.values()) {
-			if (legoSetTheme.bricklinkId == bricklinkId) return legoSetTheme;
+			if (legoSetTheme.brickLinkId == brickLinkId) return legoSetTheme;
 		}
 
 		return null;
@@ -156,10 +156,10 @@ export class LegoPieces extends ClassMap {
 
 			this.set(legoPiece.databaseId, new LegoPiece(
 				legoPiece.databaseId,
-				legoPiece.bricklinkId,
-				legoPiece.bricklinkName,
+				legoPiece.brickLinkId,
+				legoPiece.brickLinkName,
 				color,
-				legoPiece.bricklinkCategory
+				legoPiece.brickLinkCategory
 			));
 		}
 
@@ -167,20 +167,20 @@ export class LegoPieces extends ClassMap {
 	}
 
 	/**
-	 * @param {string} bricklinkId
-	 * @param {string} bricklinkName
+	 * @param {string} brickLinkId
+	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color
-	 * @param {string} bricklinkCategory
+	 * @param {string} brickLinkCategory
 	 */
-	async add(bricklinkId, bricklinkName, color, bricklinkCategory) {
-		let databaseId = await database.addLegoPiece(bricklinkId, bricklinkName, color, bricklinkCategory);
+	async add(brickLinkId, brickLinkName, color, brickLinkCategory) {
+		let databaseId = await database.addLegoPiece(brickLinkId, brickLinkName, color, brickLinkCategory);
 
 		let legoPiece = new LegoPiece(
 			databaseId,
-			bricklinkId,
-			bricklinkName,
+			brickLinkId,
+			brickLinkName,
 			color,
-			bricklinkCategory
+			brickLinkCategory
 		);
 
 		this.set(databaseId, legoPiece);
@@ -189,18 +189,18 @@ export class LegoPieces extends ClassMap {
 
 	/**
 	 *
-	 * @param {string} bricklinkId
-	 * @param {string} bricklinkName
+	 * @param {string} brickLinkId
+	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color
-	 * @param {string} bricklinkCategory
+	 * @param {string} brickLinkCategory
 	 */
-	getDatabaseId(bricklinkId, bricklinkName, color, bricklinkCategory) {
+	getDatabaseId(brickLinkId, brickLinkName, color, brickLinkCategory) {
 		for (let value of this.values()) {
 			if (
-				value.bricklinkId == bricklinkId
-				&& value.bricklinkName == bricklinkName
+				value.brickLinkId == brickLinkId
+				&& value.brickLinkName == brickLinkName
 				&& value.color == color
-				&& value.bricklinkCategory == bricklinkCategory
+				&& value.brickLinkCategory == brickLinkCategory
 			) return value.databaseId;
 		}
 
