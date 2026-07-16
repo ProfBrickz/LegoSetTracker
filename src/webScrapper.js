@@ -39,7 +39,6 @@ export default class WebScrapper {
 		await window.loadURL("https://www.bricklink.com");
 
 		let cookies = await window.webContents.session.cookies.get({});
-		window.close();
 
 		this.#cookie = "";
 		for (let cookie of cookies) {
@@ -47,6 +46,8 @@ export default class WebScrapper {
 
 			this.#cookie += `${cookie.name}=${cookie.value}`;
 		}
+
+		window.close();
 	}
 
 	/**
