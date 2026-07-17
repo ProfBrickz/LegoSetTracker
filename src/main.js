@@ -3,7 +3,7 @@ import ejs from "ejs";
 import { app, BrowserWindow, nativeTheme } from "electron";
 import fs from "fs";
 import path from "path";
-import { DATA_PATH, IMAGES_PATH, IS_DEV_MODE, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
+import { DATA_PATH, IMAGES_PATH, IS_BUILT, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PAGES_PATH, PIECE_IMAGES_PATH, PRELOAD_FILE, SET_IMAGES_PATH } from "./constants.js";
 import database from "./database/database.js";
 import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
@@ -205,7 +205,7 @@ function createWindow() {
 		show: false,
 		webPreferences: {
 			contextIsolation: true,
-			devTools: IS_DEV_MODE,
+			devTools: !IS_BUILT,
 			preload: PRELOAD_FILE
 		}
 	});

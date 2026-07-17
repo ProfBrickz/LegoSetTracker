@@ -3,8 +3,6 @@ import path from "path";
 
 
 // Constants
-export const IS_DEV_MODE = process.env.IS_DEV_MODE === "true";
-
 let tempIsBuilt = false;
 const { app } = await import("electron");
 if (app) tempIsBuilt = app.isPackaged;
