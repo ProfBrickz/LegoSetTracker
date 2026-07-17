@@ -37,7 +37,7 @@ export class ClassMap extends Map {
 export class TypedClass {
 	/**
 	 * @private
-	 * @type {Symbol}
+	 * @type {string}
 	 */
-	brand = Symbol("");
+	brand = "";
 }
