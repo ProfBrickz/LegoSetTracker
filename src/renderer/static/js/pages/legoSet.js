@@ -99,7 +99,14 @@ document.addEventListener("pageLoad", (event) => {
 				type: "number",
 				min: 0,
 				onChange: ({ value: amountFound, element, row }) => {
-					if (typeof amountFound !== "number") return;
+					if (
+						typeof amountFound !== "number"
+						|| Number.isNaN(amountFound)
+						|| amountFound < 0
+					) amountFound = 0;
+
+					let input = element.getElementsByTagName("input")[0];
+					input.value = amountFound.toString();
 
 					let pieceId = /** @type {number} */ (row.original.pieceId);
 					let amountNeeded = /** @type {number} */ (row.original.amountNeeded);
