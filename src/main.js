@@ -16,7 +16,7 @@ import WebScrapper from "./webScrapper.js";
 let mainWindow;
 let colors = new LegoColors();
 let webScrapper = new WebScrapper(colors);
-webScrapper.init();
+await webScrapper.init();
 export { webScrapper };
 let legoPieces = new LegoPieces();
 let legoSets = new LegoSets();
@@ -240,11 +240,12 @@ app.whenReady().then(async () => {
 	});
 });
 
-app.on("window-all-closed", () => {
+app.on("window-all-closed", async () => {
 	// Quit when all windows are closed, except on macOS
-	if (process.platform !== "darwin") {
-		app.quit();
-	}
+	if (process.platform == "darwin") return;
+
+	await webScrapper.close();
+	app.quit();
 });
 
 

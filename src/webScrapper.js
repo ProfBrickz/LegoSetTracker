@@ -3,6 +3,7 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import { JSDOM } from "jsdom";
 import path from "path";
+import puppeteer, { Browser, Page } from "puppeteer";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import { LegoColors } from "./dataMaps.js";
 import { LegoPiece, LegoSet } from "./models.js";
@@ -18,9 +19,14 @@ export default class WebScrapper {
 	colors;
 	/**
 	 * @private
-	 * @type {string|null}
+	 * @type {Browser | null}
 	 */
-	cookie = null;
+	browser = null;
+	/**
+	 * @private
+	 * @type {Page | null}
+	 */
+	page = null;
 
 	/**
 	 * @public
@@ -31,29 +37,16 @@ export default class WebScrapper {
 	}
 
 	async init() {
-		await this.getCookie();
+		this.browser = await puppeteer.launch({ headless: true });
+		this.page = await this.browser.newPage();
+
+		await this.getWebpage("https://www.bricklink.com/v2/main.page");
 	}
 
-	/**
-	 * @private
-	 */
-	async getCookie() {
-		let { BrowserWindow, app } = await import("electron");
+	async close() {
+		if (this.browser == null) throw new Error("Error: Browser is not initialized");
 
-		await app.whenReady();
-		let window = new BrowserWindow({ show: false });
-		await window.loadURL("https://www.bricklink.com");
-
-		let cookies = await window.webContents.session.cookies.get({});
-
-		this.cookie = "";
-		for (let cookie of cookies) {
-			if (this.cookie) this.cookie += "; ";
-
-			this.cookie += `${cookie.name}=${cookie.value}`;
-		}
-
-		window.close();
+		await this.browser.close();
 	}
 
 	/**
@@ -65,15 +58,11 @@ export default class WebScrapper {
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
 	 */
 	async getWebpage(url) {
-		const headers = new Headers();
-		headers.append("Cookie", this.cookie || "");
-		let response = await fetch(url, { headers });
+		if (this.browser == null || this.page == null) throw new Error("Error: Browser and page are not initialized");
 
-		if (!response.ok) {
-			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
-		}
+		await this.page.goto(url, { waitUntil: "networkidle2" });
+		const html = await this.page.content();
 
-		let html = await response.text();
 		let { document } = new JSDOM(html).window;
 		return document;
 	}
