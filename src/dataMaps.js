@@ -1,7 +1,7 @@
 // Imports
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme } from "./models.js";
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 /** @import { LegoSetPieceType } from "./types.js" */
 
@@ -147,9 +147,12 @@ export class LegoPieces extends ClassMap {
 	 * @param {LegoColors} colors
 	 */
 	async init(colors) {
-		let databaseLegoPieces = await database.getLegoPieces();
+		// let { pieces, stickeredRelations } = await database.getLegoPieces();
+		let pieces = await database.getLegoPieces();
+		let stickeredRelations = await database.getStickerRelations();
 
-		for (let legoPiece of databaseLegoPieces) {
+		// Initialize all base pieces
+		for (let legoPiece of pieces) {
 			let color = null;
 			if (legoPiece.colorId != null) color = colors.get(legoPiece.colorId);
 			if (typeof color == "undefined") throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
@@ -160,6 +163,24 @@ export class LegoPieces extends ClassMap {
 				legoPiece.brickLinkName,
 				color,
 				legoPiece.brickLinkCategory
+			));
+		}
+
+		// Initialize stickered pieces by looking up their base pieces
+		for (let relation of stickeredRelations) {
+			let baseLegoPiece = this.get(relation.baseLegoPieceId);
+			if (!baseLegoPiece) continue;
+
+			let stickeredLegoPiece = this.get(relation.stickeredLegoPieceId);
+			if (!stickeredLegoPiece) continue;
+
+			this.set(stickeredLegoPiece.databaseId, new StickeredLegoPiece(
+				stickeredLegoPiece.databaseId,
+				stickeredLegoPiece.brickLinkId,
+				stickeredLegoPiece.brickLinkName,
+				stickeredLegoPiece.color,
+				stickeredLegoPiece.brickLinkCategory,
+				baseLegoPiece
 			));
 		}
 
@@ -184,11 +205,46 @@ export class LegoPieces extends ClassMap {
 		);
 
 		this.set(databaseId, legoPiece);
+
+		if (brickLinkName.includes("(Sticker)")) {
+			let baseLegoPieceId = brickLinkId.split("pb")[0];
+			let baseLegoPiece = this.getByBrickLinkIdAndColor(baseLegoPieceId, color);
+			if (baseLegoPiece == null) return null;
+
+			// Convert to StickeredLegoPiece and update in map
+			let stickeredPiece = new StickeredLegoPiece(
+				databaseId,
+				brickLinkId,
+				brickLinkName,
+				color,
+				brickLinkCategory,
+				baseLegoPiece
+			);
+			this.set(databaseId, stickeredPiece);
+
+			// Record the relationship in database
+			await database.addStickeredLegoPiece(stickeredPiece);
+		}
+
 		return legoPiece;
 	}
 
 	/**
-	 *
+	 * @param {string} brickLinkId
+	 * @param {LegoColor | null} color
+	 */
+	getByBrickLinkIdAndColor(brickLinkId, color) {
+		for (let value of this.values()) {
+			if (
+				value.brickLinkId == brickLinkId
+				&& value.color == color
+			) return value;
+		}
+
+		return null;
+	}
+
+	/**
 	 * @param {string} brickLinkId
 	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color

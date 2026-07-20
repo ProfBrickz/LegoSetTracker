@@ -28,6 +28,11 @@ export const legoPiecesDBTable = pgTable("lego_pieces", {
    brickLinkCategory: varchar("bricklink_category", { length: 256 }).notNull()
 });
 
+export const stickeredLegoPiecesDBTable = pgTable("stickered_lego_pieces", {
+   baseLegoPieceId: integer("base_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
+   stickeredLegoPieceId: integer("stickered_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
+});
+
 export const legoSetsDBTable = pgTable("lego_sets", {
    databaseId: serial("id").primaryKey(),
    setNumber: varchar("set_number", { length: 16 }).unique().notNull(),

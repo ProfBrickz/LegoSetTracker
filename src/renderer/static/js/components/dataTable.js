@@ -223,7 +223,6 @@ export class DataTable extends HTMLElement {
    }
 
    /**
-    *
     * @param {number} rowIndex
     */
    deleteRow(rowIndex) {

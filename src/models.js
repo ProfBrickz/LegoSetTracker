@@ -78,6 +78,25 @@ export class LegoPiece extends TypedClass {
 	}
 }
 
+export class StickeredLegoPiece extends LegoPiece {
+	/** @type {LegoPiece} */
+	baseLegoPiece;
+
+	/**
+		 * @param {number} databaseId
+		 * @param {string} brickLinkId
+		 * @param {string} brickLinkName
+		 * @param {LegoColor | null} color
+		 * @param {string} brickLinkCategory
+		 * @param {LegoPiece} baseLegoPiece
+		*/
+	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, baseLegoPiece) {
+		super(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory);
+
+		this.baseLegoPiece = baseLegoPiece;
+	}
+}
+
 export class LegoSetPiece extends TypedClass {
 	/** @type {number} */
 	databaseId;

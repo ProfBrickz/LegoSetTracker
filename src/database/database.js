@@ -4,8 +4,8 @@ import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { DATABASE_PATH, MIGRATIONS_PATH } from "../constants.js";
-import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable } from "./schema.js";
-/** @import { LegoColor, LegoSet, LegoSetPiece } from "../models.js" */
+import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable, stickeredLegoPiecesDBTable } from "./schema.js";
+/** @import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, StickeredLegoPiece } from "../models.js" */
 /** @import { PgliteDatabase } from "drizzle-orm/pglite" */
 
 
@@ -92,6 +92,13 @@ export async function getLegoPieces() {
    return await database.select().from(legoPiecesDBTable);
 }
 
+export async function getStickerRelations() {
+   return await database.select({
+      stickeredLegoPieceId: stickeredLegoPiecesDBTable.stickeredLegoPieceId,
+      baseLegoPieceId: stickeredLegoPiecesDBTable.baseLegoPieceId
+   }).from(stickeredLegoPiecesDBTable);
+}
+
 /**
     * @param {string} brickLinkId
     * @param {string} brickLinkName
@@ -99,7 +106,8 @@ export async function getLegoPieces() {
     * @param {string} brickLinkCategory
     */
 export async function addLegoPiece(brickLinkId, brickLinkName, color, brickLinkCategory) {
-   let result = await database.insert(legoPiecesDBTable)
+   let result = await database
+      .insert(legoPiecesDBTable)
       .values({
          brickLinkId,
          brickLinkName,
@@ -117,10 +125,23 @@ export async function addLegoPiece(brickLinkId, brickLinkName, color, brickLinkC
 }
 
 /**
+ * @param {StickeredLegoPiece} stickeredLegoPiece
+ */
+export async function addStickeredLegoPiece(stickeredLegoPiece) {
+   await database
+      .insert(stickeredLegoPiecesDBTable)
+      .values({
+         stickeredLegoPieceId: stickeredLegoPiece.databaseId,
+         baseLegoPieceId: stickeredLegoPiece.baseLegoPiece.databaseId
+      });
+}
+
+/**
  * @param {number} legoSetId
  */
 export async function getLegoSetPieces(legoSetId) {
-   return await database.select()
+   return await database
+      .select()
       .from(legoSetPiecesDBTable)
       .where(eq(legoSetPiecesDBTable.legoSetId, legoSetId));
 }
@@ -225,6 +246,8 @@ export default {
    addLegoSetTheme,
    getLegoPieces,
    addLegoPiece,
+   addStickeredLegoPiece,
+   getStickerRelations,
    getLegoSetPieces,
    addLegoSetPiece,
    getLegoSets,

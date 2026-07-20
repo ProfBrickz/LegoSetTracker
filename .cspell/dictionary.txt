@@ -24,6 +24,7 @@ piccalil
 polybag
 seccomp
 smallserial
+Stickered
 tailwindlabs
 textareas
 webscraper
