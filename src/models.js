@@ -155,6 +155,33 @@ export class LegoSetPiece extends TypedClass {
 	}
 }
 
+export class StickeredLegoSetPiece extends LegoSetPiece {
+	/** @type {LegoSetPiece} */
+	baseLegoPiece;
+
+	/**
+	 * @param {number} databaseId
+	 * @param {LegoPiece} legoPiece
+	 * @param {LegoSetPiece} baseLegoPiece
+	 * @param {number} amountNeeded
+	 * @param {number} [amountFound=0]
+	 */
+	constructor(databaseId, legoPiece, baseLegoPiece, amountNeeded, amountFound = 0) {
+		super(databaseId, legoPiece, amountNeeded, amountFound);
+
+		this.baseLegoPiece = baseLegoPiece;
+	}
+
+	/**
+	 * @param {number} amountFound
+	 */
+	syncAmountFound(amountFound) {
+		this.baseLegoPiece.amountFound += amountFound - this.amountFound;
+
+		this.amountFound = amountFound;
+	}
+}
+
 export class LegoSetTheme extends TypedClass {
 	/** @type {number} */
 	databaseId;
