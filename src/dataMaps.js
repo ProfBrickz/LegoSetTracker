@@ -1,7 +1,7 @@
 // Imports
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece } from "./models.js";
+import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 /** @import { LegoSetPieceType } from "./types.js" */
 
@@ -295,12 +295,39 @@ export class LegoSetPieces extends ClassMap {
 			amountFound
 		);
 
-		return this.set(databaseId, new LegoSetPiece(
-			databaseId,
-			legoPiece,
-			amountNeeded,
-			amountFound
-		));
+		if (legoPiece instanceof StickeredLegoPiece) {
+			let baseLegoSetPiece = this.getBaseSetPiece(legoPiece);
+			if (baseLegoSetPiece == null) return this;
+
+			return this.set(databaseId, new StickeredLegoSetPiece(
+				databaseId,
+				legoPiece,
+				baseLegoSetPiece,
+				amountNeeded,
+				amountFound
+			));
+		} else {
+			return this.set(databaseId, new LegoSetPiece(
+				databaseId,
+				legoPiece,
+				amountNeeded,
+				amountFound
+			));
+		}
+	}
+
+	/**
+	 * @param {StickeredLegoPiece} stickeredLegoPiece
+	 */
+	getBaseSetPiece(stickeredLegoPiece) {
+		for (let legoSetPiece of this.values()) {
+			if (
+				legoSetPiece.brickLinkId == stickeredLegoPiece.brickLinkId
+				&& legoSetPiece.color == stickeredLegoPiece.color
+			) return legoSetPiece;
+		}
+
+		return null;
 	}
 }
 
@@ -350,15 +377,25 @@ export class LegoSets extends ClassMap {
 				else if (legoSetPiece.legoSetPieceType == "counterpart") legoSetPieces = legoSet.counterpartPieces;
 				else legoSetPieces = legoSet.normalPieces;
 
-				legoSetPieces.set(
-					legoSetPiece.databaseId,
-					new LegoSetPiece(
+				if (legoPiece instanceof StickeredLegoPiece) {
+					let baseLegoSetPiece = legoSetPieces.getBaseSetPiece(legoPiece);
+					if (baseLegoSetPiece == null) continue;
+
+					legoSetPieces.set(legoSetPiece.databaseId, new StickeredLegoSetPiece(
+						legoSetPiece.databaseId,
+						legoPiece,
+						baseLegoSetPiece,
+						legoSetPiece.amountNeeded,
+						legoSetPiece.amountFound
+					));
+				} else {
+					legoSetPieces.set(legoSetPiece.databaseId, new LegoSetPiece(
 						legoSetPiece.databaseId,
 						legoPiece,
 						legoSetPiece.amountNeeded,
 						legoSetPiece.amountFound
-					)
-				);
+					));
+				}
 			}
 		}
 

@@ -362,4 +362,11 @@ export class LegoSet extends TypedClass {
 	async addCounterpartPieces(newSetPieces) {
 		await this.addPieces(this.counterpartPieces, newSetPieces);
 	}
+
+	/**
+	 * @param {StickeredLegoPiece} stickeredLegoPiece
+	 */
+	getBaseSetPiece(stickeredLegoPiece) {
+		return this.normalPieces.getBaseSetPiece(stickeredLegoPiece);
+	}
 }
