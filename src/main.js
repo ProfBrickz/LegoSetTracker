@@ -7,7 +7,7 @@ import { DATA_PATH, IMAGES_PATH, IS_BUILT, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PA
 import database from "./database/database.js";
 import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
-import { LegoSet, LegoSetPiece } from "./models.js";
+import { LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 
 
@@ -355,6 +355,11 @@ ipcMain.on("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
 	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.extraPieces.get(pieceId));
 	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.counterpartPieces.get(pieceId));
 
-	legoSetPiece.amountFound = amountFound;
+	if (legoSetPiece instanceof StickeredLegoSetPiece) {
+		legoSetPiece.syncAmountFound(amountFound);
+		legoSetPiece.baseLegoPiece.save();
+	} else {
+		legoSetPiece.amountFound = amountFound;
+	}
 	legoSetPiece.save();
 });

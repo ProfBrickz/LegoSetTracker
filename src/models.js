@@ -327,11 +327,17 @@ export class LegoSet extends TypedClass {
 					newLegoSetPiece.color,
 					newLegoSetPiece.brickLinkCategory
 				);
+				if (legoPiece == null) return;
 			} else {
 				legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
 			}
 
-			await legoSetPieces.add(this, legoPiece, newLegoSetPiece.amountNeeded, newLegoSetPiece.amountFound);
+			await legoSetPieces.add(
+				this,
+				legoPiece,
+				newLegoSetPiece.amountNeeded,
+				newLegoSetPiece.amountFound
+			);
 		}
 	}
 

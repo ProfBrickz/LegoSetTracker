@@ -224,6 +224,7 @@ export class LegoPieces extends ClassMap {
 
 			// Record the relationship in database
 			await database.addStickeredLegoPiece(stickeredPiece);
+			return stickeredPiece;
 		}
 
 		return legoPiece;
@@ -296,7 +297,7 @@ export class LegoSetPieces extends ClassMap {
 		);
 
 		if (legoPiece instanceof StickeredLegoPiece) {
-			let baseLegoSetPiece = this.getBaseSetPiece(legoPiece);
+			let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
 			if (baseLegoSetPiece == null) return this;
 
 			return this.set(databaseId, new StickeredLegoSetPiece(
@@ -322,7 +323,7 @@ export class LegoSetPieces extends ClassMap {
 	getBaseSetPiece(stickeredLegoPiece) {
 		for (let legoSetPiece of this.values()) {
 			if (
-				legoSetPiece.brickLinkId == stickeredLegoPiece.brickLinkId
+				legoSetPiece.brickLinkId == stickeredLegoPiece.baseLegoPiece.brickLinkId
 				&& legoSetPiece.color == stickeredLegoPiece.color
 			) return legoSetPiece;
 		}
