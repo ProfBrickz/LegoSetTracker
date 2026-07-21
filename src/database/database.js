@@ -143,7 +143,8 @@ export async function getLegoSetPieces(legoSetId) {
    return await database
       .select()
       .from(legoSetPiecesDBTable)
-      .where(eq(legoSetPiecesDBTable.legoSetId, legoSetId));
+      .where(eq(legoSetPiecesDBTable.legoSetId, legoSetId))
+      .orderBy(legoSetPiecesDBTable.databaseId);
 }
 
 /**

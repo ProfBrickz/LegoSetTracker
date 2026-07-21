@@ -379,7 +379,7 @@ export class LegoSets extends ClassMap {
 				else legoSetPieces = legoSet.normalPieces;
 
 				if (legoPiece instanceof StickeredLegoPiece) {
-					let baseLegoSetPiece = legoSetPieces.getBaseSetPiece(legoPiece);
+					let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
 					if (baseLegoSetPiece == null) continue;
 
 					legoSetPieces.set(legoSetPiece.databaseId, new StickeredLegoSetPiece(
