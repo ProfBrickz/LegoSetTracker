@@ -300,13 +300,16 @@ export class LegoSetPieces extends ClassMap {
 			let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
 			if (baseLegoSetPiece == null) return this;
 
-			return this.set(databaseId, new StickeredLegoSetPiece(
+			let stickeredLegoSetPiece = new StickeredLegoSetPiece(
 				databaseId,
 				legoPiece,
 				baseLegoSetPiece,
 				amountNeeded,
 				amountFound
-			));
+			);
+			baseLegoSetPiece.stickeredLegoSetPieces.push(stickeredLegoSetPiece);
+
+			return this.set(databaseId, stickeredLegoSetPiece);
 		} else {
 			return this.set(databaseId, new LegoSetPiece(
 				databaseId,
@@ -382,13 +385,16 @@ export class LegoSets extends ClassMap {
 					let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
 					if (baseLegoSetPiece == null) continue;
 
-					legoSetPieces.set(legoSetPiece.databaseId, new StickeredLegoSetPiece(
+					let stickeredLegoSetPiece = new StickeredLegoSetPiece(
 						legoSetPiece.databaseId,
 						legoPiece,
 						baseLegoSetPiece,
 						legoSetPiece.amountNeeded,
 						legoSetPiece.amountFound
-					));
+					);
+					baseLegoSetPiece.stickeredLegoSetPieces.push(stickeredLegoSetPiece);
+
+					legoSetPieces.set(legoSetPiece.databaseId, stickeredLegoSetPiece);
 				} else {
 					legoSetPieces.set(legoSetPiece.databaseId, new LegoSetPiece(
 						legoSetPiece.databaseId,

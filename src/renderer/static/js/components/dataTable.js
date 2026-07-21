@@ -142,8 +142,13 @@ export class DataTable extends HTMLElement {
             };
          } else if (type === "number") {
             input.type = "number";
-            input.min = String(min);
-            input.max = String(max);
+
+            if (typeof min === "number") input.min = min.toString();
+            else if (typeof min === "function") input.min = min(cell.row).toString();
+            if (typeof max === "number") input.max = max.toString();
+            else if (typeof max === "function") input.max = max(cell.row).toString();
+
+
             input.onchange = (event) => {
                let element = /** @type {HTMLInputElement} */ (event.target);
                if (!element) return;

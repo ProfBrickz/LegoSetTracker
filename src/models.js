@@ -109,6 +109,8 @@ export class LegoSetPiece extends TypedClass {
 	amountNeeded;
 	/** @type {number} */
 	amountFound;
+	/** @type {StickeredLegoSetPiece[]} */
+	stickeredLegoSetPieces = [];
 
 	// Make the constructor with the jsdoc string
 	/**
@@ -152,6 +154,28 @@ export class LegoSetPiece extends TypedClass {
 
 	getMinifigImagePath() {
 		return this.legoPiece.getMinifigImagePath();
+	}
+
+	getTotalStickeredPiecesFound() {
+		let total = 0;
+
+		for (let stickeredLegoSetPiece of this.stickeredLegoSetPieces) {
+			total += stickeredLegoSetPiece.amountFound;
+		}
+
+		return total;
+	}
+
+	/**
+	 * @param {number} amountFound
+	 */
+	syncAmountFound(amountFound) {
+		let totalStickeredPiecesFound = this.getTotalStickeredPiecesFound();
+		if (amountFound < totalStickeredPiecesFound) {
+			amountFound = totalStickeredPiecesFound;
+		}
+
+		this.amountFound = amountFound;
 	}
 }
 

@@ -9,6 +9,7 @@ import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
 import { LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
+/** @import {LegoSetPieceType} from "./types.js" */
 
 
 // Variables
@@ -148,7 +149,7 @@ function getLegoSetsTableRows() {
 /**
  * @param {LegoSet} legoSet
  * @param {LegoSetPiece} legoSetPiece
- * @param {import("./types.js").LegoSetPieceType} legoSetPieceType
+ * @param {LegoSetPieceType} legoSetPieceType
  */
 function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 	let image = "";
@@ -167,7 +168,8 @@ function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 		brickLinkName: legoSetPiece.brickLinkName,
 		brickLinkId: legoSetPiece.brickLinkId,
 		color: legoSetPiece.color,
-		brickLinkCategory: legoSetPiece.brickLinkCategory
+		brickLinkCategory: legoSetPiece.brickLinkCategory,
+		totalStickeredPiecesFound: legoSetPiece.getTotalStickeredPiecesFound()
 	};
 }
 

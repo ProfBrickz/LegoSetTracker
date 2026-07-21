@@ -97,13 +97,18 @@ document.addEventListener("pageLoad", (event) => {
 			accessorKey: "amountFound",
 			meta: {
 				type: "number",
-				min: 0,
+				min: (row) => {
+					return /** @type {number} */ (row.original.totalStickeredPiecesFound);
+				},
 				onChange: ({ value: amountFound, element, row }) => {
 					if (
 						typeof amountFound !== "number"
 						|| Number.isNaN(amountFound)
 						|| amountFound < 0
 					) amountFound = 0;
+
+					let min = /** @type {number} */ (row.original.totalStickeredPiecesFound);
+					if (amountFound < min) amountFound = min;
 
 					let input = element.getElementsByTagName("input")[0];
 					input.value = amountFound.toString();
