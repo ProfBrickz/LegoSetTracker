@@ -1,5 +1,19 @@
 // Imports
-import { BarChart, Check, createIcons, House, Menu, Monitor, Moon, Plus, Settings, Sun, ToyBrick, X } from "lucide";
+import {
+   BarChart,
+   Check,
+   ChevronDown,
+   ChevronRight,
+   createIcons,
+   House,
+   Menu, Monitor,
+   Moon,
+   Plus,
+   Settings,
+   Sun,
+   ToyBrick,
+   X
+} from "lucide";
 import "./pages/addLegoSet.js";
 import "./pages/legoSet.js";
 import "./pages/legoSets.js";
@@ -7,7 +21,18 @@ import "./pages/legoSets.js";
 
 const iconsConfig = {
    icons: {
-      Menu, House, ToyBrick, BarChart, Settings, Sun, Moon, Monitor, X, Check, Plus
+      BarChart,
+      Check,
+      ChevronDown,
+      ChevronRight,
+      House,
+      Menu, Monitor,
+      Moon,
+      Plus,
+      Settings,
+      Sun,
+      ToyBrick,
+      X
    }
 };
 

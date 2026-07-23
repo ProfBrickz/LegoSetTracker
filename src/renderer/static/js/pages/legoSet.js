@@ -46,6 +46,32 @@ document.addEventListener("pageLoad", (event) => {
 
 	dataTable.columns = [
 		{
+			id: "expand",
+			header: "",
+			cell: ({ row }) => {
+				// if (!row.getCanExpand()) return document.createDocumentFragment();
+
+				let expandButton = document.createElement("button");
+
+				// <i data-lucide="house"></i>;
+				let collapsedIcon = document.createElement("i");
+				collapsedIcon.classList.add("collapsed-icon");
+				collapsedIcon.dataset.lucide = "chevron-down";
+				expandButton.appendChild(collapsedIcon);
+
+				expandButton.onclick = (event) => {
+					let expandButton = /** @type {HTMLButtonElement} */ (event.target);
+
+					expandButton.classList.toggle("expanded");
+				};
+
+				return expandButton;
+			},
+			meta: {
+				type: "function"
+			}
+		},
+		{
 			id: "completion",
 			header: "Completion Status",
 			cell: () => {
