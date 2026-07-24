@@ -7,6 +7,7 @@ import { DATABASE_PATH, MIGRATIONS_PATH } from "../constants.js";
 import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable, stickeredLegoPiecesDBTable } from "./schema.js";
 /** @import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, StickeredLegoPiece } from "../models.js" */
 /** @import { PgliteDatabase } from "drizzle-orm/pglite" */
+/** @import { LegoSetPieceType } from "../types.js" */
 
 
 /** @type {PgliteDatabase} */
@@ -150,7 +151,7 @@ export async function getLegoSetPieces(legoSetId) {
 /**
  * @param {number} legoSetId
  * @param {number} legoPieceId
- * @param {import("../types.js").LegoSetPieceType} legoSetPieceType
+ * @param {LegoSetPieceType} legoSetPieceType
  * @param {number} amountNeeded
  * @param {number} amountFound
  */

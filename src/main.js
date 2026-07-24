@@ -9,7 +9,7 @@ import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
 import { LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
-/** @import {LegoSetPieceType} from "./types.js" */
+/** @import {LegoSetPieceType, LegoSetSearchResult, LegoSetsTableRow, LegoSetTableRow} from "./types.js" */
 
 
 // Variables
@@ -93,10 +93,10 @@ function initializeFolders() {
 /**
  * Gets the rows for the Lego set search table
  *
- * @param {import("./types.js").LegoSetSearchResult[]} searchResults
+ * @param {LegoSetSearchResult[]} searchResults
  */
 async function getSearchLegoSetsTableRows(searchResults) {
-	/** @type {(import("./types.js").LegoSetSearchResult & {theme: string, image: string})[]} */
+	/** @type {(LegoSetSearchResult & {theme: string, image: string})[]} */
 	let tableRows = [];
 
 	for (let searchResult of searchResults) {
@@ -122,9 +122,7 @@ async function getSearchLegoSetsTableRows(searchResults) {
  * Gets the rows for the main Lego sets table
  */
 function getLegoSetsTableRows() {
-	/**
-	 * @type {import("./types.js").LegoSetsTableRow[]}
-	 */
+	/** @type {LegoSetsTableRow[]} */
 	let tableRows = [];
 
 	for (let legoSet of legoSets.values()) {
@@ -180,7 +178,7 @@ function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
  */
 function getLegoSetTableRows(legoSet) {
 	/**
-	 * @type {import("./types.js").LegoSetTableRow[]}
+	 * @type {LegoSetTableRow[]}
 	 */
 	let tableRows = [];
 

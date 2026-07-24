@@ -1,13 +1,16 @@
 // Imports
 const { contextBridge } = require("electron");
 const electronIpcRenderer = require("electron").ipcRenderer;
+/** @import {TypedIpcRenderer} from "../types/electronIPC.d.ts" */
+/** @import {ElectronAPI} from "../renderer/types/electronAPI.d.ts" */
 
-/** @type {import("../types/electronIPC.d.ts").TypedIpcRenderer} */
+
+/** @type {TypedIpcRenderer} */
 export const ipcRenderer = electronIpcRenderer;
 
 
 // Context Bridge
-/** @type {import("../renderer/types/electronAPI.d.ts").ElectronAPI} */
+/** @type {ElectronAPI} */
 let electronAPI = {
 	loadPage: async (page, { pageParams = {}, params = {} } = {}) => {
 		// call loadPage on server side

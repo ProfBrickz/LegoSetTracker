@@ -1,12 +1,13 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
+/** @import {LegoSetsTableRow} from "../../../../types.js" */
 
 
 // Event Listeners
 document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
 	let page = event.detail.page;
-	/** @type {import("../../../../types.js").LegoSetsTableRow[]} */
+	/** @type {LegoSetsTableRow[]} */
 	let tableRows = event.detail.params.tableRows;
 
 	if (page !== "lego-sets") return;

@@ -1,5 +1,6 @@
 // Imports
 import { createTable, getCoreRowModel } from "@tanstack/table-core";
+/** @import {ColumnDef,Table, Header, Row, Cell} from "@tanstack/table-core" */
 
 
 // Types
@@ -7,16 +8,16 @@ import { createTable, getCoreRowModel } from "@tanstack/table-core";
  * @typedef {Record<string, unknown>} TableRow
  */
 /**
- * @typedef {import("@tanstack/table-core").ColumnDef<TableRow, any>} TableColumn
+ * @typedef {ColumnDef<TableRow, any>} TableColumn
  */
 /**
- * @typedef {import("@tanstack/table-core").Cell<TableRow, unknown>} TableCell
+ * @typedef {Cell<TableRow, unknown>} TableCell
  */
 
 
 // Web Component
 export class DataTable extends HTMLElement {
-   /** @type {import("@tanstack/table-core").Table<TableRow>} */
+   /** @type {Table<TableRow>} */
    table;
    /** @type {boolean} */
    hideOnEmpty = false;
@@ -78,7 +79,7 @@ export class DataTable extends HTMLElement {
 
    /**
     * @private
-    * @param {import("@tanstack/table-core").Header<TableRow, unknown>} header
+    * @param {Header<TableRow, unknown>} header
     */
    createHeader(header) {
       let th = document.createElement("th");
@@ -186,7 +187,7 @@ export class DataTable extends HTMLElement {
 
    /**
     * @private
-    * @param {import("@tanstack/table-core").Row<TableRow>} row
+    * @param {Row<TableRow>} row
    */
    createRow(row) {
       let tr = document.createElement("tr");

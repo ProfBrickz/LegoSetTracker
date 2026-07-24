@@ -1,5 +1,6 @@
 // Imports
 import crypto from "crypto";
+/** @import { BuildResult } from "electron-builder" */
 import fs from "fs";
 import path from "path";
 
@@ -71,7 +72,7 @@ function moveFile(oldFilePath) {
 /**
  * Handles the completion of artifact builds by creating necessary folder structures and moving artifacts.
  *
- * @param {import("electron-builder").BuildResult} result The result object containing `artifactPaths`.
+ * @param {BuildResult} result The result object containing `artifactPaths`.
  */
 async function artifactBuildCompleted(result) {
 	// Create the build folder structure.

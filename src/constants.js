@@ -18,12 +18,8 @@ export const LAYOUTS_PATH = path.join(VIEWS_PATH, "layouts");
 export const MIGRATIONS_PATH = path.join(SRC_PATH, "../../drizzle");
 
 let tempDataPath;
-if (IS_BUILT) {
-	const { app } = await import("electron");
-	tempDataPath = app.getPath("userData");
-} else {
-	tempDataPath = path.resolve(SRC_PATH, "../../data");
-}
+if (IS_BUILT) tempDataPath = app.getPath("userData");
+else tempDataPath = path.resolve(SRC_PATH, "../../data");
 
 export const DATA_PATH = tempDataPath;
 export const DATABASE_PATH = path.join(DATA_PATH, "database");

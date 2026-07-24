@@ -1,11 +1,13 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
-/** @import { TableRow } from "../components/dataTable.js" */
+/** @import {LegoSetsTableRow, LegoSetTableRow} from "../../../../types.js" */
 
 
+// Types
 /**
  * @typedef {"not-started" | "incomplete" | "complete" | "extra"} CompletionStatus
  */
+
 
 // Functions
 /**
@@ -35,7 +37,7 @@ function getCompletion(amountFound, amountNeeded) {
 document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
 	let page = event.detail.page;
-	/** @type {import("../../../../types.js").LegoSetsTableRow[]} */
+	/** @type {LegoSetsTableRow[]} */
 	let tableRows = event.detail.params.tableRows;
 	/** @type {number} */
 	let legoSetId = event.detail.params.legoSetId;
@@ -180,7 +182,7 @@ document.addEventListener("pageLoad", (event) => {
 			id: "color",
 			header: "Color",
 			accessorFn: (row) => {
-				const legoSetRow = /** @type {import("../../../../types.js").LegoSetTableRow} */ (row);
+				const legoSetRow = /** @type {LegoSetTableRow} */ (row);
 				return legoSetRow.color?.brickLinkName || "";
 			}
 		},
