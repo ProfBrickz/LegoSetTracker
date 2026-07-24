@@ -57,7 +57,6 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {number} pieceCount
  * @property {number} minifigCount
  * @property {number} legoSetCount
- * @property {number} totalStickeredPiecesFound
  */
 
 /**
@@ -71,4 +70,5 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {string} brickLinkId
  * @property {LegoColor | null} color
  * @property {string} brickLinkCategory
+ * @property {number} totalStickeredPiecesFound
  */
