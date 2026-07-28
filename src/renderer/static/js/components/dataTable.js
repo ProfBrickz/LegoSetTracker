@@ -1,18 +1,12 @@
 // Imports
-import { createTable, getCoreRowModel } from "@tanstack/table-core";
+import { createTable, functionalUpdate, getCoreRowModel, getExpandedRowModel } from "@tanstack/table-core";
 /** @import {ColumnDef,Table, Header, Row, Cell} from "@tanstack/table-core" */
 
 
 // Types
-/**
- * @typedef {Record<string, unknown>} TableRow
- */
-/**
- * @typedef {ColumnDef<TableRow, any>} TableColumn
- */
-/**
- * @typedef {Cell<TableRow, unknown>} TableCell
- */
+/** @typedef {Record<string, unknown>} TableRow */
+/** @typedef {ColumnDef<TableRow, any>} TableColumn */
+/** @typedef {Cell<TableRow, unknown>} TableCell */
 
 
 // Web Component
@@ -29,11 +23,21 @@ export class DataTable extends HTMLElement {
          columns: [],
          /** @type {TableRow[]} */
          data: [],
-         getCoreRowModel: getCoreRowModel(),
-         onStateChange: () => { },
          state: {
-            columnPinning: {}
+            columnPinning: {},
+            expanded: {}
          },
+         getSubRows: (row) => /** @type {TableRow[]} */(row.subRows),
+         getCoreRowModel: getCoreRowModel(),
+         getExpandedRowModel: getExpandedRowModel(),
+         onStateChange:
+            /**
+             * @param {any} updater
+             */
+            (updater) => {
+               const newState = functionalUpdate(updater, this.table.options.state);
+               this.table.options.state = newState;
+            },
          renderFallbackValue: null
       });
    }
@@ -61,6 +65,44 @@ export class DataTable extends HTMLElement {
     * @param {TableColumn[]} columns
     */
    set columns(columns) {
+      columns.unshift(
+         {
+            id: "expand",
+            header: "",
+            cell: ({ row }) => {
+               if (!row.getCanExpand()) return document.createDocumentFragment();
+
+               let expandButton = document.createElement("button");
+
+               let collapsedIcon = document.createElement("i");
+               collapsedIcon.classList.add("collapsed-icon");
+               collapsedIcon.dataset.lucide = "chevron-down";
+               expandButton.appendChild(collapsedIcon);
+
+               expandButton.onclick = async (event) => {
+                  event.stopPropagation();
+                  await row.getToggleExpandedHandler()();
+                  let isExpanded = row.getIsExpanded();
+
+                  for (let subRow of /** @type {{rowId: number}[]} */ (row.original.subRows)) {
+                     let rowId = /** @type {number} */ (subRow.rowId);
+                     let tableRow = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"]`));
+
+                     if (isExpanded) tableRow.style.display = "";
+                     else tableRow.style.display = "none";
+                  }
+
+                  expandButton.classList.toggle("expanded");
+               };
+
+               return expandButton;
+            },
+            meta: {
+               type: "function"
+            }
+         }
+      );
+
       this.table.setOptions(previous => ({
          ...previous,
          columns
@@ -192,6 +234,13 @@ export class DataTable extends HTMLElement {
    createRow(row) {
       let tr = document.createElement("tr");
 
+      let rowId = /** @type {number | undefined} */ (row.original.rowId);
+      if (rowId !== undefined) {
+         tr.dataset.rowId = rowId.toString();
+      }
+
+      tr.dataset.depth = row.depth.toString();
+
       for (let cell of row.getAllCells()) {
          tr.appendChild(this.createCell(cell));
       }
@@ -206,12 +255,28 @@ export class DataTable extends HTMLElement {
       let tbody = document.createElement("tbody");
 
       for (let row of this.table.getRowModel().rows) {
-         tbody.appendChild(this.createRow(row));
+         let htmlRow = this.createRow(row);
+
+         tbody.appendChild(htmlRow);
+
+         if (row.subRows.length > 0) {
+            for (let i = 0; i < row.subRows.length; i++) {
+               let subRow = row.subRows[i];
+
+               let htmlSubRow = this.createRow(subRow);
+               htmlSubRow.style.display = "none";
+
+               if (i == row.subRows.length - 1) {
+                  htmlSubRow.classList.add("last-sub-row");
+               }
+
+               tbody.appendChild(htmlSubRow);
+            }
+         }
       }
 
       return tbody;
    }
-
    renderTable() {
       this.innerHTML = "";
 

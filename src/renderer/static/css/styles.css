@@ -8,6 +8,8 @@ html {
 	--h3: calc(var(--h4) * var(--font-scale));
 	--h2: calc(var(--h3) * var(--font-scale));
 	--h1: calc(var(--h2) * var(--font-scale));
+
+	--button-size: 4.5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -327,12 +329,48 @@ data-table td {
 	border-bottom: 1px solid var(--border);
 }
 
-data-table tr:last-child td {
-	border-bottom: none;
-}
+data-table tbody tr {
+	--line-width: 0.15rem;
+	--icon-width: 3rem;
 
-data-table tr:hover {
-	background-color: var(--bg-light);
+	&:not([data-depth="0"]) {
+		td:first-child {
+			position: relative;
+
+			&::before {
+				content: '';
+				display: block;
+				position: absolute;
+				border-left: var(--line-width) solid var(--primary);
+				height: 100%;
+				top: calc(-50% + var(--button-size) - 1rem);
+				margin-left: calc(var(--button-size) / 2 - 0.3rem);
+			}
+
+			&::after {
+				content: '';
+				display: block;
+				position: absolute;
+				top: calc(var(--button-size) / 2);
+				width: calc(100% - var(--button-size) / 2 - 0.3rem);
+				margin-top: calc(50% + var(--button-size) / 2 + 0.5rem);
+				margin-left: calc(var(--button-size) / 2 - 0.2rem);
+				border-bottom: var(--line-width) solid var(--primary);
+			}
+		}
+	}
+
+	&.last-sub-row td:first-child::before {
+		height: calc(50% + var(--button-size) + 0.4rem);
+	}
+
+	&:last-child td {
+		border-bottom: none;
+	}
+
+	&:hover {
+		background-color: var(--bg-light);
+	}
 }
 
 data-table input[type="text"],
@@ -355,8 +393,10 @@ data-table img {
 	object-fit: contain;
 }
 
+
+
 td.expand button {
-	--size: 4.5rem;
+	--size: var(--button-size);
 	width: var(--size);
 	height: var(--size);
 	padding: 0rem;

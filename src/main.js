@@ -121,7 +121,7 @@ async function getSearchLegoSetsTableRows(searchResults) {
 /**
  * Gets the rows for the main Lego sets table
  */
-function getLegoSetsTableRows() {
+function makeLegoSetsTableRows() {
 	/** @type {LegoSetsTableRow[]} */
 	let tableRows = [];
 
@@ -145,11 +145,24 @@ function getLegoSetsTableRows() {
 }
 
 /**
+ * @param {LegoSetTableRow[]} tableRows
+ * @param {number} databaseId
+ */
+function getLegoSetPieceTableRow(tableRows, databaseId) {
+	for (let tableRow of tableRows) {
+		if (tableRow.databaseId == databaseId) return tableRow;
+	}
+
+	return null;
+}
+
+/**
  * @param {LegoSet} legoSet
  * @param {LegoSetPiece} legoSetPiece
  * @param {LegoSetPieceType} legoSetPieceType
+ * @returns {LegoSetTableRow}
  */
-function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
+function makeLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 	let image = "";
 
 	if (legoSetPieceType === "minifig") image = legoSetPiece.getMinifigImagePath();
@@ -159,7 +172,9 @@ function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 
 	return {
 		image: `data:image/png;base64,${image}`,
-		pieceId: /** @type {number} */ (legoSetPiece.databaseId),
+		rowId: /** @type {number} */ (legoSetPiece.databaseId),
+		databaseId: /** @type {number} */ (legoSetPiece.databaseId),
+		subRows: [],
 		amountFound: legoSetPiece.amountFound,
 		amountLeft: legoSetPiece.amountNeeded * legoSet.legoSetCount - legoSetPiece.amountFound,
 		amountNeeded: legoSetPiece.amountNeeded * legoSet.legoSetCount,
@@ -176,22 +191,29 @@ function getLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
  *
  * @param {LegoSet} legoSet
  */
-function getLegoSetTableRows(legoSet) {
-	/**
-	 * @type {LegoSetTableRow[]}
-	 */
+function makeLegoSetTableRows(legoSet) {
+	/** @type {LegoSetTableRow[]}	 */
 	let tableRows = [];
 
 	for (let legoSetPiece of legoSet.normalPieces.values()) {
-		tableRows.push(getLegoSetPieceTableRow(legoSet, legoSetPiece, "normal"));
+		tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "normal"));
 	}
 
 	for (let legoSetPiece of legoSet.minifigs.values()) {
-		tableRows.push(getLegoSetPieceTableRow(legoSet, legoSetPiece, "minifig"));
+		tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "minifig"));
 	}
 
 	for (let legoSetPiece of legoSet.counterpartPieces.values()) {
-		tableRows.push(getLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
+		if (legoSetPiece instanceof StickeredLegoSetPiece) {
+			let baseRow = getLegoSetPieceTableRow(tableRows, legoSetPiece.baseLegoPiece.databaseId);
+
+			if (baseRow !== null) {
+				baseRow.subRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
+				continue;
+			}
+		}
+
+		tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
 	}
 
 	return tableRows;
@@ -254,7 +276,7 @@ ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 	if (page === "add-lego-set") {
 		pageParams.legoSetThemes = legoSetThemes;
 	} else if (page == "lego-sets") {
-		params.tableRows = getLegoSetsTableRows();
+		params.tableRows = makeLegoSetsTableRows();
 	} else if (page === "settings") {
 		setTimeout(() => {
 			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
@@ -267,7 +289,7 @@ ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 
 		pageParams.legoSetName = legoSet.name;
 		params.legoSetId = legoSet.databaseId;
-		params.tableRows = getLegoSetTableRows(legoSet);
+		params.tableRows = makeLegoSetTableRows(legoSet);
 	}
 
 	let html = renderPage(page, pageParams);

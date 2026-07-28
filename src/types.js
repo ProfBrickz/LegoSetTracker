@@ -62,7 +62,9 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
 /**
  * @typedef {Object} LegoSetTableRow
  * @property {string} image
- * @property {number} pieceId
+ * @property {number} rowId
+ * @property {number} databaseId
+ * @property {LegoSetTableRow[]} subRows
  * @property {number} amountFound
  * @property {number} amountLeft
  * @property {number} amountNeeded
