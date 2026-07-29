@@ -102,33 +102,44 @@ document.addEventListener("pageLoad", (event) => {
 				min: (row) => {
 					return /** @type {number} */ (row.original.totalStickeredPiecesFound);
 				},
-				onChange: ({ value: amountFound, element, row }) => {
+				onChange: async ({ value: amountFound, element, row }) => {
 					if (
 						typeof amountFound !== "number"
 						|| Number.isNaN(amountFound)
 						|| amountFound < 0
 					) amountFound = 0;
 
-					let min = /** @type {number} */ (row.original.totalStickeredPiecesFound);
+					let input = element.getElementsByTagName("input")[0];
+
+					let min = Number.parseInt(input.min);
 					if (amountFound < min) amountFound = min;
 
-					let input = element.getElementsByTagName("input")[0];
 					input.value = amountFound.toString();
 
 					let databaseId = /** @type {number} */ (row.original.databaseId);
-					let amountNeeded = /** @type {number} */ (row.original.amountNeeded);
-					let amountLeft = amountNeeded - amountFound;
+					let legoPieceChanges = await window.electronAPI.changeAmountFound(legoSetId, databaseId, amountFound);
 
-					let tr = /** @type {HTMLTableRowElement} */ (element.parentElement);
-					let amountLeftTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("amountLeft")[0]);
-					let completionTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("completion")[0]);
+					for (let legoPieceChange of legoPieceChanges) {
+						console.log(legoPieceChange);
 
-					amountLeftTd.innerText = amountLeft.toString();
+						let tr = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${legoPieceChange.databaseId}"]`));
+						let amountFoundTd = /** @type {HTMLInputElement} */ (tr.querySelector(".amountFound input"));
+						let amountLeftTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("amountLeft")[0]);
+						let completionTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("completion")[0]);
 
-					completionTd.className = "completion";
-					completionTd.classList.add(getCompletion(amountFound, amountNeeded));
+						amountFoundTd.value = legoPieceChange.amountFound.toString();
+						let totalStickeredPiecesFound = 0;
+						for (let stickeredLegoSetPiece of legoPieceChange.stickeredLegoSetPieces) {
+							totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+						}
+						amountFoundTd.min = totalStickeredPiecesFound.toString();
 
-					window.electronAPI.changeAmountFound(legoSetId, databaseId, amountFound);
+						let amountLeft = legoPieceChange.amountNeeded - legoPieceChange.amountFound;
+						amountLeftTd.innerText = amountLeft.toString();
+
+						completionTd.className = "completion";
+						completionTd.classList.add(getCompletion(legoPieceChange.amountFound, legoPieceChange.amountNeeded));
+					}
 				}
 			}
 		},

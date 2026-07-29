@@ -1,5 +1,6 @@
 import "electron";
 import { IpcMain, IpcRenderer } from "electron";
+import { LegoSetPiece } from "../models.js";
 import { LegoSetSearchResult, Theme } from "../types.js";
 
 export { };
@@ -89,11 +90,6 @@ type IpcEventMap = {
 		rowIndex: number,
 		setCount: number
 	];
-	changeAmountFound: [
-		legoSetId: number,
-		pieceId: number,
-		amountFound: number
-	];
 };
 
 type IpcRequestsMap = {
@@ -127,5 +123,13 @@ type IpcRequestsMap = {
 			databaseId: number
 		];
 		returns: void;
+	};
+	changeAmountFound: {
+		args: [
+			legoSetId: number,
+			pieceId: number,
+			amountFound: number
+		];
+		returns: LegoSetPiece[];
 	};
 };

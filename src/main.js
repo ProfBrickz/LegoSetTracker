@@ -370,7 +370,9 @@ ipcMain.on("changeLegoSetCount", (event, legoSetId, setCount) => {
 	legoSet.save();
 });
 
-ipcMain.on("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
+ipcMain.handle("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
+	let result = [];
+
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 	let legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.normalPieces.get(pieceId));
 	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.minifigs.get(pieceId));
@@ -380,8 +382,13 @@ ipcMain.on("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
 	if (legoSetPiece instanceof StickeredLegoSetPiece) {
 		legoSetPiece.syncAmountFound(amountFound);
 		legoSetPiece.baseLegoPiece.save();
+		result.push(legoSetPiece.baseLegoPiece);
 	} else {
 		legoSetPiece.amountFound = amountFound;
 	}
+	result.push(legoSetPiece);
+
 	legoSetPiece.save();
+
+	return result;
 });

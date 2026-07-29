@@ -70,8 +70,8 @@ let electronAPI = {
 	changeLegoSetCount: (legoSetId, setCount) => {
 		ipcRenderer.send("changeLegoSetCount", legoSetId, setCount);
 	},
-	changeAmountFound: (legoSetId, pieceId, amountFound) => {
-		ipcRenderer.send("changeAmountFound", legoSetId, pieceId, amountFound);
+	changeAmountFound: async (legoSetId, pieceId, amountFound) => {
+		return await ipcRenderer.invoke("changeAmountFound", legoSetId, pieceId, amountFound);
 	}
 };
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

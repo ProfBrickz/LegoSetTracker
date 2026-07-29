@@ -1,3 +1,4 @@
+import { LegoSetPiece } from "../../models.js";
 import { LegoSetSearchResult, Theme } from "../types.js";
 
 export interface ElectronAPI {
@@ -7,5 +8,5 @@ export interface ElectronAPI {
    addLegoSet(setNumber: string): void;
    deleteLegoSet(databaseId: number): Promise<void>;
    changeLegoSetCount(legoSetId: number, setCount: number): void;
-   changeAmountFound(legoSetId: number, pieceId: number, amountFound: number): void;
+   changeAmountFound(legoSetId: number, pieceId: number, amountFound: number): Promise<LegoSetPiece[]>;
 }
