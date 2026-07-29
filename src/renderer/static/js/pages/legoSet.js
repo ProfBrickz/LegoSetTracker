@@ -120,8 +120,6 @@ document.addEventListener("pageLoad", (event) => {
 					let legoPieceChanges = await window.electronAPI.changeAmountFound(legoSetId, databaseId, amountFound);
 
 					for (let legoPieceChange of legoPieceChanges) {
-						console.log(legoPieceChange);
-
 						let tr = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${legoPieceChange.databaseId}"]`));
 						let amountFoundTd = /** @type {HTMLInputElement} */ (tr.querySelector(".amountFound input"));
 						let amountLeftTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("amountLeft")[0]);
