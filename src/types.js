@@ -14,7 +14,19 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  */
 
 /**
- * @typedef {Omit<LegoSetPiece, "brand" | "databaseId" | "legoPiece" | "save" | "getImagePath" | "getMinifigImagePath" >} LegoSetPieceInfo
+ * @typedef {Omit<
+ * 	LegoSetPiece,
+ * 	"brand"
+ * 	| "databaseId"
+ * 	| "legoPiece"
+ * 	| "save"
+ * 	| "getImagePath"
+ * 	| "getMinifigImagePath"
+ * 	| "stickeredLegoSetPieces"
+ * 	| "getTotalStickeredPiecesFound"
+ * 	| "syncAmountFound"
+ * 	| "compoundLegoSetPieces"
+ * >} LegoSetPieceInfo
  */
 /**
  * @typedef {Omit<LegoColor, "brand" | "databaseId">} WebLegoColor

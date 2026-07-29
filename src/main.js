@@ -205,7 +205,7 @@ function makeLegoSetTableRows(legoSet) {
 
 	for (let legoSetPiece of legoSet.counterpartPieces.values()) {
 		if (legoSetPiece instanceof StickeredLegoSetPiece) {
-			let baseRow = getLegoSetPieceTableRow(tableRows, legoSetPiece.baseLegoPiece.databaseId);
+			let baseRow = getLegoSetPieceTableRow(tableRows, legoSetPiece.baseLegoSetPiece.databaseId);
 
 			if (baseRow !== null) {
 				baseRow.subRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
@@ -381,8 +381,8 @@ ipcMain.handle("changeAmountFound", (event, legoSetId, pieceId, amountFound) => 
 
 	if (legoSetPiece instanceof StickeredLegoSetPiece) {
 		legoSetPiece.syncAmountFound(amountFound);
-		legoSetPiece.baseLegoPiece.save();
-		result.push(legoSetPiece.baseLegoPiece);
+		legoSetPiece.baseLegoSetPiece.save();
+		result.push(legoSetPiece.baseLegoSetPiece);
 	} else {
 		legoSetPiece.amountFound = amountFound;
 	}

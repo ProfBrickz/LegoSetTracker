@@ -83,17 +83,36 @@ export class StickeredLegoPiece extends LegoPiece {
 	baseLegoPiece;
 
 	/**
-		 * @param {number} databaseId
-		 * @param {string} brickLinkId
-		 * @param {string} brickLinkName
-		 * @param {LegoColor | null} color
-		 * @param {string} brickLinkCategory
-		 * @param {LegoPiece} baseLegoPiece
-		*/
+	 * @param {number} databaseId
+	 * @param {string} brickLinkId
+	 * @param {string} brickLinkName
+	 * @param {LegoColor | null} color
+	 * @param {string} brickLinkCategory
+	 * @param {LegoPiece} baseLegoPiece
+	*/
 	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, baseLegoPiece) {
 		super(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory);
 
 		this.baseLegoPiece = baseLegoPiece;
+	}
+}
+
+export class CompoundLegoPiece extends LegoPiece {
+	/** @type {LegoPiece[]} */
+	components;
+
+	/**
+	 * @param {number} databaseId
+	 * @param {string} brickLinkId
+	 * @param {string} brickLinkName
+	 * @param {LegoColor | null} color
+	 * @param {string} brickLinkCategory
+	 * @param {LegoPiece[]} components
+	 */
+	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, components = []) {
+		super(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory);
+
+		this.components = components;
 	}
 }
 
@@ -111,6 +130,8 @@ export class LegoSetPiece extends TypedClass {
 	amountFound;
 	/** @type {StickeredLegoSetPiece[]} */
 	stickeredLegoSetPieces = [];
+	/** @type {CompoundLegoSetPiece[]} */
+	compoundLegoSetPieces = [];
 
 	// Make the constructor with the jsdoc string
 	/**
@@ -163,6 +184,10 @@ export class LegoSetPiece extends TypedClass {
 			total += stickeredLegoSetPiece.amountFound;
 		}
 
+		for (let compoundLegoSetPiece of this.compoundLegoSetPieces) {
+			total += compoundLegoSetPiece.amountFound;
+		}
+
 		return total;
 	}
 
@@ -181,28 +206,77 @@ export class LegoSetPiece extends TypedClass {
 
 export class StickeredLegoSetPiece extends LegoSetPiece {
 	/** @type {LegoSetPiece} */
-	baseLegoPiece;
+	baseLegoSetPiece;
 
 	/**
 	 * @param {number} databaseId
-	 * @param {LegoPiece} legoPiece
-	 * @param {LegoSetPiece} baseLegoPiece
+	 * @param {StickeredLegoPiece} legoPiece
+	 * @param {LegoSetPiece} baseLegoSetPiece
 	 * @param {number} amountNeeded
 	 * @param {number} [amountFound=0]
 	 */
-	constructor(databaseId, legoPiece, baseLegoPiece, amountNeeded, amountFound = 0) {
+	constructor(databaseId, legoPiece, baseLegoSetPiece, amountNeeded, amountFound = 0) {
 		super(databaseId, legoPiece, amountNeeded, amountFound);
 
-		this.baseLegoPiece = baseLegoPiece;
+		this.baseLegoSetPiece = baseLegoSetPiece;
 	}
 
 	/**
 	 * @param {number} amountFound
 	 */
 	syncAmountFound(amountFound) {
-		this.baseLegoPiece.amountFound += amountFound - this.amountFound;
+		this.baseLegoSetPiece.amountFound += amountFound - this.amountFound;
 
 		this.amountFound = amountFound;
+	}
+}
+
+export class CompoundLegoSetPiece extends LegoSetPiece {
+	/** @type {LegoSetPiece[]} */
+	legoSetComponents;
+
+	/**
+	 * @param {number} databaseId
+	 * @param {CompoundLegoPiece} legoPiece
+	 * @param {number} amountNeeded
+	 * @param {number} amountFound
+	 * @param {LegoSetPiece[]} legoSetComponents
+	 */
+	constructor(databaseId, legoPiece, amountNeeded, amountFound = 0, legoSetComponents = []) {
+		super(databaseId, legoPiece, amountNeeded, amountFound);
+
+		this.legoSetComponents = legoSetComponents;
+	}
+
+	/**
+	 * @param {number} amountFound
+	 */
+	syncAmountFound(amountFound) {
+		let amountFoundDifference = amountFound - this.amountFound;
+
+		for (let legoSetComponent of this.legoSetComponents) {
+			legoSetComponent.amountFound += amountFoundDifference;
+		}
+
+		this.amountFound = amountFound;
+	}
+
+	updateAmountFound() {
+		/** @type {number | null} */
+		let minAmountFound = null;
+
+		for (let legoSetComponent of this.legoSetComponents) {
+			if (minAmountFound == null) {
+				minAmountFound = legoSetComponent.amountFound;
+				continue;
+			}
+
+			if (legoSetComponent.amountFound < minAmountFound) minAmountFound = legoSetComponent.amountFound;
+		}
+
+		if (minAmountFound == null) minAmountFound = 0;
+
+		this.amountFound = minAmountFound;
 	}
 }
 

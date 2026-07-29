@@ -17,6 +17,7 @@ minifig
 minifigs
 Minifigure
 minifigures
+networkidle
 nsis
 pacman
 pglite

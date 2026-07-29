@@ -76,7 +76,6 @@ export class LegoColors extends ClassMap {
 	}
 }
 
-
 /** @extends {ClassMap<number, LegoSetTheme>} */
 export class LegoSetThemes extends ClassMap {
 	/**
@@ -132,7 +131,6 @@ export class LegoSetThemes extends ClassMap {
 		return null;
 	}
 }
-
 
 /** @extends {ClassMap<number, LegoPiece>}  */
 export class LegoPieces extends ClassMap {
@@ -265,7 +263,6 @@ export class LegoPieces extends ClassMap {
 	}
 }
 
-
 /** @extends {ClassMap<number, LegoSetPiece>}  */
 export class LegoSetPieces extends ClassMap {
 	/** @type {LegoSetPieceType} */
@@ -334,7 +331,6 @@ export class LegoSetPieces extends ClassMap {
 		return null;
 	}
 }
-
 
 /** @extends {ClassMap<number, LegoSet>}  */
 export class LegoSets extends ClassMap {
