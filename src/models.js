@@ -4,7 +4,7 @@ import { TypedClass } from "./classes.js";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import database from "./database/database.js";
 import { LegoPieces, LegoSetPieces } from "./dataMaps.js";
-/** @import { LegoSetPieceInfo } from "./types.js" */
+/** @import { LegoSetPieceCategory, LegoSetPieceInfo } from "./types.js" */
 
 
 // Classes
@@ -99,7 +99,7 @@ export class StickeredLegoPiece extends LegoPiece {
 
 export class CompoundLegoPiece extends LegoPiece {
 	/** @type {LegoPiece[]} */
-	components;
+	componentLegoPieces;
 
 	/**
 	 * @param {number} databaseId
@@ -107,12 +107,12 @@ export class CompoundLegoPiece extends LegoPiece {
 	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color
 	 * @param {string} brickLinkCategory
-	 * @param {LegoPiece[]} components
+	 * @param {LegoPiece[]} componentLegoPieces
 	 */
-	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, components = []) {
+	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, componentLegoPieces = []) {
 		super(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory);
 
-		this.components = components;
+		this.componentLegoPieces = componentLegoPieces;
 	}
 }
 
@@ -233,19 +233,19 @@ export class StickeredLegoSetPiece extends LegoSetPiece {
 
 export class CompoundLegoSetPiece extends LegoSetPiece {
 	/** @type {LegoSetPiece[]} */
-	legoSetComponents;
+	componentLegoSetPieces;
 
 	/**
 	 * @param {number} databaseId
 	 * @param {CompoundLegoPiece} legoPiece
 	 * @param {number} amountNeeded
 	 * @param {number} amountFound
-	 * @param {LegoSetPiece[]} legoSetComponents
+	 * @param {LegoSetPiece[]} componentLegoSetPieces
 	 */
-	constructor(databaseId, legoPiece, amountNeeded, amountFound = 0, legoSetComponents = []) {
+	constructor(databaseId, legoPiece, amountNeeded, amountFound = 0, componentLegoSetPieces = []) {
 		super(databaseId, legoPiece, amountNeeded, amountFound);
 
-		this.legoSetComponents = legoSetComponents;
+		this.componentLegoSetPieces = componentLegoSetPieces;
 	}
 
 	/**
@@ -254,8 +254,8 @@ export class CompoundLegoSetPiece extends LegoSetPiece {
 	syncAmountFound(amountFound) {
 		let amountFoundDifference = amountFound - this.amountFound;
 
-		for (let legoSetComponent of this.legoSetComponents) {
-			legoSetComponent.amountFound += amountFoundDifference;
+		for (let componentLegoSetPiece of this.componentLegoSetPieces) {
+			componentLegoSetPiece.amountFound += amountFoundDifference;
 		}
 
 		this.amountFound = amountFound;
@@ -265,13 +265,13 @@ export class CompoundLegoSetPiece extends LegoSetPiece {
 		/** @type {number | null} */
 		let minAmountFound = null;
 
-		for (let legoSetComponent of this.legoSetComponents) {
+		for (let componentLegoSetPiece of this.componentLegoSetPieces) {
 			if (minAmountFound == null) {
-				minAmountFound = legoSetComponent.amountFound;
+				minAmountFound = componentLegoSetPiece.amountFound;
 				continue;
 			}
 
-			if (legoSetComponent.amountFound < minAmountFound) minAmountFound = legoSetComponent.amountFound;
+			if (componentLegoSetPiece.amountFound < minAmountFound) minAmountFound = componentLegoSetPiece.amountFound;
 		}
 
 		if (minAmountFound == null) minAmountFound = 0;
@@ -405,8 +405,9 @@ export class LegoSet extends TypedClass {
 	/**
 	 * @param {LegoSetPieces} legoSetPieces
 	 * @param {LegoSetPieceInfo[]} newLegoSetPieces
+	 * @param {LegoSetPieceCategory} legoSetPieceCategory
 	 */
-	async addPieces(legoSetPieces, newLegoSetPieces) {
+	async addPieces(legoSetPieces, newLegoSetPieces, legoSetPieceCategory) {
 		for (let newLegoSetPiece of newLegoSetPieces) {
 			let legoPieceId = LegoSet.legoPieces.getDatabaseId(
 				newLegoSetPiece.brickLinkId,
@@ -423,7 +424,9 @@ export class LegoSet extends TypedClass {
 					newLegoSetPiece.brickLinkId,
 					newLegoSetPiece.brickLinkName,
 					newLegoSetPiece.color,
-					newLegoSetPiece.brickLinkCategory
+					newLegoSetPiece.brickLinkCategory,
+					legoSetPieceCategory,
+					newLegoSetPiece.isCompoundPiece
 				);
 				if (legoPiece == null) return;
 			} else {
@@ -443,28 +446,28 @@ export class LegoSet extends TypedClass {
 	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addNormalPieces(newSetPieces) {
-		await this.addPieces(this.normalPieces, newSetPieces);
+		await this.addPieces(this.normalPieces, newSetPieces, "normal");
 	}
 
 	/**
 	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addMinifigs(newSetPieces) {
-		await this.addPieces(this.minifigs, newSetPieces);
+		await this.addPieces(this.minifigs, newSetPieces, "minifig");
 	}
 
 	/**
 	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addExtraPieces(newSetPieces) {
-		await this.addPieces(this.extraPieces, newSetPieces);
+		await this.addPieces(this.extraPieces, newSetPieces, "extra");
 	}
 
 	/**
 	 * @param {LegoSetPieceInfo[]} newSetPieces
 	 */
 	async addCounterpartPieces(newSetPieces) {
-		await this.addPieces(this.counterpartPieces, newSetPieces);
+		await this.addPieces(this.counterpartPieces, newSetPieces, "counterpart");
 	}
 
 	/**

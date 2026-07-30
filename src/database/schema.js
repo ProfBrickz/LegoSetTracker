@@ -30,7 +30,12 @@ export const legoPiecesDBTable = pgTable("lego_pieces", {
 
 export const stickeredLegoPiecesDBTable = pgTable("stickered_lego_pieces", {
    baseLegoPieceId: integer("base_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
-   stickeredLegoPieceId: integer("stickered_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
+   stickeredLegoPieceId: integer("stickered_piece_id").notNull().references(() => legoPiecesDBTable.databaseId)
+});
+
+export const componentLegoPiecesDBTable = pgTable("component_lego_pieces", {
+   componentLegoPieceId: integer("component_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
+   compoundLegoPieceId: integer("compound_piece_id").notNull().references(() => legoPiecesDBTable.databaseId)
 });
 
 export const legoSetsDBTable = pgTable("lego_sets", {

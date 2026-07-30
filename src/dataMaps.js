@@ -1,9 +1,10 @@
 // Imports
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
-import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
+import { webScrapper } from "./main.js";
+import { CompoundLegoPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
-/** @import { LegoSetPieceType } from "./types.js" */
+/** @import { LegoSetPieceCategory, LegoSetPieceType } from "./types.js" */
 
 
 // Classes
@@ -148,6 +149,7 @@ export class LegoPieces extends ClassMap {
 		// let { pieces, stickeredRelations } = await database.getLegoPieces();
 		let pieces = await database.getLegoPieces();
 		let stickeredRelations = await database.getStickerRelations();
+		let componentRelations = await database.getComponentRelations();
 
 		// Initialize all base pieces
 		for (let legoPiece of pieces) {
@@ -181,6 +183,26 @@ export class LegoPieces extends ClassMap {
 				baseLegoPiece
 			));
 		}
+		for (let relation of componentRelations) {
+			let componentLegoPiece = this.get(relation.componentLegoPieceId);
+			if (!componentLegoPiece) continue;
+
+			let compoundLegoPiece = this.get(relation.compoundLegoPieceId);
+			if (!compoundLegoPiece) continue;
+
+			if (compoundLegoPiece instanceof CompoundLegoPiece) {
+				compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
+			} else {
+				this.set(compoundLegoPiece.databaseId, new CompoundLegoPiece(
+					compoundLegoPiece.databaseId,
+					compoundLegoPiece.brickLinkId,
+					compoundLegoPiece.brickLinkName,
+					compoundLegoPiece.color,
+					compoundLegoPiece.brickLinkCategory,
+					[componentLegoPiece]
+				));
+			}
+		}
 
 		return this;
 	}
@@ -190,8 +212,10 @@ export class LegoPieces extends ClassMap {
 	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color
 	 * @param {string} brickLinkCategory
+	 * @param {boolean} isCompoundPiece
+	 * @param {LegoSetPieceCategory} legoSetPieceCategory
 	 */
-	async add(brickLinkId, brickLinkName, color, brickLinkCategory) {
+	async add(brickLinkId, brickLinkName, color, brickLinkCategory, legoSetPieceCategory, isCompoundPiece) {
 		let databaseId = await database.addLegoPiece(brickLinkId, brickLinkName, color, brickLinkCategory);
 
 		let legoPiece = new LegoPiece(
@@ -223,6 +247,32 @@ export class LegoPieces extends ClassMap {
 			// Record the relationship in database
 			await database.addStickeredLegoPiece(stickeredPiece);
 			return stickeredPiece;
+		} else if (isCompoundPiece && legoSetPieceCategory === "counterpart") {
+			let compoundLegoPiece = new CompoundLegoPiece(
+				databaseId,
+				brickLinkId,
+				brickLinkName,
+				color,
+				brickLinkCategory,
+				[]
+			);
+
+			let componentInfo = await webScrapper.getCompositePieceComponents(compoundLegoPiece);
+
+			for (let normalPiece of componentInfo.normalPieces) {
+				let componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, normalPiece.color);
+				if (componentLegoPiece == null) componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, color);
+				if (componentLegoPiece == null) {
+					console.log(`Could not find component with id: ${normalPiece.brickLinkId}, and color: ${normalPiece.color?.brickLinkName || "null"}`);
+					continue;
+				}
+
+				compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
+			}
+			this.set(databaseId, compoundLegoPiece);
+
+			await database.addCompoundLegoPiece(compoundLegoPiece);
+			return compoundLegoPiece;
 		}
 
 		return legoPiece;

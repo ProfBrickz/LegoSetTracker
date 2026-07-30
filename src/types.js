@@ -26,7 +26,7 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * 	| "getTotalStickeredPiecesFound"
  * 	| "syncAmountFound"
  * 	| "compoundLegoSetPieces"
- * >} LegoSetPieceInfo
+ * > & {isCompoundPiece: boolean}} LegoSetPieceInfo
  */
 /**
  * @typedef {Omit<LegoColor, "brand" | "databaseId">} WebLegoColor
@@ -41,6 +41,10 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {LegoSetPieceInfo[]} minifigs The minifigures in the set
  * @property {LegoSetPieceInfo[]} extraPieces The extra pieces in the set
  * @property {LegoSetPieceInfo[]} counterparts The counterpart pieces in the set
+ */
+
+/**
+ * @typedef {"normal" | "minifig" | "extra" | "counterpart"} LegoSetPieceCategory
  */
 
 /**

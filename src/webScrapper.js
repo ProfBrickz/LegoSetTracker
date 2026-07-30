@@ -277,13 +277,17 @@ export default class WebScrapper {
 			let brickLinkName = nameAndColor;
 			if (color) brickLinkName = nameAndColor.replace(color.brickLinkName, "").trim();
 
+			let inventoryLinkElement = /** @type {HTMLAnchorElement | null} */ (row.querySelector("td:nth-of-type(3) a:nth-of-type(2)"));
+			let isCompoundPiece = inventoryLinkElement !== null && inventoryLinkElement.textContent === "Inv";
+
 			legoSetPieces.push({
 				brickLinkId,
 				brickLinkName,
 				color,
 				brickLinkCategory,
 				amountNeeded,
-				amountFound: 0
+				amountFound: 0,
+				isCompoundPiece
 			});
 		}
 

@@ -4,8 +4,8 @@ import { eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { DATABASE_PATH, MIGRATIONS_PATH } from "../constants.js";
-import { legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable, stickeredLegoPiecesDBTable } from "./schema.js";
-/** @import { LegoColor, LegoPiece, LegoSet, LegoSetPiece, StickeredLegoPiece } from "../models.js" */
+import { componentLegoPiecesDBTable, legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable, stickeredLegoPiecesDBTable } from "./schema.js";
+/** @import { CompoundLegoPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, StickeredLegoPiece } from "../models.js" */
 /** @import { PgliteDatabase } from "drizzle-orm/pglite" */
 /** @import { LegoSetPieceType } from "../types.js" */
 
@@ -93,13 +93,6 @@ export async function getLegoPieces() {
    return await database.select().from(legoPiecesDBTable);
 }
 
-export async function getStickerRelations() {
-   return await database.select({
-      stickeredLegoPieceId: stickeredLegoPiecesDBTable.stickeredLegoPieceId,
-      baseLegoPieceId: stickeredLegoPiecesDBTable.baseLegoPieceId
-   }).from(stickeredLegoPiecesDBTable);
-}
-
 /**
     * @param {string} brickLinkId
     * @param {string} brickLinkName
@@ -135,6 +128,36 @@ export async function addStickeredLegoPiece(stickeredLegoPiece) {
          stickeredLegoPieceId: stickeredLegoPiece.databaseId,
          baseLegoPieceId: stickeredLegoPiece.baseLegoPiece.databaseId
       });
+}
+
+export async function getStickerRelations() {
+   return await database
+      .select({
+         stickeredLegoPieceId: stickeredLegoPiecesDBTable.stickeredLegoPieceId,
+         baseLegoPieceId: stickeredLegoPiecesDBTable.baseLegoPieceId
+      }).from(stickeredLegoPiecesDBTable);
+}
+
+/**
+ * @param {CompoundLegoPiece} compoundLegoPiece
+ */
+export async function addCompoundLegoPiece(compoundLegoPiece) {
+   for (let componentLegoPiece of compoundLegoPiece.componentLegoPieces) {
+      await database
+         .insert(componentLegoPiecesDBTable)
+         .values({
+            componentLegoPieceId: componentLegoPiece.databaseId,
+            compoundLegoPieceId: compoundLegoPiece.databaseId
+         });
+   }
+}
+
+export async function getComponentRelations() {
+   return await database
+      .select({
+         componentLegoPieceId: componentLegoPiecesDBTable.componentLegoPieceId,
+         compoundLegoPieceId: componentLegoPiecesDBTable.compoundLegoPieceId
+      }).from(componentLegoPiecesDBTable);
 }
 
 /**
@@ -250,6 +273,8 @@ export default {
    addLegoPiece,
    addStickeredLegoPiece,
    getStickerRelations,
+   addCompoundLegoPiece,
+   getComponentRelations,
    getLegoSetPieces,
    addLegoSetPiece,
    getLegoSets,
