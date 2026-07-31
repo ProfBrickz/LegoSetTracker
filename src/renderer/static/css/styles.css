@@ -333,12 +333,22 @@ data-table tbody tr {
 	--line-width: 0.15rem;
 	--icon-width: 3rem;
 
-	/* &[data-depth="2"] td:first-child,
-	&[data-depth="1"].last-sub-row td:first-child {
-		padding-left: calc(var(--button-size) * 1 + 1rem);
-	} */
+	&[data-depth="2"] td:first-child {
+		padding-left: calc(var(--button-size) * 1.5);
+	}
 
-	/* &:not([data-depth="0"]) {
+	&[data-depth="1"].last-sub-row td:first-child:has(div) {
+		div {
+			margin-left: calc(var(--button-size) * 1.25);
+		}
+
+		&::after {
+			margin-top: calc(var(--button-size) * -0.5);
+			width: calc(100% - var(--button-size) * 2);
+		}
+	}
+
+	&:not([data-depth="0"]) {
 		td:first-child {
 			position: relative;
 
@@ -356,18 +366,20 @@ data-table tbody tr {
 				content: '';
 				display: block;
 				position: absolute;
-				top: calc(var(--button-size) / 2);
 				width: calc(100% - var(--button-size) / 2 - 0.3rem);
-				margin-top: calc(50% + var(--button-size) / 2 + 0.5rem);
 				margin-left: calc(var(--button-size) / 2 - 0.2rem);
 				border-bottom: var(--line-width) solid var(--primary);
 			}
 		}
 	}
 
+	&[data-depth="2"] td:first-child::after {
+		width: calc(100% - var(--button-size) * 2 - 0.3rem);
+	}
+
 	&.last-sub-row td:first-child::before {
-		height: calc(50% + var(--button-size) + 0.4rem);
-	} */
+		height: calc(50% + var(--button-size) + 0.6rem);
+	}
 
 	&:last-child td {
 		border-bottom: none;
