@@ -2,7 +2,7 @@
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { webScrapper } from "./main.js";
-import { CompoundLegoPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
+import { CompoundLegoPiece, CompoundLegoSetPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 /** @import { LegoSetPieceCategory, LegoSetPieceType } from "./types.js" */
 
@@ -344,7 +344,7 @@ export class LegoSetPieces extends ClassMap {
 		);
 
 		if (legoPiece instanceof StickeredLegoPiece) {
-			let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
+			let baseLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(legoPiece.baseLegoPiece);
 			if (baseLegoSetPiece == null) return this;
 
 			let stickeredLegoSetPiece = new StickeredLegoSetPiece(
@@ -357,6 +357,22 @@ export class LegoSetPieces extends ClassMap {
 			baseLegoSetPiece.stickeredLegoSetPieces.push(stickeredLegoSetPiece);
 
 			return this.set(databaseId, stickeredLegoSetPiece);
+		} else if (legoPiece instanceof CompoundLegoPiece) {
+			let compoundLegoSetPiece = new CompoundLegoSetPiece(
+				databaseId,
+				legoPiece,
+				amountNeeded,
+				amountFound
+			);
+
+			for (let componentLegoPiece of legoPiece.componentLegoPieces) {
+				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+				if (componentLegoSetPiece == null) continue;
+
+				compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
+			}
+
+			return this.set(databaseId, compoundLegoSetPiece);
 		} else {
 			return this.set(databaseId, new LegoSetPiece(
 				databaseId,
@@ -368,13 +384,13 @@ export class LegoSetPieces extends ClassMap {
 	}
 
 	/**
-	 * @param {StickeredLegoPiece} stickeredLegoPiece
+	 * @param {LegoPiece} legoPiece
 	 */
-	getBaseSetPiece(stickeredLegoPiece) {
+	getLegoSetPiece(legoPiece) {
 		for (let legoSetPiece of this.values()) {
 			if (
-				legoSetPiece.brickLinkId == stickeredLegoPiece.baseLegoPiece.brickLinkId
-				&& legoSetPiece.color == stickeredLegoPiece.color
+				legoSetPiece.brickLinkId == legoPiece.brickLinkId
+				&& legoSetPiece.color == legoPiece.color
 			) return legoSetPiece;
 		}
 
@@ -428,7 +444,7 @@ export class LegoSets extends ClassMap {
 				else legoSetPieces = legoSet.normalPieces;
 
 				if (legoPiece instanceof StickeredLegoPiece) {
-					let baseLegoSetPiece = legoSet.normalPieces.getBaseSetPiece(legoPiece);
+					let baseLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(legoPiece.baseLegoPiece);
 					if (baseLegoSetPiece == null) continue;
 
 					let stickeredLegoSetPiece = new StickeredLegoSetPiece(
@@ -441,6 +457,22 @@ export class LegoSets extends ClassMap {
 					baseLegoSetPiece.stickeredLegoSetPieces.push(stickeredLegoSetPiece);
 
 					legoSetPieces.set(legoSetPiece.databaseId, stickeredLegoSetPiece);
+				} else if (legoPiece instanceof CompoundLegoPiece) {
+					let compoundLegoSetPiece = new CompoundLegoSetPiece(
+						legoSetPiece.databaseId,
+						legoPiece,
+						legoSetPiece.amountNeeded,
+						legoSetPiece.amountFound
+					);
+
+					for (let componentLegoPiece of legoPiece.componentLegoPieces) {
+						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+						if (componentLegoSetPiece == null) continue;
+
+						compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
+					}
+
+					legoSetPieces.set(legoSetPiece.databaseId, compoundLegoSetPiece);
 				} else {
 					legoSetPieces.set(legoSetPiece.databaseId, new LegoSetPiece(
 						legoSetPiece.databaseId,
