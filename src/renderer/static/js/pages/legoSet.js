@@ -176,6 +176,7 @@ document.addEventListener("pageLoad", (event) => {
 		}
 	];
 
+	console.log(tableRows);
 	dataTable.data = tableRows;
 
 	dataTable.renderTable();

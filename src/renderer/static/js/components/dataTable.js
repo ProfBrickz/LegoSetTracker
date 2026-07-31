@@ -61,47 +61,77 @@ export class DataTable extends HTMLElement {
       return this.table.options.data;
    }
 
+   /** @typedef {{rowId: number, subRows: subRow[]}} subRow  */
+   /**
+    * @param {subRow[]} subRows
+    * @param {boolean} isExpanded
+    */
+   expandCollapseSubRows(subRows, isExpanded) {
+      for (let subRow of subRows) {
+         console.log(subRow);
+
+         let rowId = subRow.rowId;
+         let tableRow = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"]`));
+
+         if (isExpanded) {
+            tableRow.style.display = "";
+         } else {
+            tableRow.style.display = "none";
+
+            let expandButton = /** @type {HTMLButtonElement | undefined} */ (tableRow.querySelector("td.expand button"));
+            if (!!expandButton) expandButton.classList.remove("expanded");
+
+            if (subRow.subRows.length > 0) this.expandCollapseSubRows(subRow.subRows, isExpanded);
+         }
+      }
+   }
+
    /**
     * @param {TableColumn[]} columns
     */
    set columns(columns) {
-      columns.unshift(
-         {
-            id: "expand",
-            header: "",
-            cell: ({ row }) => {
-               if (!row.getCanExpand()) return document.createDocumentFragment();
+      columns.unshift({
+         id: "expand",
+         header: "",
+         cell: ({ row }) => {
+            let fragment = document.createDocumentFragment();
 
-               let expandButton = document.createElement("button");
+            if (!row.getCanExpand()) return fragment;
 
-               let collapsedIcon = document.createElement("i");
-               collapsedIcon.classList.add("collapsed-icon");
-               collapsedIcon.dataset.lucide = "chevron-down";
-               expandButton.appendChild(collapsedIcon);
+            /** @type {HTMLDivElement | null} */
+            let div = null;
+            if (row.depth > 0) div = document.createElement("div");
 
-               expandButton.onclick = async (event) => {
-                  event.stopPropagation();
-                  await row.getToggleExpandedHandler()();
-                  let isExpanded = row.getIsExpanded();
+            let expandButton = document.createElement("button");
 
-                  for (let subRow of /** @type {{rowId: number}[]} */ (row.original.subRows)) {
-                     let rowId = /** @type {number} */ (subRow.rowId);
-                     let tableRow = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"]`));
+            let collapsedIcon = document.createElement("i");
+            collapsedIcon.classList.add("collapsed-icon");
+            collapsedIcon.dataset.lucide = "chevron-down";
+            expandButton.appendChild(collapsedIcon);
 
-                     if (isExpanded) tableRow.style.display = "";
-                     else tableRow.style.display = "none";
-                  }
+            expandButton.onclick = async (event) => {
+               event.stopPropagation();
+               await row.getToggleExpandedHandler()();
+               let isExpanded = row.getIsExpanded();
 
-                  expandButton.classList.toggle("expanded");
-               };
+               this.expandCollapseSubRows(/** @type {subRow[]} */(row.original.subRows), isExpanded);
 
-               return expandButton;
-            },
-            meta: {
-               type: "function"
+               expandButton.classList.toggle("expanded");
+            };
+
+            if (div !== null) {
+               div.appendChild(expandButton);
+               fragment.appendChild(div);
+            } else {
+               fragment.appendChild(expandButton);
             }
+
+            return fragment;
+         },
+         meta: {
+            type: "function"
          }
-      );
+      });
 
       this.table.setOptions(previous => ({
          ...previous,
@@ -249,6 +279,29 @@ export class DataTable extends HTMLElement {
    }
 
    /**
+    * @param {HTMLTableSectionElement} tbody
+    * @param {Row<TableRow>} row
+    */
+   createSubRows(tbody, row) {
+      if (row.subRows.length <= 0) return;
+
+      for (let i = 0; i < row.subRows.length; i++) {
+         let subRow = row.subRows[i];
+
+         let htmlSubRow = this.createRow(subRow);
+         htmlSubRow.style.display = "none";
+
+         if (i == row.subRows.length - 1) {
+            htmlSubRow.classList.add("last-sub-row");
+         }
+
+         tbody.appendChild(htmlSubRow);
+
+         this.createSubRows(tbody, subRow);
+      }
+   }
+
+   /**
     * @private
     */
    createTbody() {
@@ -259,24 +312,12 @@ export class DataTable extends HTMLElement {
 
          tbody.appendChild(htmlRow);
 
-         if (row.subRows.length > 0) {
-            for (let i = 0; i < row.subRows.length; i++) {
-               let subRow = row.subRows[i];
-
-               let htmlSubRow = this.createRow(subRow);
-               htmlSubRow.style.display = "none";
-
-               if (i == row.subRows.length - 1) {
-                  htmlSubRow.classList.add("last-sub-row");
-               }
-
-               tbody.appendChild(htmlSubRow);
-            }
-         }
+         this.createSubRows(tbody, row);
       }
 
       return tbody;
    }
+
    renderTable() {
       this.innerHTML = "";
 

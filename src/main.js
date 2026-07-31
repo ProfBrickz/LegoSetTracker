@@ -7,7 +7,7 @@ import { DATA_PATH, IMAGES_PATH, IS_BUILT, LAYOUTS_PATH, MINIFIG_IMAGES_PATH, PA
 import database from "./database/database.js";
 import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
-import { LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
+import { CompoundLegoSetPiece, LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
 /** @import {LegoSetPieceType, LegoSetSearchResult, LegoSetsTableRow, LegoSetTableRow} from "./types.js" */
 
@@ -147,13 +147,41 @@ function makeLegoSetsTableRows() {
 /**
  * @param {LegoSetTableRow[]} tableRows
  * @param {number} databaseId
+ * @returns {LegoSetTableRow | null}
  */
 function getLegoSetPieceTableRow(tableRows, databaseId) {
 	for (let tableRow of tableRows) {
 		if (tableRow.databaseId == databaseId) return tableRow;
+
+		if (tableRow.subRows.length > 0) {
+			let foundRow = getLegoSetPieceTableRow(tableRow.subRows, databaseId);
+			if (foundRow) return foundRow;
+		}
 	}
 
 	return null;
+}
+
+/**
+ * @param {LegoSetTableRow[]} tableRows
+ * @param {number} databaseId
+ * @returns {boolean}
+ */
+function removeLegoSetPieceTableRow(tableRows, databaseId) {
+	for (let i = 0; i < tableRows.length; i++) {
+		let tableRow = tableRows[i];
+
+		if (tableRow.databaseId == databaseId) {
+			tableRows.splice(i, 1);
+			return true;
+		}
+		if (tableRow.subRows.length > 0) {
+			let inSubRows = removeLegoSetPieceTableRow(tableRow.subRows, databaseId);
+			if (inSubRows) return true;
+		}
+	}
+
+	return false;
 }
 
 /**
@@ -211,6 +239,19 @@ function makeLegoSetTableRows(legoSet) {
 				baseRow.subRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
 				continue;
 			}
+		} else if (legoSetPiece instanceof CompoundLegoSetPiece) {
+			tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
+
+			for (let componentLegoSetPiece of legoSetPiece.componentLegoSetPieces) {
+				let componentRow = getLegoSetPieceTableRow(tableRows, componentLegoSetPiece.databaseId);
+
+				if (componentRow !== null) {
+					tableRows[tableRows.length - 1].subRows.push(componentRow);
+					removeLegoSetPieceTableRow(tableRows, componentRow.databaseId);
+				}
+			}
+
+			continue;
 		}
 
 		tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));

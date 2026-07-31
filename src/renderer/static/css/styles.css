@@ -333,7 +333,12 @@ data-table tbody tr {
 	--line-width: 0.15rem;
 	--icon-width: 3rem;
 
-	&:not([data-depth="0"]) {
+	/* &[data-depth="2"] td:first-child,
+	&[data-depth="1"].last-sub-row td:first-child {
+		padding-left: calc(var(--button-size) * 1 + 1rem);
+	} */
+
+	/* &:not([data-depth="0"]) {
 		td:first-child {
 			position: relative;
 
@@ -362,7 +367,7 @@ data-table tbody tr {
 
 	&.last-sub-row td:first-child::before {
 		height: calc(50% + var(--button-size) + 0.4rem);
-	}
+	} */
 
 	&:last-child td {
 		border-bottom: none;
