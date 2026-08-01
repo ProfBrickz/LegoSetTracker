@@ -370,6 +370,7 @@ export class LegoSetPieces extends ClassMap {
 				if (componentLegoSetPiece == null) continue;
 
 				compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
+				componentLegoSetPiece.compoundLegoSetPieces.push(compoundLegoSetPiece);
 			}
 
 			return this.set(databaseId, compoundLegoSetPiece);
@@ -470,6 +471,7 @@ export class LegoSets extends ClassMap {
 						if (componentLegoSetPiece == null) continue;
 
 						compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
+						componentLegoSetPiece.compoundLegoSetPieces.push(compoundLegoSetPiece);
 					}
 
 					legoSetPieces.set(legoSetPiece.databaseId, compoundLegoSetPiece);

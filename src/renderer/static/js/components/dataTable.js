@@ -68,7 +68,6 @@ export class DataTable extends HTMLElement {
     */
    expandCollapseSubRows(subRows, isExpanded) {
       for (let subRow of subRows) {
-         console.log(subRow);
 
          let rowId = subRow.rowId;
          let tableRow = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"]`));

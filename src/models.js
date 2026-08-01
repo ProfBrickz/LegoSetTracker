@@ -184,23 +184,24 @@ export class LegoSetPiece extends TypedClass {
 			total += stickeredLegoSetPiece.amountFound;
 		}
 
-		for (let compoundLegoSetPiece of this.compoundLegoSetPieces) {
-			total += compoundLegoSetPiece.amountFound;
-		}
-
 		return total;
 	}
 
 	/**
 	 * @param {number} amountFound
+	 * @param {(legoSetPiece: LegoSetPiece) => void} callback
 	 */
-	syncAmountFound(amountFound) {
+	syncAmountFound(amountFound, callback) {
 		let totalStickeredPiecesFound = this.getTotalStickeredPiecesFound();
-		if (amountFound < totalStickeredPiecesFound) {
-			amountFound = totalStickeredPiecesFound;
-		}
+		if (amountFound < totalStickeredPiecesFound) amountFound = totalStickeredPiecesFound;
 
 		this.amountFound = amountFound;
+		callback(this);
+
+		for (let compoundLegoSetPiece of this.compoundLegoSetPieces) {
+			compoundLegoSetPiece.updateAmountFound();
+			callback(compoundLegoSetPiece);
+		}
 	}
 }
 
@@ -223,11 +224,18 @@ export class StickeredLegoSetPiece extends LegoSetPiece {
 
 	/**
 	 * @param {number} amountFound
+	 * @param {(legoSetPiece: LegoSetPiece) => void} callback
 	 */
-	syncAmountFound(amountFound) {
-		this.baseLegoSetPiece.amountFound += amountFound - this.amountFound;
+	syncAmountFound(amountFound, callback) {
+		let amountFoundDifference = amountFound - this.amountFound;
 
 		this.amountFound = amountFound;
+		callback(this);
+
+		this.baseLegoSetPiece.syncAmountFound(
+			this.baseLegoSetPiece.amountFound + amountFoundDifference,
+			callback
+		);
 	}
 }
 
@@ -249,16 +257,39 @@ export class CompoundLegoSetPiece extends LegoSetPiece {
 	}
 
 	/**
-	 * @param {number} amountFound
+	 * @returns {number}
 	 */
-	syncAmountFound(amountFound) {
-		let amountFoundDifference = amountFound - this.amountFound;
+	getMaxStickeredPiecesFound() {
+		let maxStickeredPiecesFound = 0;
 
 		for (let componentLegoSetPiece of this.componentLegoSetPieces) {
-			componentLegoSetPiece.amountFound += amountFoundDifference;
+			let totalStickeredPiecesFound = componentLegoSetPiece.getTotalStickeredPiecesFound();
+
+			if (totalStickeredPiecesFound > maxStickeredPiecesFound) maxStickeredPiecesFound = totalStickeredPiecesFound;
 		}
 
+		return maxStickeredPiecesFound;
+	}
+
+	/**
+	 * @param {number} amountFound
+	 * @param {(legoSetPiece: LegoSetPiece) => void} callback
+	 */
+	syncAmountFound(amountFound, callback) {
+		let maxStickeredPiecesFound = this.getMaxStickeredPiecesFound();
+		if (amountFound < maxStickeredPiecesFound) amountFound = maxStickeredPiecesFound;
+
+		let amountFoundDifference = amountFound - this.amountFound;
+
 		this.amountFound = amountFound;
+		callback(this);
+
+		for (let componentLegoSetPiece of this.componentLegoSetPieces) {
+			componentLegoSetPiece.syncAmountFound(
+				componentLegoSetPiece.amountFound + amountFoundDifference,
+				callback
+			);
+		}
 	}
 
 	updateAmountFound() {

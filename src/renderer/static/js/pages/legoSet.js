@@ -1,6 +1,7 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
 /** @import {LegoSetsTableRow, LegoSetTableRow} from "../../../../types.js" */
+/** @import { CompoundLegoSetPiece } from "../../../../models.js" */
 
 
 // Types
@@ -100,7 +101,7 @@ document.addEventListener("pageLoad", (event) => {
 			meta: {
 				type: "number",
 				min: (row) => {
-					return /** @type {number} */ (row.original.totalStickeredPiecesFound);
+					return /** @type {number} */ (row.original.min);
 				},
 				onChange: async ({ value: amountFound, element, row }) => {
 					if (
@@ -126,11 +127,30 @@ document.addEventListener("pageLoad", (event) => {
 						let completionTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("completion")[0]);
 
 						amountFoundTd.value = legoPieceChange.amountFound.toString();
-						let totalStickeredPiecesFound = 0;
-						for (let stickeredLegoSetPiece of legoPieceChange.stickeredLegoSetPieces) {
-							totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+
+						let min = 0;
+						let compoundLegoPieceChange = /** @type {CompoundLegoSetPiece} */ (legoPieceChange);
+						if (Array.isArray(compoundLegoPieceChange.componentLegoSetPieces)) {
+							let maxStickeredPiecesFound = 0;
+
+							for (let componentLegoSetPiece of compoundLegoPieceChange.componentLegoSetPieces) {
+								let totalStickeredPiecesFound = 0;
+								for (let stickeredLegoSetPiece of componentLegoSetPiece.stickeredLegoSetPieces) {
+									totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+								}
+
+								if (totalStickeredPiecesFound > maxStickeredPiecesFound) maxStickeredPiecesFound = totalStickeredPiecesFound;
+							}
+
+							min = maxStickeredPiecesFound;
+						} else {
+							let totalStickeredPiecesFound = 0;
+							for (let stickeredLegoSetPiece of legoPieceChange.stickeredLegoSetPieces) {
+								totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+							}
+							min = totalStickeredPiecesFound;
 						}
-						amountFoundTd.min = totalStickeredPiecesFound.toString();
+						amountFoundTd.min = min.toString();
 
 						let amountLeft = legoPieceChange.amountNeeded - legoPieceChange.amountFound;
 						amountLeftTd.innerText = amountLeft.toString();
@@ -176,7 +196,6 @@ document.addEventListener("pageLoad", (event) => {
 		}
 	];
 
-	console.log(tableRows);
 	dataTable.data = tableRows;
 
 	dataTable.renderTable();

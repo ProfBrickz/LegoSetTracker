@@ -198,6 +198,11 @@ function makeLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 
 	image = fs.readFileSync(image).toString("base64") || "";
 
+	let min = 0;
+
+	if (legoSetPiece instanceof CompoundLegoSetPiece) min = legoSetPiece.getMaxStickeredPiecesFound();
+	else min = legoSetPiece.getTotalStickeredPiecesFound();
+
 	return {
 		image: `data:image/png;base64,${image}`,
 		rowId: /** @type {number} */ (legoSetPiece.databaseId),
@@ -210,7 +215,7 @@ function makeLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 		brickLinkId: legoSetPiece.brickLinkId,
 		color: legoSetPiece.color,
 		brickLinkCategory: legoSetPiece.brickLinkCategory,
-		totalStickeredPiecesFound: legoSetPiece.getTotalStickeredPiecesFound()
+		min
 	};
 }
 
@@ -412,6 +417,7 @@ ipcMain.on("changeLegoSetCount", (event, legoSetId, setCount) => {
 });
 
 ipcMain.handle("changeAmountFound", (event, legoSetId, pieceId, amountFound) => {
+	/** @type {LegoSetPiece[]} */
 	let result = [];
 
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
@@ -420,16 +426,10 @@ ipcMain.handle("changeAmountFound", (event, legoSetId, pieceId, amountFound) => 
 	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.extraPieces.get(pieceId));
 	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.counterpartPieces.get(pieceId));
 
-	if (legoSetPiece instanceof StickeredLegoSetPiece) {
-		legoSetPiece.syncAmountFound(amountFound);
-		legoSetPiece.baseLegoSetPiece.save();
-		result.push(legoSetPiece.baseLegoSetPiece);
-	} else {
-		legoSetPiece.amountFound = amountFound;
-	}
-	result.push(legoSetPiece);
-
-	legoSetPiece.save();
+	legoSetPiece.syncAmountFound(amountFound, (legoSetPiece) => {
+		legoSetPiece.save();
+		result.push(legoSetPiece);
+	});
 
 	return result;
 });
