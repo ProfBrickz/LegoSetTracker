@@ -234,6 +234,22 @@ function makeLegoSetTableRows(legoSet) {
 	}
 
 	for (let legoSetPiece of legoSet.minifigs.values()) {
+		if (legoSetPiece instanceof CompoundLegoSetPiece) {
+			let tableRow = makeLegoSetPieceTableRow(legoSet, legoSetPiece, "minifig");
+
+			for (let componentLegoSetPiece of legoSetPiece.componentLegoSetPieces) {
+				let componentRow = getLegoSetPieceTableRow(tableRows, componentLegoSetPiece.databaseId);
+
+				if (componentRow !== null) {
+					tableRow.subRows.push(componentRow);
+					removeLegoSetPieceTableRow(tableRows, componentRow.databaseId);
+				}
+			}
+
+			tableRows.push(tableRow);
+			continue;
+		}
+
 		tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "minifig"));
 	}
 
@@ -246,17 +262,18 @@ function makeLegoSetTableRows(legoSet) {
 				continue;
 			}
 		} else if (legoSetPiece instanceof CompoundLegoSetPiece) {
-			tableRows.push(makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart"));
+			let tableRow = makeLegoSetPieceTableRow(legoSet, legoSetPiece, "counterpart");
 
 			for (let componentLegoSetPiece of legoSetPiece.componentLegoSetPieces) {
 				let componentRow = getLegoSetPieceTableRow(tableRows, componentLegoSetPiece.databaseId);
 
 				if (componentRow !== null) {
-					tableRows[tableRows.length - 1].subRows.push(componentRow);
+					tableRow.subRows.push(componentRow);
 					removeLegoSetPieceTableRow(tableRows, componentRow.databaseId);
 				}
 			}
 
+			tableRows.push(tableRow);
 			continue;
 		}
 
