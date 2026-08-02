@@ -88,7 +88,7 @@ type IpcEventMap = {
 	];
 	changeLegoSetCount: [
 		rowIndex: number,
-		setCount: number
+		legoSetCount: number
 	];
 };
 

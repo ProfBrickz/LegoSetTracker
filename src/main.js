@@ -409,10 +409,10 @@ ipcMain.handle("deleteLegoSet", (event, databaseId) => {
 	legoSets.delete(databaseId);
 });
 
-ipcMain.on("changeLegoSetCount", (event, legoSetId, setCount) => {
+ipcMain.on("changeLegoSetCount", (event, legoSetId, legoSetCount) => {
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 
-	legoSet.legoSetCount = setCount;
+	legoSet.legoSetCount = legoSetCount;
 	legoSet.save();
 });
 

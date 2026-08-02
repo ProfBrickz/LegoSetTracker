@@ -67,8 +67,8 @@ let electronAPI = {
 	deleteLegoSet: async (databaseId) => {
 		await ipcRenderer.invoke("deleteLegoSet", databaseId);
 	},
-	changeLegoSetCount: (legoSetId, setCount) => {
-		ipcRenderer.send("changeLegoSetCount", legoSetId, setCount);
+	changeLegoSetCount: (legoSetId, legoSetCount) => {
+		ipcRenderer.send("changeLegoSetCount", legoSetId, legoSetCount);
 	},
 	changeAmountFound: async (legoSetId, pieceId, amountFound) => {
 		return await ipcRenderer.invoke("changeAmountFound", legoSetId, pieceId, amountFound);

@@ -7,6 +7,6 @@ export interface ElectronAPI {
    searchLegoSets(callback: (searchResults: (LegoSetSearchResult & { theme: string, image: string; })[]) => void): void;
    addLegoSet(setNumber: string): void;
    deleteLegoSet(databaseId: number): Promise<void>;
-   changeLegoSetCount(legoSetId: number, setCount: number): void;
+   changeLegoSetCount(legoSetId: number, legoSetCount: number): void;
    changeAmountFound(legoSetId: number, pieceId: number, amountFound: number): Promise<LegoSetPiece[]>;
 }
