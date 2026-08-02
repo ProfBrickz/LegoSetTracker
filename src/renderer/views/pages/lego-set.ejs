@@ -1,5 +1,7 @@
 <h1>
 	<%= legoSetName %>
+		<% if (legoSetCount> 1) { %> x <%= legoSetCount%>
+				<% }%>
 </h1>
 
 <button onclick="electronAPI.loadPage('lego-sets')">Back</button>

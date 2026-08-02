@@ -152,11 +152,16 @@ document.addEventListener("pageLoad", (event) => {
 						}
 						amountFoundTd.min = min.toString();
 
-						let amountLeft = legoPieceChange.amountNeeded - legoPieceChange.amountFound;
+						let amountLeft =
+							legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
+							- legoPieceChange.amountFound;
 						amountLeftTd.innerText = amountLeft.toString();
 
 						completionTd.className = "completion";
-						completionTd.classList.add(getCompletion(legoPieceChange.amountFound, legoPieceChange.amountNeeded));
+						completionTd.classList.add(getCompletion(
+							legoPieceChange.amountFound,
+							legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
+						));
 					}
 				}
 			}

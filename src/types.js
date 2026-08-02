@@ -89,4 +89,5 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {LegoColor | null} color
  * @property {string} brickLinkCategory
  * @property {number} min
+ * @property {number} legoSetCount
  */

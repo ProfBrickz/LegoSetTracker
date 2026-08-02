@@ -215,7 +215,8 @@ function makeLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {
 		brickLinkId: legoSetPiece.brickLinkId,
 		color: legoSetPiece.color,
 		brickLinkCategory: legoSetPiece.brickLinkCategory,
-		min
+		min,
+		legoSetCount: legoSet.legoSetCount
 	};
 }
 
@@ -334,6 +335,7 @@ ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 		let legoSet =/** @type {LegoSet} */(legoSets.get(databaseId));
 
 		pageParams.legoSetName = legoSet.name;
+		pageParams.legoSetCount = legoSet.legoSetCount;
 		params.legoSetId = legoSet.databaseId;
 		params.tableRows = makeLegoSetTableRows(legoSet);
 	}
