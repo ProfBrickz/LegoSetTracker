@@ -327,6 +327,8 @@ export class DataTable extends HTMLElement {
       }
 
       let tableElement = document.createElement("table");
+      // tableElement.classList.add("scroll-area");
+
       tableElement.appendChild(this.createThead());
       tableElement.appendChild(this.createTbody());
 

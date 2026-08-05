@@ -299,39 +299,42 @@ strong {
 /* Table Styles */
 data-table {
 	width: 100%;
+	height: calc(100vh - 4rem);
+	overflow: auto;
 	margin: 1rem 0;
 	border-collapse: collapse;
 	background-color: var(--bg);
 	border-radius: 8px;
-	overflow: hidden;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 data-table table {
 	width: 100%;
-	border-collapse: collapse;
 }
 
 data-table thead {
+	position: sticky;
+	top: 0px;
 	background-color: var(--bg-light);
+	border-bottom: 2px solid var(--border);
 }
 
 data-table th {
 	padding: 1rem;
 	text-align: left;
 	font-weight: 600;
-	color: var(--text);
-	border-bottom: 2px solid var(--border);
+	color: var(--text)
 }
 
 data-table td {
 	padding: 1rem;
-	border-bottom: 1px solid var(--border);
 }
 
 data-table tbody tr {
 	--line-width: 0.15rem;
 	--icon-width: 3rem;
+
+	border-bottom: 1px solid var(--border);
 
 	&[data-depth="2"] td:first-child {
 		padding-left: calc(var(--button-size) * 1.5);
@@ -409,8 +412,6 @@ data-table img {
 	height: var(--size);
 	object-fit: contain;
 }
-
-
 
 td.expand button {
 	--size: var(--button-size);
@@ -495,6 +496,17 @@ td.completion {
 .info {
 	color: var(--info);
 }
+
+
+/* Scrollbar Styles */
+* {
+	scrollbar-color: var(--border) var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--primary);
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
