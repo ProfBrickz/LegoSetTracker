@@ -247,73 +247,6 @@ export class LegoPieces extends ClassMap {
 			await database.addStickeredLegoPiece(stickeredPiece);
 			return stickeredPiece;
 		}
-		// else if (isCompoundPiece && legoSetPieceCategory === "counterpart") {
-		// 	let compoundLegoPiece = new CompoundLegoPiece(
-		// 		databaseId,
-		// 		brickLinkId,
-		// 		brickLinkName,
-		// 		color,
-		// 		brickLinkCategory,
-		// 		[]
-		// 	);
-
-		// 	let componentInfo = await webScrapper.getCompositePieceComponents(compoundLegoPiece);
-
-		// 	for (let normalPiece of componentInfo.normalPieces) {
-		// 		let componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, normalPiece.color);
-		// 		if (componentLegoPiece == null) componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, color);
-		// 		if (componentLegoPiece == null) {
-
-		// 		}
-		// 		if (componentLegoPiece == null) {
-		// 			console.log(`Could not find component with id: ${normalPiece.brickLinkId}, and color: ${normalPiece.color?.brickLinkName || "null"}`);
-		// 			continue;
-		// 		}
-
-		// 		compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
-		// 	}
-		// 	this.set(databaseId, compoundLegoPiece);
-
-		// 	await database.addCompoundLegoPiece(compoundLegoPiece);
-		// 	return compoundLegoPiece;
-		// }
-		// else if (isCompoundPiece && legoSetPieceCategory === "minifig") {
-		// 	let compoundLegoPiece = new CompoundLegoPiece(
-		// 		databaseId,
-		// 		brickLinkId,
-		// 		brickLinkName,
-		// 		color,
-		// 		brickLinkCategory,
-		// 		[]
-		// 	);
-
-		// 	let componentInfo = await webScrapper.getMinifigPieces(compoundLegoPiece);
-
-		// 	for (let normalPiece of componentInfo.normalPieces) {
-		// 		let componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, normalPiece.color);
-		// 		if (componentLegoPiece == null) componentLegoPiece = this.getByBrickLinkIdAndColor(normalPiece.brickLinkId, color);
-		// 		if (componentLegoPiece == null) {
-		// 			componentLegoPiece = await this.add(
-		// 				normalPiece.brickLinkId,
-		// 				normalPiece.brickLinkName,
-		// 				normalPiece.color,
-		// 				normalPiece.brickLinkCategory,
-		// 				"normal",
-		// 				false
-		// 			);
-		// 		}
-		// 		if (componentLegoPiece == null) {
-		// 			console.log(`Could not find component with id: ${normalPiece.brickLinkId}, and color: ${normalPiece.color?.brickLinkName || "null"}`);
-		// 			continue;
-		// 		}
-
-		// 		compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
-		// 	}
-		// 	this.set(databaseId, compoundLegoPiece);
-
-		// 	await database.addCompoundLegoPiece(compoundLegoPiece);
-		// 	return compoundLegoPiece;
-		// }
 
 		return legoPiece;
 	}
@@ -407,6 +340,7 @@ export class LegoSetPieces extends ClassMap {
 
 			for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+				if (componentLegoSetPiece == null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
 				if (componentLegoSetPiece == null) continue;
 
 				compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
@@ -508,6 +442,7 @@ export class LegoSets extends ClassMap {
 
 					for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+						if (componentLegoSetPiece == null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
 						if (componentLegoSetPiece == null) continue;
 
 						compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);

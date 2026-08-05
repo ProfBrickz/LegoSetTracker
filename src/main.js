@@ -240,9 +240,10 @@ function makeLegoSetTableRows(legoSet) {
 			for (let componentLegoSetPiece of legoSetPiece.componentLegoSetPieces) {
 				let componentRow = getLegoSetPieceTableRow(tableRows, componentLegoSetPiece.databaseId);
 
-				if (componentRow !== null) {
+				if (componentRow == null) {
+					tableRow.subRows.push(makeLegoSetPieceTableRow(legoSet, componentLegoSetPiece, "minifigPieces"));
+				} else {
 					tableRow.subRows.push(componentRow);
-					removeLegoSetPieceTableRow(tableRows, componentRow.databaseId);
 				}
 			}
 

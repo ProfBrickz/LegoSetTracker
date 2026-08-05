@@ -1,0 +1,1 @@
+ALTER TYPE "public"."set_piece_type" ADD VALUE 'minifigPieces' BEFORE 'extra';

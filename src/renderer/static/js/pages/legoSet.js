@@ -1,7 +1,8 @@
 // Imports
 import { DataTable } from "../components/dataTable.js";
 /** @import {LegoSetsTableRow, LegoSetTableRow} from "../../../../types.js" */
-/** @import { CompoundLegoSetPiece } from "../../../../models.js" */
+/** @import {CompoundLegoSetPiece} from "../../../../models.js" */
+/** @import {TableRow} from "../components/dataTable.js" */
 
 
 // Types
@@ -38,7 +39,7 @@ function getCompletion(amountFound, amountNeeded) {
 document.addEventListener("pageLoad", (event) => {
 	/** @type {string} */
 	let page = event.detail.page;
-	/** @type {LegoSetsTableRow[]} */
+	/** @type {TableRow[]} */
 	let tableRows = event.detail.params.tableRows;
 	/** @type {number} */
 	let legoSetId = event.detail.params.legoSetId;
@@ -121,47 +122,49 @@ document.addEventListener("pageLoad", (event) => {
 					let legoPieceChanges = await window.electronAPI.changeAmountFound(legoSetId, databaseId, amountFound);
 
 					for (let legoPieceChange of legoPieceChanges) {
-						let tr = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${legoPieceChange.databaseId}"]`));
-						let amountFoundTd = /** @type {HTMLInputElement} */ (tr.querySelector(".amountFound input"));
-						let amountLeftTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("amountLeft")[0]);
-						let completionTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("completion")[0]);
+						let trs = /** @type {NodeListOf<HTMLTableRowElement>} */ (document.querySelectorAll(`[data-row-id="${legoPieceChange.databaseId}"]`));
+						for (let tr of trs) {
+							let amountFoundTd = /** @type {HTMLInputElement} */ (tr.querySelector(".amountFound input"));
+							let amountLeftTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("amountLeft")[0]);
+							let completionTd = /** @type {HTMLTableCellElement} */ (tr.getElementsByClassName("completion")[0]);
 
-						amountFoundTd.value = legoPieceChange.amountFound.toString();
+							amountFoundTd.value = legoPieceChange.amountFound.toString();
 
-						let min = 0;
-						let compoundLegoPieceChange = /** @type {CompoundLegoSetPiece} */ (legoPieceChange);
-						if (Array.isArray(compoundLegoPieceChange.componentLegoSetPieces)) {
-							let maxStickeredPiecesFound = 0;
+							let min = 0;
+							let compoundLegoPieceChange = /** @type {CompoundLegoSetPiece} */ (legoPieceChange);
+							if (Array.isArray(compoundLegoPieceChange.componentLegoSetPieces)) {
+								let maxStickeredPiecesFound = 0;
 
-							for (let componentLegoSetPiece of compoundLegoPieceChange.componentLegoSetPieces) {
-								let totalStickeredPiecesFound = 0;
-								for (let stickeredLegoSetPiece of componentLegoSetPiece.stickeredLegoSetPieces) {
-									totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+								for (let componentLegoSetPiece of compoundLegoPieceChange.componentLegoSetPieces) {
+									let totalStickeredPiecesFound = 0;
+									for (let stickeredLegoSetPiece of componentLegoSetPiece.stickeredLegoSetPieces) {
+										totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+									}
+
+									if (totalStickeredPiecesFound > maxStickeredPiecesFound) maxStickeredPiecesFound = totalStickeredPiecesFound;
 								}
 
-								if (totalStickeredPiecesFound > maxStickeredPiecesFound) maxStickeredPiecesFound = totalStickeredPiecesFound;
+								min = maxStickeredPiecesFound;
+							} else {
+								let totalStickeredPiecesFound = 0;
+								for (let stickeredLegoSetPiece of legoPieceChange.stickeredLegoSetPieces) {
+									totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
+								}
+								min = totalStickeredPiecesFound;
 							}
+							amountFoundTd.min = min.toString();
 
-							min = maxStickeredPiecesFound;
-						} else {
-							let totalStickeredPiecesFound = 0;
-							for (let stickeredLegoSetPiece of legoPieceChange.stickeredLegoSetPieces) {
-								totalStickeredPiecesFound += stickeredLegoSetPiece.amountFound;
-							}
-							min = totalStickeredPiecesFound;
+							let amountLeft =
+								legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
+								- legoPieceChange.amountFound;
+							amountLeftTd.innerText = amountLeft.toString();
+
+							completionTd.className = "completion";
+							completionTd.classList.add(getCompletion(
+								legoPieceChange.amountFound,
+								legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
+							));
 						}
-						amountFoundTd.min = min.toString();
-
-						let amountLeft =
-							legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
-							- legoPieceChange.amountFound;
-						amountLeftTd.innerText = amountLeft.toString();
-
-						completionTd.className = "completion";
-						completionTd.classList.add(getCompletion(
-							legoPieceChange.amountFound,
-							legoPieceChange.amountNeeded * /** @type {number} */ (row.original.legoSetCount)
-						));
 					}
 				}
 			}

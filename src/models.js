@@ -368,6 +368,11 @@ export class LegoSet extends TypedClass {
 	 * @readonly
 	 * @type {LegoSetPieces}
 	 */
+	minifigPieces;
+	/**
+	 * @readonly
+	 * @type {LegoSetPieces}
+	 */
 	extraPieces;
 	/**
 	 * @readonly
@@ -400,6 +405,7 @@ export class LegoSet extends TypedClass {
 		legoSetCount = 1,
 		normalPieces = new LegoSetPieces("normal"),
 		minifigs = new LegoSetPieces("minifig"),
+		minifigPieces = new LegoSetPieces("minifigPieces"),
 		extraPieces = new LegoSetPieces("extra"),
 		counterpartPieces = new LegoSetPieces("counterpart")
 	) {
@@ -415,6 +421,7 @@ export class LegoSet extends TypedClass {
 		this.legoSetCount = legoSetCount;
 		this.normalPieces = normalPieces;
 		this.minifigs = minifigs;
+		this.minifigPieces = minifigPieces;
 		this.extraPieces = extraPieces;
 		this.counterpartPieces = counterpartPieces;
 	}
@@ -536,10 +543,8 @@ export class LegoSet extends TypedClass {
 						let componentInfo = this.getLegoSetPieceInfo(componentsInfo.normalPieces, componentLegoPiece);
 						if (componentInfo == null) continue;
 
-						if (componentLegoSetPiece) {
-							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded * newLegoSetPiece.amountNeeded;
-						} else {
-							this.normalPieces.add(
+						if (componentLegoSetPiece == null) {
+							let a = await this.minifigPieces.add(
 								this,
 								componentLegoPiece,
 								componentInfo.amountNeeded,

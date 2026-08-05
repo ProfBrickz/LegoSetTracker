@@ -59,7 +59,7 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  */
 
 /**
- * @typedef {"normal" | "minifig" | "extra" | "counterpart"} LegoSetPieceType
+ * @typedef {"normal" | "minifig" | "minifigPieces" | "extra" | "counterpart"} LegoSetPieceType
  */
 
 /**

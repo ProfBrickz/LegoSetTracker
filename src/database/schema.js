@@ -2,7 +2,7 @@
 import { integer, pgEnum, pgTable, serial, smallint, smallserial, varchar } from "drizzle-orm/pg-core";
 
 // Enums
-export const legoSetPieceDBType = pgEnum("set_piece_type", ["normal", "minifig", "extra", "counterpart"]);
+export const legoSetPieceDBType = pgEnum("set_piece_type", ["normal", "minifig", "minifigPieces", "extra", "counterpart"]);
 
 
 // Database tables

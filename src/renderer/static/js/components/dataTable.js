@@ -4,7 +4,8 @@ import { createTable, functionalUpdate, getCoreRowModel, getExpandedRowModel } f
 
 
 // Types
-/** @typedef {Record<string, unknown>} TableRow */
+/** @typedef {{rowId: number | undefined, subRows: subRow[]}} subRow  */
+/** @typedef {Record<string, unknown> & {rowId: number | undefined, subRows: subRow[]}} TableRow */
 /** @typedef {ColumnDef<TableRow, any>} TableColumn */
 /** @typedef {Cell<TableRow, unknown>} TableCell */
 
@@ -61,16 +62,16 @@ export class DataTable extends HTMLElement {
       return this.table.options.data;
    }
 
-   /** @typedef {{rowId: number, subRows: subRow[]}} subRow  */
    /**
     * @param {subRow[]} subRows
+    * @param {number} parentRowId
     * @param {boolean} isExpanded
     */
-   expandCollapseSubRows(subRows, isExpanded) {
+   expandCollapseSubRows(subRows, parentRowId, isExpanded) {
       for (let subRow of subRows) {
-
          let rowId = subRow.rowId;
-         let tableRow = /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"]`));
+         let tableRow =
+         /** @type {HTMLTableRowElement} */ (document.querySelector(`[data-row-id="${rowId}"][data-parent-row-id="${parentRowId}"]`));
 
          if (isExpanded) {
             tableRow.style.display = "";
@@ -80,7 +81,8 @@ export class DataTable extends HTMLElement {
             let expandButton = /** @type {HTMLButtonElement | undefined} */ (tableRow.querySelector("td.expand button"));
             if (!!expandButton) expandButton.classList.remove("expanded");
 
-            if (subRow.subRows.length > 0) this.expandCollapseSubRows(subRow.subRows, isExpanded);
+            if (subRow.rowId == undefined) return;
+            if (subRow.subRows.length > 0) this.expandCollapseSubRows(subRow.subRows, subRow.rowId, isExpanded);
          }
       }
    }
@@ -113,7 +115,8 @@ export class DataTable extends HTMLElement {
                await row.getToggleExpandedHandler()();
                let isExpanded = row.getIsExpanded();
 
-               this.expandCollapseSubRows(/** @type {subRow[]} */(row.original.subRows), isExpanded);
+               if (row.original.rowId == undefined) return;
+               this.expandCollapseSubRows(row.original.subRows, row.original.rowId, isExpanded);
 
                expandButton.classList.toggle("expanded");
             };
@@ -263,7 +266,7 @@ export class DataTable extends HTMLElement {
    createRow(row) {
       let tr = document.createElement("tr");
 
-      let rowId = /** @type {number | undefined} */ (row.original.rowId);
+      let rowId = row.original.rowId;
       if (rowId !== undefined) {
          tr.dataset.rowId = rowId.toString();
       }
@@ -283,12 +286,14 @@ export class DataTable extends HTMLElement {
     */
    createSubRows(tbody, row) {
       if (row.subRows.length <= 0) return;
+      if (row.original.rowId == undefined) return;
 
       for (let i = 0; i < row.subRows.length; i++) {
          let subRow = row.subRows[i];
 
          let htmlSubRow = this.createRow(subRow);
          htmlSubRow.style.display = "none";
+         htmlSubRow.dataset.parentRowId = row.original.rowId.toString();
 
          if (i == row.subRows.length - 1) {
             htmlSubRow.classList.add("last-sub-row");

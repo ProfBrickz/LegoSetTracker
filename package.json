@@ -26,7 +26,7 @@
 		"build": "pnpm vite-build && node ./scripts/build.js",
 		"build-release-notes": "node ./scripts/buildReleaseNotes.js",
 		"test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
-		"updata-database-migrations": "drizzle-kit generate"
+		"update-database-migrations": "drizzle-kit generate"
 	},
 	"dependencies": {
 		"@electric-sql/pglite": "^0.4.0",

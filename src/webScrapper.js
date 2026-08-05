@@ -529,6 +529,9 @@ export default class WebScrapper {
 			legoSet.normalPieces.forEach((setPiece) =>
 				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
 			),
+			legoSet.minifigPieces.forEach((setPiece) =>
+				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
+			),
 			legoSet.counterpartPieces.forEach((setPiece) =>
 				this.downloadLegoPieceImage(setPiece.brickLinkId, setPiece.color?.brickLinkId || 0)
 			),
