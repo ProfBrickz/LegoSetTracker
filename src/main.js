@@ -389,6 +389,7 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 	// Increment set count if it already exists
 	if (legoSet) {
 		legoSet.legoSetCount++;
+		legoSet.save();
 		return true;
 	}
 
