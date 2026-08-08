@@ -7,7 +7,7 @@ import { DATABASE_PATH, MIGRATIONS_PATH } from "../constants.js";
 import { componentLegoPiecesDBTable, legoColorsDBTable, legoPiecesDBTable, legoSetPiecesDBTable, legoSetsDBTable, legoSetThemesDBTable, stickeredLegoPiecesDBTable } from "./schema.js";
 /** @import { CompoundLegoPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, StickeredLegoPiece } from "../models.js" */
 /** @import { PgliteDatabase } from "drizzle-orm/pglite" */
-/** @import { LegoSetPieceType } from "../types.js" */
+/** @import { LegoSetPieceType, LegoSetStatus } from "../types.js" */
 
 
 /** @type {PgliteDatabase} */
@@ -209,8 +209,9 @@ export async function getLegoSets() {
  * @param {number} pieceCount
  * @param {number} minifigCount
  * @param {number} legoSetCount
+ * @param {LegoSetStatus} status
  */
-export async function addLegoSet(setNumber, name, themeId, releaseYear, pieceCount, minifigCount, legoSetCount) {
+export async function addLegoSet(setNumber, name, themeId, releaseYear, pieceCount, minifigCount, legoSetCount, status) {
    let result = await database.insert(legoSetsDBTable)
       .values({
          setNumber,
@@ -219,7 +220,8 @@ export async function addLegoSet(setNumber, name, themeId, releaseYear, pieceCou
          releaseYear,
          pieceCount,
          minifigCount,
-         legoSetCount
+         legoSetCount,
+         status
       })
       .returning({
          databaseId: legoSetsDBTable.databaseId
@@ -244,7 +246,8 @@ export async function saveLegoSet(legoSet) {
          releaseYear: legoSet.releaseYear,
          pieceCount: legoSet.pieceCount,
          minifigCount: legoSet.minifigCount,
-         legoSetCount: legoSet.legoSetCount
+         legoSetCount: legoSet.legoSetCount,
+         status: legoSet.status
       })
       .where(eq(legoSetsDBTable.databaseId, legoSet.databaseId));
 }

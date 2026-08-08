@@ -391,6 +391,18 @@ data-table tbody tr {
 	&:hover {
 		background-color: var(--bg-light);
 	}
+
+	&.grayed-out {
+		background-color: var(--bg);
+		filter: opacity(40%) brightness(90%) grayscale(20%);
+		cursor: not-allowed;
+
+		input,
+		button {
+			pointer-events: none;
+			cursor: not-allowed;
+		}
+	}
 }
 
 data-table input[type="text"],

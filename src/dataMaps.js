@@ -3,7 +3,7 @@ import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { CompoundLegoPiece, CompoundLegoSetPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
-/** @import { LegoSetPieceCategory, LegoSetPieceType } from "./types.js" */
+/** @import { LegoSetPieceCategory, LegoSetPieceType, LegoSetStatus } from "./types.js" */
 
 
 // Classes
@@ -401,7 +401,8 @@ export class LegoSets extends ClassMap {
 				databaseLegoSet.releaseYear,
 				databaseLegoSet.pieceCount,
 				databaseLegoSet.minifigCount,
-				databaseLegoSet.legoSetCount
+				databaseLegoSet.legoSetCount,
+				databaseLegoSet.status
 			);
 
 			this.set(databaseLegoSet.databaseId, legoSet);
@@ -472,6 +473,7 @@ export class LegoSets extends ClassMap {
 	 * @param {number} pieceCount
 	 * @param {number} minifigCount
 	 * @param {number} legoSetCount
+	 * @param {LegoSetStatus} status
 	 */
 	async add(
 		setNumber,
@@ -480,7 +482,8 @@ export class LegoSets extends ClassMap {
 		releaseYear,
 		pieceCount,
 		minifigCount,
-		legoSetCount,
+		legoSetCount = 1,
+		status = "scrapping",
 	) {
 		let databaseId = await database.addLegoSet(
 			setNumber,
@@ -489,7 +492,8 @@ export class LegoSets extends ClassMap {
 			releaseYear,
 			pieceCount,
 			minifigCount,
-			legoSetCount
+			legoSetCount,
+			status
 		);
 
 		let legoSet = new LegoSet(

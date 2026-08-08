@@ -2,8 +2,17 @@
 import { integer, pgEnum, pgTable, serial, smallint, smallserial, varchar } from "drizzle-orm/pg-core";
 
 // Enums
-export const legoSetPieceDBType = pgEnum("set_piece_type", ["normal", "minifig", "minifigPieces", "extra", "counterpart"]);
-
+export const legoSetPieceDBType = pgEnum("lego_set_piece_type", [
+   "normal",
+   "minifig",
+   "minifigPieces",
+   "extra",
+   "counterpart"
+]);
+export const LegoSetStatusDBType = pgEnum("lego_set_status_type", [
+   "scrapping",
+   "done"
+]);
 
 // Database tables
 export const legoColorsDBTable = pgTable("lego_colors", {
@@ -46,7 +55,8 @@ export const legoSetsDBTable = pgTable("lego_sets", {
    releaseYear: smallint("release_year").notNull(),
    pieceCount: smallint("piece_count").notNull().default(0),
    minifigCount: smallint("minifig_count").notNull().default(0),
-   legoSetCount: smallint("lego_set_count").notNull().default(1)
+   legoSetCount: smallint("lego_set_count").notNull().default(1),
+   status: LegoSetStatusDBType("status").notNull()
 });
 
 export const legoSetPiecesDBTable = pgTable("lego_set_pieces", {

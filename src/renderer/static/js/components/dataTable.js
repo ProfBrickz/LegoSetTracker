@@ -5,7 +5,7 @@ import { createTable, functionalUpdate, getCoreRowModel, getExpandedRowModel } f
 
 // Types
 /** @typedef {{rowId: number | undefined, subRows: subRow[]}} subRow  */
-/** @typedef {Record<string, unknown> & {rowId: number | undefined, subRows: subRow[]}} TableRow */
+/** @typedef {Record<string, unknown> & {rowId?: number, subRows: subRow[], grayedOut?: boolean}} TableRow */
 /** @typedef {ColumnDef<TableRow, any>} TableColumn */
 /** @typedef {Cell<TableRow, unknown>} TableCell */
 
@@ -269,6 +269,10 @@ export class DataTable extends HTMLElement {
       let rowId = row.original.rowId;
       if (rowId !== undefined) {
          tr.dataset.rowId = rowId.toString();
+      }
+
+      if (row.original.grayedOut) {
+         tr.classList.add("grayed-out");
       }
 
       tr.dataset.depth = row.depth.toString();

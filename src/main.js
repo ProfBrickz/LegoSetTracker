@@ -9,7 +9,7 @@ import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
 import { CompoundLegoSetPiece, LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScrapper from "./webScrapper.js";
-/** @import {LegoSetPieceType, LegoSetSearchResult, LegoSetsTableRow, LegoSetTableRow} from "./types.js" */
+/** @import {LegoSetPieceType, LegoSetSearchResult, LegoSetsTableRow, LegoSetTableRow, LegoSetStatus} from "./types.js" */
 
 
 // Variables
@@ -137,7 +137,8 @@ function makeLegoSetsTableRows() {
 			releaseYear: legoSet.releaseYear,
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
-			legoSetCount: legoSet.legoSetCount
+			legoSetCount: legoSet.legoSetCount,
+			grayedOut: legoSet.status == "scrapping"
 		});
 	}
 
@@ -413,13 +414,15 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 		theme,
 		legoSetInfo.releaseYear,
 		legoSetInfo.pieceCount,
-		legoSetInfo.minifigCount,
-		1
+		legoSetInfo.minifigCount
 	);
+
 	await legoSet.addNormalPieces(legoSetPieces.normalPieces);
 	await legoSet.addMinifigs(legoSetPieces.minifigs);
 	await legoSet.addExtraPieces(legoSetPieces.extraPieces);
 	await legoSet.addCounterpartPieces(legoSetPieces.counterparts);
+	legoSet.status = "done";
+	legoSet.save();
 
 	webScrapper.downloadLegoSetImages(legoSet);
 

@@ -54,13 +54,10 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {string} themeId The ID of the theme associated with the set (ex. 65.806.258)
  */
 
-/**
- * @typedef {"light" | "dark" | "system"} Theme
- */
+/** @typedef {"light" | "dark" | "system"} Theme */
 
-/**
- * @typedef {"normal" | "minifig" | "minifigPieces" | "extra" | "counterpart"} LegoSetPieceType
- */
+/** @typedef {"normal" | "minifig" | "minifigPieces" | "extra" | "counterpart"} LegoSetPieceType */
+/** @typedef {"scrapping" | "done"} LegoSetStatus */
 
 /**
  * @typedef {Object} LegoSetsTableRow
@@ -73,6 +70,7 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
  * @property {number} pieceCount
  * @property {number} minifigCount
  * @property {number} legoSetCount
+ * @property {boolean} grayedOut
  */
 
 /**

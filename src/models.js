@@ -5,8 +5,7 @@ import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./const
 import database from "./database/database.js";
 import { LegoPieces, LegoSetPieces } from "./dataMaps.js";
 import { webScrapper } from "./main.js";
-/** @import { LegoSetPieceCategory, LegoSetPieceInfo, LegoSetPiecesInfo } from "./types.js" */
-
+/** @import { LegoSetPieceCategory, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetStatus } from "./types.js" */
 
 // Classes
 export class LegoColor extends TypedClass {
@@ -354,6 +353,8 @@ export class LegoSet extends TypedClass {
 	minifigCount;
 	/** @type {number} */
 	legoSetCount;
+	/** @type {LegoSetStatus} */
+	status;
 	/**
 	 * @readonly
 	 * @type {LegoSetPieces}
@@ -389,6 +390,7 @@ export class LegoSet extends TypedClass {
 	 * @param {number} pieceCount
 	 * @param {number} minifigCount
 	 * @param {number} [legoSetCount]
+	 * @param {LegoSetStatus} status
 	 * @param {LegoSetPieces} [normalPieces]
 	 * @param {LegoSetPieces} [minifigs]
 	 * @param {LegoSetPieces} [extraPieces]
@@ -403,6 +405,7 @@ export class LegoSet extends TypedClass {
 		pieceCount,
 		minifigCount,
 		legoSetCount = 1,
+		status = "scrapping",
 		normalPieces = new LegoSetPieces("normal"),
 		minifigs = new LegoSetPieces("minifig"),
 		minifigPieces = new LegoSetPieces("minifigPieces"),
@@ -419,6 +422,7 @@ export class LegoSet extends TypedClass {
 		this.pieceCount = pieceCount;
 		this.minifigCount = minifigCount;
 		this.legoSetCount = legoSetCount;
+		this.status = status;
 		this.normalPieces = normalPieces;
 		this.minifigs = minifigs;
 		this.minifigPieces = minifigPieces;
