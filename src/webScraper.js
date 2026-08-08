@@ -11,7 +11,7 @@ import { LegoPiece, LegoSet } from "./models.js";
 
 
 // Functions
-export default class WebScrapper {
+export default class WebScraper {
 	/**
 	 * @private
 	 * @type {LegoColors}

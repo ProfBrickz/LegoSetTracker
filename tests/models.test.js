@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { LegoColors } from "../src/dataMaps.js";
 import { CompoundLegoPiece, CompoundLegoSetPiece, LegoPiece, LegoSetPiece, StickeredLegoPiece, StickeredLegoSetPiece } from "../src/models.js";
-import WebScrapper from "../src/webScrapper.js";
+import WebScraper from "../src/webScraper.js";
 /** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
 
 
@@ -11,8 +11,8 @@ import WebScrapper from "../src/webScrapper.js";
 let colors;
 /** @type {LegoPiece[]} */
 let legoPieces;
-/** @type {WebScrapper} */
-let webScrapper;
+/** @type {WebScraper} */
+let webScraper;
 
 /** @type {jest.SpiedFunction<fetch>} */
 let fetchMock;

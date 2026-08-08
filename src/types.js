@@ -57,7 +57,7 @@ import { LegoColor, LegoSetPiece, LegoSetTheme } from "./models.js";
 /** @typedef {"light" | "dark" | "system"} Theme */
 
 /** @typedef {"normal" | "minifig" | "minifigPieces" | "extra" | "counterpart"} LegoSetPieceType */
-/** @typedef {"scrapping" | "done"} LegoSetStatus */
+/** @typedef {"scraping" | "done"} LegoSetStatus */
 
 /**
  * @typedef {Object} LegoSetsTableRow

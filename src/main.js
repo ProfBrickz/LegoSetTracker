@@ -8,7 +8,7 @@ import database from "./database/database.js";
 import { LegoColors, LegoPieces, LegoSets, LegoSetThemes } from "./dataMaps.js";
 import { ipcMain } from "./ipcMain.js";
 import { CompoundLegoSetPiece, LegoSet, LegoSetPiece, StickeredLegoSetPiece } from "./models.js";
-import WebScrapper from "./webScrapper.js";
+import WebScraper from "./webScraper.js";
 /** @import {LegoSetPieceType, LegoSetSearchResult, LegoSetsTableRow, LegoSetTableRow, LegoSetStatus} from "./types.js" */
 
 
@@ -16,9 +16,9 @@ import WebScrapper from "./webScrapper.js";
 /** @type {BrowserWindow | null} */
 let mainWindow;
 let colors = new LegoColors();
-let webScrapper = new WebScrapper(colors);
-await webScrapper.init();
-export { webScrapper };
+let webScraper = new WebScraper(colors);
+await webScraper.init();
+export { webScraper };
 let legoPieces = new LegoPieces();
 let legoSets = new LegoSets();
 LegoSet.legoPieces = legoPieces;
@@ -66,8 +66,8 @@ function loadLayout(layout) {
  * Initializes all models
  */
 async function initializeModels() {
-	await colors.init(webScrapper);
-	await legoSetThemes.init(webScrapper);
+	await colors.init(webScraper);
+	await legoSetThemes.init(webScraper);
 	await legoPieces.init(colors);
 	await legoSets.init(legoSetThemes, legoPieces);
 }
@@ -138,7 +138,7 @@ function makeLegoSetsTableRows() {
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
 			legoSetCount: legoSet.legoSetCount,
-			grayedOut: legoSet.status == "scrapping"
+			grayedOut: legoSet.status == "scraping"
 		});
 	}
 
@@ -332,7 +332,7 @@ app.on("window-all-closed", async () => {
 	// Quit when all windows are closed, except on macOS
 	if (process.platform == "darwin") return;
 
-	await webScrapper.close();
+	await webScraper.close();
 	app.quit();
 });
 
@@ -373,10 +373,10 @@ ipcMain.on("setTheme", async (event, theme) => {
 });
 
 ipcMain.handle("searchLegoSets", async (event, searchQuery, { themeId, startYear, endYear }) => {
-	let searchResults = await webScrapper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
+	let searchResults = await webScraper.searchLegoSets(searchQuery, { themeId, startYear, endYear });
 
 	for (let searchResult of searchResults) {
-		await webScrapper.downloadLegoSetImage(searchResult.setNumber);
+		await webScraper.downloadLegoSetImage(searchResult.setNumber);
 	}
 
 	return await getSearchLegoSetsTableRows(searchResults);
@@ -396,13 +396,13 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 
 	let legoSetInfo;
 	try {
-		legoSetInfo = await webScrapper.getLegoSetInfo(setNumber);
+		legoSetInfo = await webScraper.getLegoSetInfo(setNumber);
 	} catch (error) {
 		return false;
 	}
 
 	// Get the pieces for this set
-	let legoSetPieces = await webScrapper.getLegoSetPieces(setNumber);
+	let legoSetPieces = await webScraper.getLegoSetPieces(setNumber);
 
 	let theme = legoSetThemes.getByBricklinkId(legoSetInfo.themeId);
 	if (!theme) return false;
@@ -424,7 +424,7 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 	legoSet.status = "done";
 	legoSet.save();
 
-	webScrapper.downloadLegoSetImages(legoSet);
+	webScraper.downloadLegoSetImages(legoSet);
 
 	return true;
 });

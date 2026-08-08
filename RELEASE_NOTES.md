@@ -2,9 +2,9 @@
 
 ## Release Notes - v1.0.3
 
-- Fixed BrickLink web scrapping by using session cookie
+- Fixed BrickLink web scraping by using session cookie
 - Fixed database server
-- Fixed WebScrapper tests
+- Fixed WebScraper tests
 - Fixed build process
 
 **Full Changelog**: <https://github.com/ProfBrickz/BrickRecover/commits/1.0.3>

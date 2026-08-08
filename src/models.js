@@ -4,7 +4,7 @@ import { TypedClass } from "./classes.js";
 import { MINIFIG_IMAGES_PATH, PIECE_IMAGES_PATH, SET_IMAGES_PATH } from "./constants.js";
 import database from "./database/database.js";
 import { LegoPieces, LegoSetPieces } from "./dataMaps.js";
-import { webScrapper } from "./main.js";
+import { webScraper } from "./main.js";
 /** @import { LegoSetPieceCategory, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetStatus } from "./types.js" */
 
 // Classes
@@ -405,7 +405,7 @@ export class LegoSet extends TypedClass {
 		pieceCount,
 		minifigCount,
 		legoSetCount = 1,
-		status = "scrapping",
+		status = "scraping",
 		normalPieces = new LegoSetPieces("normal"),
 		minifigs = new LegoSetPieces("minifig"),
 		minifigPieces = new LegoSetPieces("minifigPieces"),
@@ -503,9 +503,9 @@ export class LegoSet extends TypedClass {
 				/** @type {LegoSetPiecesInfo | null} */
 				let componentsInfo = null;
 				if (legoSetPieceCategory === "counterpart") {
-					componentsInfo = await webScrapper.getCompositePieceComponents(compoundLegoPiece);
+					componentsInfo = await webScraper.getCompositePieceComponents(compoundLegoPiece);
 				} else if (legoSetPieceCategory === "minifig") {
-					componentsInfo = await webScrapper.getMinifigPieces(compoundLegoPiece);
+					componentsInfo = await webScraper.getMinifigPieces(compoundLegoPiece);
 				}
 				if (componentsInfo == null) {
 					return;

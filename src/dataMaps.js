@@ -2,7 +2,7 @@
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
 import { CompoundLegoPiece, CompoundLegoSetPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
-import WebScrapper from "./webScrapper.js";
+import WebScraper from "./webScraper.js";
 /** @import { LegoSetPieceCategory, LegoSetPieceType, LegoSetStatus } from "./types.js" */
 
 
@@ -18,9 +18,9 @@ export class LegoColors extends ClassMap {
 
 	/**
 	 * Initializes the colors, by first checking the database then BrickLink
-	 * @param {WebScrapper} webScrapper
+	 * @param {WebScraper} webScraper
 	 */
-	async init(webScrapper) {
+	async init(webScraper) {
 		let databaseColors = await database.getLegoColors();
 
 		for (let color of databaseColors) {
@@ -35,7 +35,7 @@ export class LegoColors extends ClassMap {
 
 		if (this.size > 0) return this;
 
-		let webColors = await webScrapper.getColors();
+		let webColors = await webScraper.getColors();
 
 		for (let color of webColors) {
 			await this.add(
@@ -87,9 +87,9 @@ export class LegoSetThemes extends ClassMap {
 
 	/**
 	 * Initializes the themes, by first checking the database then BrickLink
-	 * @param {WebScrapper} webScrapper
+	 * @param {WebScraper} webScraper
 	 */
-	async init(webScrapper) {
+	async init(webScraper) {
 		let databaseThemes = await database.getLegoSetThemes();
 
 		for (let { databaseId, brickLinkId, brickLinkName } of databaseThemes) {
@@ -98,7 +98,7 @@ export class LegoSetThemes extends ClassMap {
 
 		if (this.size > 0) return this;
 
-		let webThemes = await webScrapper.getLegoSetThemes();
+		let webThemes = await webScraper.getLegoSetThemes();
 
 		for (let { brickLinkId, brickLinkName } of webThemes) {
 			await this.add(brickLinkId, brickLinkName);
@@ -483,7 +483,7 @@ export class LegoSets extends ClassMap {
 		pieceCount,
 		minifigCount,
 		legoSetCount = 1,
-		status = "scrapping",
+		status = "scraping",
 	) {
 		let databaseId = await database.addLegoSet(
 			setNumber,

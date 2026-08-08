@@ -10,7 +10,7 @@ export const legoSetPieceDBType = pgEnum("lego_set_piece_type", [
    "counterpart"
 ]);
 export const LegoSetStatusDBType = pgEnum("lego_set_status_type", [
-   "scrapping",
+   "scraping",
    "done"
 ]);
 

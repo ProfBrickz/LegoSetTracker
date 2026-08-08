@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globa
 import fs from "fs";
 import { LegoColors } from "../src/dataMaps.js";
 import { LegoColor, LegoPiece } from "../src/models.js";
-import WebScrapper from "../src/webScrapper.js";
+import WebScraper from "../src/webScraper.js";
 import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 /** @import { LegoSetInfo, LegoSetPieceInfo, LegoSetPiecesInfo, LegoSetSearchResult, WebLegoColor, WebLegoSetTheme } from "../src/types.js" */
 
@@ -13,8 +13,8 @@ import { getRelativeFilePath, readTextFile } from "./testFunctions.js";
 let colors;
 /** @type {LegoPiece[]} */
 let legoPieces;
-/** @type {WebScrapper} */
-let webScrapper;
+/** @type {WebScraper} */
+let webScraper;
 
 /** @type {jest.SpiedFunction<fetch>} */
 let fetchMock;
@@ -25,7 +25,7 @@ beforeEach(() => {
 	fetchMock = jest.spyOn(global, "fetch");
 	colors = new LegoColors();
 	legoPieces = [];
-	webScrapper = new WebScrapper(colors);
+	webScraper = new WebScraper(colors);
 });
 
 afterEach(() => {
@@ -42,7 +42,7 @@ describe("getWebpage", () => {
 		// Mock fetch to return a successful response with HTML content
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let document = await webScrapper.getWebpage(url);
+		let document = await webScraper.getWebpage(url);
 
 		expect(fetch).toHaveBeenCalledWith(url, expect.objectContaining({ headers: expect.any(Headers) }));
 		// Verify that the document is a valid HTML document and contains
@@ -56,7 +56,7 @@ describe("getWebpage", () => {
 		fetchMock.mockResolvedValue(new Response("", { status: 404, statusText: "Not Found" }));
 
 		// Expect an error to be thrown when the response is
-		await expect(webScrapper.getWebpage("https://example.com")).rejects.toThrow(
+		await expect(webScraper.getWebpage("https://example.com")).rejects.toThrow(
 			new Error("Failed to fetch https://example.com: 404 Not Found")
 		);
 	});
@@ -79,7 +79,7 @@ describe("getColors", () => {
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let colors = await webScrapper.getColors();
+		let colors = await webScraper.getColors();
 
 		// Verify that the returned value is the correct array of colors
 		expect(Array.isArray(colors)).toEqual(true);
@@ -92,7 +92,7 @@ describe("getColors", () => {
 		fetchMock.mockResolvedValue(new Response("", { status: 404, statusText: "Not Found" }));
 
 		// Expect an error to be thrown when calling getColors
-		await expect(webScrapper.getColors()).rejects.toThrow(
+		await expect(webScraper.getColors()).rejects.toThrow(
 			"Failed to fetch https://v2.bricklink.com/en-us/catalog/color-guide: 404 Not Found"
 		);
 	});
@@ -103,7 +103,7 @@ describe("getColors", () => {
 		// Mock the fetch function to return a response with the
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let colors = await webScrapper.getColors();
+		let colors = await webScraper.getColors();
 
 		// Verify that the function returns an empty array
 		expect(colors).toBeInstanceOf(Array);
@@ -135,7 +135,7 @@ describe("getLegoSetThemes", () => {
 		// Mock fetch to return the HTML content of the fixture
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetThemes = await webScrapper.getLegoSetThemes();
+		let legoSetThemes = await webScraper.getLegoSetThemes();
 		// Verify that the returned value is the correct array of colors
 		expect(Array.isArray(legoSetThemes)).toEqual(true);
 		expect(legoSetThemes).toHaveLength(12);
@@ -181,7 +181,7 @@ describe("searchLegoSets", () => {
 		let json = readTextFile("./fixtures/searchLegoSets/success.json");
 		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
 
-		let searchResults = await webScrapper.searchLegoSets(
+		let searchResults = await webScraper.searchLegoSets(
 			"destroyer",
 			{ themeId: "65", startYear: 2014, endYear: 2017 }
 		);
@@ -193,15 +193,15 @@ describe("searchLegoSets", () => {
 	test("Throws error when not ok", async () => {
 		fetchMock.mockResolvedValue(new Response("", { status: 400, statusText: "Bad Request" }));
 
-		await expect(webScrapper.searchLegoSets("")).rejects.toThrow("Failed to fetch data");
+		await expect(webScraper.searchLegoSets("")).rejects.toThrow("Failed to fetch data");
 	});
 
 	test("Invalid parameters", async () => {
 		let json = readTextFile("./fixtures/searchLegoSets/error.json");
 		fetchMock.mockResolvedValue(new Response(json, { status: 200 }));
 
-		// let searchResults = await webScrapper.searchLegoSets("");
-		await expect(webScrapper.searchLegoSets("")).rejects.toThrow("Query keyword is not specified!");
+		// let searchResults = await webScraper.searchLegoSets("");
+		await expect(webScraper.searchLegoSets("")).rejects.toThrow("Query keyword is not specified!");
 	});
 });
 
@@ -231,7 +231,7 @@ describe("getLegoSetInfo", () => {
 
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetInfo = await webScrapper.getLegoSetInfo(result.setNumber);
+		let legoSetInfo = await webScraper.getLegoSetInfo(result.setNumber);
 
 		expect(legoSetInfo).toEqual(result);
 	});
@@ -243,7 +243,7 @@ describe("getLegoSetInfo", () => {
 
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		await expect(webScrapper.getLegoSetInfo(setNumber)).rejects.toThrow(`Could not find the set ${setNumber}`);
+		await expect(webScraper.getLegoSetInfo(setNumber)).rejects.toThrow(`Could not find the set ${setNumber}`);
 	});
 });
 
@@ -345,7 +345,7 @@ describe("getLegoSetPieces", () => {
 
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetPieceInfo = await webScrapper.getLegoSetPieces("10679-1");
+		let legoSetPieceInfo = await webScraper.getLegoSetPieces("10679-1");
 
 		expect(legoSetPieceInfo.normalPieces[0].brickLinkId).toEqual(result.normalPieces[0].brickLinkId);
 		expect(legoSetPieceInfo.normalPieces[0].brickLinkName).toEqual(result.normalPieces[0].brickLinkName);
@@ -367,7 +367,7 @@ describe("getLegoSetPieces", () => {
 
 		fetchMock.mockResolvedValue(new Response(html, { status: 200 }));
 
-		let legoSetPieceInfo = await webScrapper.getLegoSetPieces("10679-1");
+		let legoSetPieceInfo = await webScraper.getLegoSetPieces("10679-1");
 
 		expect(legoSetPieceInfo).toEqual(result);
 	});
@@ -389,7 +389,7 @@ describe("downloadImage", () => {
 		// Verify that the file does not exist before downloading it
 		expect(fs.existsSync(downloadFile)).toEqual(false);
 
-		await webScrapper.downloadImage(url, downloadFile);
+		await webScraper.downloadImage(url, downloadFile);
 
 		// Verify that the file was downloaded
 		expect(fetch).toHaveBeenCalledWith(url);
@@ -404,7 +404,7 @@ describe("downloadImage", () => {
 
 		// Check if file exists before downloading
 		expect(fs.existsSync(downloadFile)).toEqual(true);
-		await webScrapper.downloadImage(url, downloadFile);
+		await webScraper.downloadImage(url, downloadFile);
 
 		// Check if file still exists after attempting to download again
 		expect(fetch).not.toHaveBeenCalledWith(url);
@@ -414,7 +414,7 @@ describe("downloadImage", () => {
 	test("Throws error when the response is not ok", async () => {
 		fetchMock.mockResolvedValue(new Response(imageData, { status: 404, statusText: "Not Found" }));
 
-		await expect(webScrapper.downloadImage("https://example.com/image.jpg", downloadFile)).rejects.toThrow(
+		await expect(webScraper.downloadImage("https://example.com/image.jpg", downloadFile)).rejects.toThrow(
 			new Error("Failed to fetch https://example.com/image.jpg: 404 Not Found")
 		);
 	});
@@ -428,6 +428,6 @@ describe("downloadImage", () => {
 			throw new Error("Write failed");
 		});
 
-		await expect(webScrapper.downloadImage(url, downloadFile)).rejects.toThrow("Write failed");
+		await expect(webScraper.downloadImage(url, downloadFile)).rejects.toThrow("Write failed");
 	});
 });

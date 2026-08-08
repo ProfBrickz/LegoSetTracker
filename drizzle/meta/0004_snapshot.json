@@ -431,7 +431,7 @@
       "name": "lego_set_status_type",
       "schema": "public",
       "values": [
-        "scrapping",
+        "scraping",
         "done"
       ]
     },
