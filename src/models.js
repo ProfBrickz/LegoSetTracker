@@ -543,14 +543,23 @@ export class LegoSet extends TypedClass {
 						let componentInfo = this.getLegoSetPieceInfo(componentsInfo.normalPieces, componentLegoPiece);
 						if (componentInfo == null) continue;
 
-						if (componentLegoSetPiece == null) {
-							let a = await this.minifigPieces.add(
-								this,
-								componentLegoPiece,
-								componentInfo.amountNeeded,
-								componentInfo.amountFound
-							);
+						if (componentLegoSetPiece != null) {
+							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
+							continue;
 						}
+
+						componentLegoSetPiece = this.minifigPieces.getLegoSetPiece(componentLegoPiece);
+						if (componentLegoSetPiece != null) {
+							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
+							continue;
+						}
+
+						await this.minifigPieces.add(
+							this,
+							componentLegoPiece,
+							componentInfo.amountNeeded,
+							componentInfo.amountFound
+						);
 					}
 				}
 
