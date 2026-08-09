@@ -44,7 +44,7 @@ export default class WebScraper {
 	}
 
 	async close() {
-		if (this.browser == null) throw new Error("Error: Browser is not initialized");
+		if (this.browser === null) throw new Error("Error: Browser is not initialized");
 
 		await this.browser.close();
 	}
@@ -58,7 +58,7 @@ export default class WebScraper {
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
 	 */
 	async getWebpage(url) {
-		if (this.browser == null || this.page == null) throw new Error("Error: Browser and page are not initialized");
+		if (this.browser === null || this.page === null) throw new Error("Error: Browser and page are not initialized");
 
 		await this.page.goto(url, { waitUntil: "networkidle2" });
 		const html = await this.page.content();
@@ -217,13 +217,13 @@ export default class WebScraper {
 		for (let category of categories) {
 			let index = rows.indexOf(category);
 
-			if (category.textContent.trim() == section) {
+			if (category.textContent.trim() === section) {
 				sectionStartIndex = index + 1;
 				continue;
 			}
 
 			if (sectionStartIndex) {
-				if (category.textContent.trim() == "Parts:") {
+				if (category.textContent.trim() === "Parts:") {
 					sectionStartIndex = index + 1;
 					continue;
 				}
@@ -362,7 +362,7 @@ export default class WebScraper {
 
 			let name = link.textContent.trim();
 
-			if (name == "{}" || name == "{more}") continue;
+			if (name === "{}" || name === "{more}") continue;
 
 			themes.push({
 				brickLinkId: id,
@@ -432,7 +432,7 @@ export default class WebScraper {
 		 */
 		/** @type {SearchResponse} */
 		let { result, returnCode, returnMessage } = await response.json();
-		if (returnCode != 0) throw new Error(returnMessage);
+		if (returnCode !== 0) throw new Error(returnMessage);
 
 		/** @type {Item[]} */
 		let items = [];

@@ -51,7 +51,7 @@ export class DataTable extends HTMLElement {
     * @param {string} newValue
     */
    attributeChangedCallback(name, oldValue, newValue) {
-      if (name == "hide-on-empty") this.hideOnEmpty = newValue != null && newValue !== "false";
+      if (name === "hide-on-empty") this.hideOnEmpty = newValue !== null && newValue !== "false";
    }
 
    get columns() {
@@ -81,7 +81,7 @@ export class DataTable extends HTMLElement {
             let expandButton = /** @type {HTMLButtonElement | undefined} */ (tableRow.querySelector("td.expand button"));
             if (!!expandButton) expandButton.classList.remove("expanded");
 
-            if (subRow.rowId == undefined) return;
+            if (subRow.rowId === undefined) return;
             if (subRow.subRows.length > 0) this.expandCollapseSubRows(subRow.subRows, subRow.rowId, isExpanded);
          }
       }
@@ -115,7 +115,7 @@ export class DataTable extends HTMLElement {
                await row.getToggleExpandedHandler()();
                let isExpanded = row.getIsExpanded();
 
-               if (row.original.rowId == undefined) return;
+               if (row.original.rowId === undefined) return;
                this.expandCollapseSubRows(row.original.subRows, row.original.rowId, isExpanded);
 
                expandButton.classList.toggle("expanded");
@@ -290,7 +290,7 @@ export class DataTable extends HTMLElement {
     */
    createSubRows(tbody, row) {
       if (row.subRows.length <= 0) return;
-      if (row.original.rowId == undefined) return;
+      if (row.original.rowId === undefined) return;
 
       for (let i = 0; i < row.subRows.length; i++) {
          let subRow = row.subRows[i];
@@ -299,7 +299,7 @@ export class DataTable extends HTMLElement {
          htmlSubRow.style.display = "none";
          htmlSubRow.dataset.parentRowId = row.original.rowId.toString();
 
-         if (i == row.subRows.length - 1) {
+         if (i === row.subRows.length - 1) {
             htmlSubRow.classList.add("last-sub-row");
          }
 

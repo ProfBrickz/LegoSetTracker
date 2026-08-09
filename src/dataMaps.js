@@ -69,7 +69,7 @@ export class LegoColors extends ClassMap {
 	 */
 	getByBricklinkId(brickLinkId) {
 		for (let legoColor of this.values()) {
-			if (legoColor.brickLinkId == brickLinkId) return legoColor;
+			if (legoColor.brickLinkId === brickLinkId) return legoColor;
 		}
 
 		return null;
@@ -125,7 +125,7 @@ export class LegoSetThemes extends ClassMap {
 	 */
 	getByBricklinkId(brickLinkId) {
 		for (let legoSetTheme of this.values()) {
-			if (legoSetTheme.brickLinkId == brickLinkId) return legoSetTheme;
+			if (legoSetTheme.brickLinkId === brickLinkId) return legoSetTheme;
 		}
 
 		return null;
@@ -153,8 +153,8 @@ export class LegoPieces extends ClassMap {
 		// Initialize all base pieces
 		for (let legoPiece of pieces) {
 			let color = null;
-			if (legoPiece.colorId != null) color = colors.get(legoPiece.colorId);
-			if (typeof color == "undefined") throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
+			if (legoPiece.colorId !== null) color = colors.get(legoPiece.colorId);
+			if (typeof color === "undefined") throw new Error(`There is no Lego color with id ${legoPiece.colorId} in database.`);
 
 			this.set(legoPiece.databaseId, new LegoPiece(
 				legoPiece.databaseId,
@@ -230,7 +230,7 @@ export class LegoPieces extends ClassMap {
 		if (brickLinkName.includes("(Sticker)")) {
 			let baseLegoPieceId = brickLinkId.split("pb")[0];
 			let baseLegoPiece = this.getByBrickLinkIdAndColor(baseLegoPieceId, color);
-			if (baseLegoPiece == null) return null;
+			if (baseLegoPiece === null) return null;
 
 			// Convert to StickeredLegoPiece and update in map
 			let stickeredPiece = new StickeredLegoPiece(
@@ -258,8 +258,8 @@ export class LegoPieces extends ClassMap {
 	getByBrickLinkIdAndColor(brickLinkId, color) {
 		for (let value of this.values()) {
 			if (
-				value.brickLinkId == brickLinkId
-				&& value.color == color
+				value.brickLinkId === brickLinkId
+				&& value.color === color
 			) return value;
 		}
 
@@ -275,10 +275,10 @@ export class LegoPieces extends ClassMap {
 	getDatabaseId(brickLinkId, brickLinkName, color, brickLinkCategory) {
 		for (let value of this.values()) {
 			if (
-				value.brickLinkId == brickLinkId
-				&& value.brickLinkName == brickLinkName
-				&& value.color == color
-				&& value.brickLinkCategory == brickLinkCategory
+				value.brickLinkId === brickLinkId
+				&& value.brickLinkName === brickLinkName
+				&& value.color === color
+				&& value.brickLinkCategory === brickLinkCategory
 			) return value.databaseId;
 		}
 
@@ -318,7 +318,7 @@ export class LegoSetPieces extends ClassMap {
 
 		if (legoPiece instanceof StickeredLegoPiece) {
 			let baseLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(legoPiece.baseLegoPiece);
-			if (baseLegoSetPiece == null) return this;
+			if (baseLegoSetPiece === null) return this;
 
 			let stickeredLegoSetPiece = new StickeredLegoSetPiece(
 				databaseId,
@@ -340,8 +340,8 @@ export class LegoSetPieces extends ClassMap {
 
 			for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
-				if (componentLegoSetPiece == null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
-				if (componentLegoSetPiece == null) continue;
+				if (componentLegoSetPiece === null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+				if (componentLegoSetPiece === null) continue;
 
 				compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
 				componentLegoSetPiece.compoundLegoSetPieces.push(compoundLegoSetPiece);
@@ -364,8 +364,8 @@ export class LegoSetPieces extends ClassMap {
 	getLegoSetPiece(legoPiece) {
 		for (let legoSetPiece of this.values()) {
 			if (
-				legoSetPiece.brickLinkId == legoPiece.brickLinkId
-				&& legoSetPiece.color == legoPiece.color
+				legoSetPiece.brickLinkId === legoPiece.brickLinkId
+				&& legoSetPiece.color === legoPiece.color
 			) return legoSetPiece;
 		}
 
@@ -414,14 +414,14 @@ export class LegoSets extends ClassMap {
 				if (!legoPiece) throw new Error(`There is no Lego piece with the id ${legoSetPiece} in database.`);
 
 				let legoSetPieces;
-				if (legoSetPiece.legoSetPieceType == "minifig") legoSetPieces = legoSet.minifigs;
-				else if (legoSetPiece.legoSetPieceType == "extra") legoSetPieces = legoSet.extraPieces;
-				else if (legoSetPiece.legoSetPieceType == "counterpart") legoSetPieces = legoSet.counterpartPieces;
+				if (legoSetPiece.legoSetPieceType === "minifig") legoSetPieces = legoSet.minifigs;
+				else if (legoSetPiece.legoSetPieceType === "extra") legoSetPieces = legoSet.extraPieces;
+				else if (legoSetPiece.legoSetPieceType === "counterpart") legoSetPieces = legoSet.counterpartPieces;
 				else legoSetPieces = legoSet.normalPieces;
 
 				if (legoPiece instanceof StickeredLegoPiece) {
 					let baseLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(legoPiece.baseLegoPiece);
-					if (baseLegoSetPiece == null) continue;
+					if (baseLegoSetPiece === null) continue;
 
 					let stickeredLegoSetPiece = new StickeredLegoSetPiece(
 						legoSetPiece.databaseId,
@@ -443,8 +443,8 @@ export class LegoSets extends ClassMap {
 
 					for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
-						if (componentLegoSetPiece == null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
-						if (componentLegoSetPiece == null) continue;
+						if (componentLegoSetPiece === null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+						if (componentLegoSetPiece === null) continue;
 
 						compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
 						componentLegoSetPiece.compoundLegoSetPieces.push(compoundLegoSetPiece);

@@ -25,7 +25,7 @@ function getCompletion(amountFound, amountNeeded) {
 		completion = "not-started";
 	} else if (amountFound < amountNeeded) {
 		completion = "incomplete";
-	} else if (amountFound == amountNeeded) {
+	} else if (amountFound === amountNeeded) {
 		completion = "complete";
 	} else if (amountFound > amountNeeded) {
 		completion = "extra";

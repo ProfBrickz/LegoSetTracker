@@ -138,7 +138,7 @@ function makeLegoSetsTableRows() {
 			pieceCount: legoSet.pieceCount,
 			minifigCount: legoSet.minifigCount,
 			legoSetCount: legoSet.legoSetCount,
-			grayedOut: legoSet.status == "scraping"
+			grayedOut: legoSet.status === "scraping"
 		});
 	}
 
@@ -152,7 +152,7 @@ function makeLegoSetsTableRows() {
  */
 function getLegoSetPieceTableRow(tableRows, databaseId) {
 	for (let tableRow of tableRows) {
-		if (tableRow.databaseId == databaseId) return tableRow;
+		if (tableRow.databaseId === databaseId) return tableRow;
 
 		if (tableRow.subRows.length > 0) {
 			let foundRow = getLegoSetPieceTableRow(tableRow.subRows, databaseId);
@@ -172,7 +172,7 @@ function removeLegoSetPieceTableRow(tableRows, databaseId) {
 	for (let i = 0; i < tableRows.length; i++) {
 		let tableRow = tableRows[i];
 
-		if (tableRow.databaseId == databaseId) {
+		if (tableRow.databaseId === databaseId) {
 			tableRows.splice(i, 1);
 			return true;
 		}
@@ -241,7 +241,7 @@ function makeLegoSetTableRows(legoSet) {
 			for (let componentLegoSetPiece of legoSetPiece.componentLegoSetPieces) {
 				let componentRow = getLegoSetPieceTableRow(tableRows, componentLegoSetPiece.databaseId);
 
-				if (componentRow == null) {
+				if (componentRow === null) {
 					tableRow.subRows.push(makeLegoSetPieceTableRow(legoSet, componentLegoSetPiece, "minifigPieces"));
 				} else {
 					tableRow.subRows.push(componentRow);
@@ -330,7 +330,7 @@ app.whenReady().then(async () => {
 
 app.on("window-all-closed", async () => {
 	// Quit when all windows are closed, except on macOS
-	if (process.platform == "darwin") return;
+	if (process.platform === "darwin") return;
 
 	await webScraper.close();
 	app.quit();
@@ -341,13 +341,13 @@ app.on("window-all-closed", async () => {
 ipcMain.handle("loadPage", (event, page, { pageParams = {}, params = {} }) => {
 	if (page === "add-lego-set") {
 		pageParams.legoSetThemes = legoSetThemes;
-	} else if (page == "lego-sets") {
+	} else if (page === "lego-sets") {
 		params.tableRows = makeLegoSetsTableRows();
 	} else if (page === "settings") {
 		setTimeout(() => {
 			mainWindow?.webContents.send("themeChange", nativeTheme.themeSource);
 		}, 10);
-	} else if (page == "lego-set") {
+	} else if (page === "lego-set") {
 		let databaseId = /** @type {number} */ (params.databaseId);
 		delete params.databaseId;
 
