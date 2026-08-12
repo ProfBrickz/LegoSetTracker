@@ -552,12 +552,14 @@ export class LegoSet extends TypedClass {
 
 						if (componentLegoSetPiece !== null) {
 							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
+							componentLegoSetPiece.save();
 							continue;
 						}
 
 						componentLegoSetPiece = this.minifigPieces.getLegoSetPiece(componentLegoPiece);
 						if (componentLegoSetPiece !== null) {
 							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
+							componentLegoSetPiece.save();
 							continue;
 						}
 

@@ -417,6 +417,7 @@ export class LegoSets extends ClassMap {
 				if (legoSetPiece.legoSetPieceType === "minifig") legoSetPieces = legoSet.minifigs;
 				else if (legoSetPiece.legoSetPieceType === "extra") legoSetPieces = legoSet.extraPieces;
 				else if (legoSetPiece.legoSetPieceType === "counterpart") legoSetPieces = legoSet.counterpartPieces;
+				else if (legoSetPiece.legoSetPieceType === "minifigPieces") legoSetPieces = legoSet.minifigPieces;
 				else legoSetPieces = legoSet.normalPieces;
 
 				if (legoPiece instanceof StickeredLegoPiece) {
