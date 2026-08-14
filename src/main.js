@@ -446,10 +446,10 @@ ipcMain.handle("changeAmountFound", (event, legoSetId, pieceId, amountFound) => 
 
 	let legoSet = /** @type {LegoSet} */ (legoSets.get(legoSetId));
 	let legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.normalPieces.get(pieceId));
-	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.minifigs.get(pieceId));
-	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.extraPieces.get(pieceId));
-	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.counterpartPieces.get(pieceId));
-	if (!legoSetPiece) legoSetPiece =/** @type {LegoSetPiece} */ (legoSet?.minifigPieces.get(pieceId));
+	if (legoSetPiece === undefined) legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.minifigs.get(pieceId));
+	if (legoSetPiece === undefined) legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.extraPieces.get(pieceId));
+	if (legoSetPiece === undefined) legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.counterpartPieces.get(pieceId));
+	if (legoSetPiece === undefined) legoSetPiece = /** @type {LegoSetPiece} */ (legoSet?.minifigPieces.get(pieceId));
 
 	legoSetPiece.syncAmountFound(amountFound, (legoSetPiece) => {
 		legoSetPiece.save();

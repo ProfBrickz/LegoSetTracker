@@ -444,7 +444,9 @@ export class LegoSets extends ClassMap {
 
 					for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
-						if (componentLegoSetPiece === null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+						if (componentLegoSetPiece === null) {
+							componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+						}
 						if (componentLegoSetPiece === null) continue;
 
 						compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
