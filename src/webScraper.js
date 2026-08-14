@@ -54,6 +54,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} url The URL of the webpage to fetch and parse.
+	 *
 	 * @returns {Promise<Document>} A Promise that resolves to the parsed Document object once the request is successful.
 	 * @throws {Error} If the request fails (e.g., network error, HTTP error status code).
 	 */
@@ -75,6 +76,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} setNumberInput The LEGO set number (e.g., "8699-1") used to construct the query URL.
+	 *
 	 * @returns {Promise<LegoSetInfo>} A Promise that resolves to an object containing the parsed set information.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
@@ -136,6 +138,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} url The URL of the BrickLink inventory page (e.g., catalog item inventory URL).
+	 *
 	 * @returns {Promise<{normalPieces: LegoSetPieceInfo[], minifigs: LegoSetPieceInfo[], extraPieces: LegoSetPieceInfo[], counterparts: LegoSetPieceInfo[]}>} A Promise that resolves to an object containing categorized piece data.
 	 * @throws {Error} If the webpage cannot be fetched or required elements are missing.
 	 */
@@ -158,6 +161,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} setNumber The LEGO set number (e.g., "8699-1") used to construct the query URL.
+	 *
 	 * @returns {Promise<LegoSetPiecesInfo>} A Promise that resolves to an object containing categorized piece data.
 	 * @throws {Error} If the set number is invalid, the document cannot be parsed, or required elements are missing.
 	 */
@@ -172,6 +176,7 @@ export default class WebScraper {
  *
  * @public
  * @param {LegoPiece} piece The BrickLink ID of the minifig (e.g., "3523").
+ *
  * @returns {Promise<LegoSetPiecesInfo>} A promise that resolves to an array of `SetPiece` objects representing the minifig's parts.
  */
 	async getMinifigPieces(piece) {
@@ -186,6 +191,7 @@ export default class WebScraper {
 	 * @todo
 	 * @public
 	 * @param {LegoPiece} piece The piece object containing the `brickLinkId` and `color` properties.
+	 *
 	 * @returns {Promise<LegoSetPiecesInfo>} A promise that resolves to a `SetPiece` object representing the piece in the specified color.
 	 */
 	async getCompositePieceComponents(piece) {
@@ -205,6 +211,7 @@ export default class WebScraper {
 	 * @param {string} section The name of the section to extract (e.g., "Regular Items:").
 	 * @param {HTMLTableRowElement[]} rows An array of table rows to search through.
 	 * @param {NodeListOf<HTMLTableRowElement>} categories A list of category rows used to identify section boundaries.
+	 *
 	 * @returns {LegoSetPieceInfo[]} An array of piece data objects corresponding to the specified section.
 	 * @throws {Error} If the specified section cannot be found in the categories.
 	 */
@@ -251,6 +258,7 @@ export default class WebScraper {
 	 *
 	 * @private
 	 * @param {HTMLTableRowElement[]} sectionRows An array of table rows containing piece details.
+	 *
 	 * @returns {LegoSetPieceInfo[]} An array of `SetPiece` objects representing the extracted piece data.
 	 */
 	getSectionPieces(sectionRows) {
@@ -303,6 +311,7 @@ export default class WebScraper {
 	 * for element selection.
 	 *
 	 * @public
+	 *
 	 * @returns {Promise<WebLegoColor[]>} A promise that resolves to an array of `LegoColor` objects.
 	 * @throws {Error} If the DOM structure is invalid or required elements are missing.
 	 */
@@ -458,6 +467,7 @@ export default class WebScraper {
 	 * @public
 	 * @param {string} url The URL of the image to download.
 	 * @param {string} downloadPath The file path where the image will be saved.
+	 *
 	 * @returns {Promise<void>} A promise that resolves when the image is successfully downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
@@ -480,6 +490,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} setNumber The set number (e.g., "10179-1").
+	 *
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error).
 	 */
@@ -493,6 +504,7 @@ export default class WebScraper {
 	 * @public
 	 * @param {string} pieceId The piece ID (e.g., "3003").
 	 * @param {number} colorId The color ID (e.g., 11 for red).
+	 *
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
@@ -505,6 +517,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {string} minifigId The minifig ID (e.g., "10179-1").
+	 *
 	 * @returns {Promise<void>} A promise that resolves when the image is downloaded or if the target path already exists.
 	 * @throws {Error} If the image cannot be fetched (e.g., invalid URL, server error) or if writing to the file fails.
 	 */
@@ -517,6 +530,7 @@ export default class WebScraper {
 	 *
 	 * @public
 	 * @param {LegoSet} legoSet The LEGO set object containing set details, pieces, and minifigs.
+	 *
 	 * @returns {Promise<void>} A promise that resolves when all images are downloaded or if no new images are needed.
 	 * @throws {Error} If any of the individual image download operations fail (e.g., network errors, invalid URLs, file write failures).
 	 */

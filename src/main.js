@@ -31,6 +31,7 @@ let legoSetThemes = new LegoSetThemes();
  *
  * @param {string} page The name of the EJS template file to render.
  * @param {Record<string, unknown>} [params] The parameters to pass to the EJS template.
+ *
  * @returns {string} The rendered HTML.
  */
 function renderPage(page, params = {}) {
@@ -50,6 +51,7 @@ function renderPage(page, params = {}) {
  * Loads a layout HTML file into the main window.
  *
  * @param {string} layout The name of the layout to load.
+ *
  * @returns {void}
  */
 function loadLayout(layout) {
@@ -148,6 +150,7 @@ function makeLegoSetsTableRows() {
 /**
  * @param {LegoSetTableRow[]} tableRows
  * @param {number} databaseId
+ *
  * @returns {LegoSetTableRow | null}
  */
 function getLegoSetPieceTableRow(tableRows, databaseId) {
@@ -166,6 +169,7 @@ function getLegoSetPieceTableRow(tableRows, databaseId) {
 /**
  * @param {LegoSetTableRow[]} tableRows
  * @param {number} databaseId
+ *
  * @returns {boolean}
  */
 function removeLegoSetPieceTableRow(tableRows, databaseId) {
@@ -189,6 +193,7 @@ function removeLegoSetPieceTableRow(tableRows, databaseId) {
  * @param {LegoSet} legoSet
  * @param {LegoSetPiece} legoSetPiece
  * @param {LegoSetPieceType} legoSetPieceType
+ *
  * @returns {LegoSetTableRow}
  */
 function makeLegoSetPieceTableRow(legoSet, legoSetPiece, legoSetPieceType) {

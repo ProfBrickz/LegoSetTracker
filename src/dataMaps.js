@@ -54,6 +54,8 @@ export class LegoColors extends ClassMap {
 	 * @param {string} brickLinkName
 	 * @param {number | null} legoId
 	 * @param {string | null} legoName
+	 *
+	 * @returns {Promise<LegoColor>}
 	 */
 	async add(brickLinkId, brickLinkName, legoId, legoName) {
 		let databaseId = await database.addLegoColor(brickLinkId, brickLinkName, legoId, legoName);
@@ -110,6 +112,8 @@ export class LegoSetThemes extends ClassMap {
 	/**
 	 * @param {string} brickLinkId
 	 * @param {string} brickLinkName
+	 *
+	 * @returns {Promise<LegoSetTheme>}
 	 */
 	async add(brickLinkId, brickLinkName) {
 		let databaseId = await database.addLegoSetTheme(brickLinkId, brickLinkName);
@@ -213,6 +217,8 @@ export class LegoPieces extends ClassMap {
 	 * @param {string} brickLinkCategory
 	 * @param {boolean} isCompoundPiece
 	 * @param {LegoSetPieceCategory} legoSetPieceCategory
+	 *
+	 * @returns {Promise<LegoPiece | null>}
 	 */
 	async add(brickLinkId, brickLinkName, color, brickLinkCategory, legoSetPieceCategory, isCompoundPiece) {
 		let databaseId = await database.addLegoPiece(brickLinkId, brickLinkName, color, brickLinkCategory);
@@ -306,6 +312,8 @@ export class LegoSetPieces extends ClassMap {
 	 * @param {LegoPiece} legoPiece
 	 * @param {number} amountNeeded
 	 * @param {number} amountFound
+	 *
+	 * @returns {Promise<LegoSetPiece | null>}
 	*/
 	async add(legoSet, legoPiece, amountNeeded, amountFound) {
 		let databaseId = await database.addLegoSetPiece(
@@ -318,7 +326,7 @@ export class LegoSetPieces extends ClassMap {
 
 		if (legoPiece instanceof StickeredLegoPiece) {
 			let baseLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(legoPiece.baseLegoPiece);
-			if (baseLegoSetPiece === null) return this;
+			if (baseLegoSetPiece === null) return null;
 
 			let stickeredLegoSetPiece = new StickeredLegoSetPiece(
 				databaseId,
@@ -329,7 +337,8 @@ export class LegoSetPieces extends ClassMap {
 			);
 			baseLegoSetPiece.stickeredLegoSetPieces.push(stickeredLegoSetPiece);
 
-			return this.set(databaseId, stickeredLegoSetPiece);
+			this.set(databaseId, stickeredLegoSetPiece);
+			return stickeredLegoSetPiece;
 		} else if (legoPiece instanceof CompoundLegoPiece) {
 			let compoundLegoSetPiece = new CompoundLegoSetPiece(
 				databaseId,
@@ -340,21 +349,35 @@ export class LegoSetPieces extends ClassMap {
 
 			for (let componentLegoPiece of legoPiece.componentLegoPieces) {
 				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
-				if (componentLegoSetPiece === null) componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+				if (componentLegoSetPiece === null) {
+					componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+				}
+				if (componentLegoSetPiece === null) {
+					componentLegoSetPiece = await legoSet.minifigPieces.add(
+						legoSet,
+						componentLegoPiece,
+						amountNeeded,
+						amountFound
+					);
+				};
 				if (componentLegoSetPiece === null) continue;
 
 				compoundLegoSetPiece.componentLegoSetPieces.push(componentLegoSetPiece);
 				componentLegoSetPiece.compoundLegoSetPieces.push(compoundLegoSetPiece);
 			}
 
-			return this.set(databaseId, compoundLegoSetPiece);
+			this.set(databaseId, compoundLegoSetPiece);
+			return compoundLegoSetPiece;
 		} else {
-			return this.set(databaseId, new LegoSetPiece(
+			let legoSetPiece = new LegoSetPiece(
 				databaseId,
 				legoPiece,
 				amountNeeded,
 				amountFound
-			));
+			);
+
+			this.set(databaseId, legoSetPiece);
+			return legoSetPiece;
 		}
 	}
 
@@ -477,6 +500,8 @@ export class LegoSets extends ClassMap {
 	 * @param {number} minifigCount
 	 * @param {number} legoSetCount
 	 * @param {LegoSetStatus} status
+	 *
+	 * @returns {Promise<LegoSet>}
 	 */
 	async add(
 		setNumber,

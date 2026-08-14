@@ -546,10 +546,10 @@ export class LegoSet extends TypedClass {
 
 				if (legoSetPieceCategory === "minifig") {
 					for (let componentLegoPiece of compoundLegoPiece.componentLegoPieces) {
-						let componentLegoSetPiece = this.normalPieces.getLegoSetPiece(componentLegoPiece);
 						let componentInfo = this.getLegoSetPieceInfo(componentsInfo.normalPieces, componentLegoPiece);
 						if (componentInfo === null) continue;
 
+						let componentLegoSetPiece = this.normalPieces.getLegoSetPiece(componentLegoPiece);
 						if (componentLegoSetPiece !== null) {
 							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
 							componentLegoSetPiece.save();
