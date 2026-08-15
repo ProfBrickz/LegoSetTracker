@@ -1,7 +1,7 @@
 // Imports
 import { ClassMap } from "./classes.js";
 import database from "./database/database.js";
-import { CompoundLegoPiece, CompoundLegoSetPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
+import { ComponentLegoPiece, CompoundLegoPiece, CompoundLegoSetPiece, LegoColor, LegoPiece, LegoSet, LegoSetPiece, LegoSetTheme, StickeredLegoPiece, StickeredLegoSetPiece } from "./models.js";
 import WebScraper from "./webScraper.js";
 /** @import { LegoSetPieceCategory, LegoSetPieceType, LegoSetStatus } from "./types.js" */
 
@@ -187,11 +187,13 @@ export class LegoPieces extends ClassMap {
 			));
 		}
 		for (let relation of componentRelations) {
-			let componentLegoPiece = this.get(relation.componentLegoPieceId);
-			if (!componentLegoPiece) continue;
+			let legoPiece = this.get(relation.componentLegoPieceId);
+			if (!legoPiece) continue;
 
 			let compoundLegoPiece = this.get(relation.compoundLegoPieceId);
 			if (!compoundLegoPiece) continue;
+
+			let componentLegoPiece = new ComponentLegoPiece(legoPiece, relation.componentAmount);
 
 			if (compoundLegoPiece instanceof CompoundLegoPiece) {
 				compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
@@ -348,14 +350,14 @@ export class LegoSetPieces extends ClassMap {
 			);
 
 			for (let componentLegoPiece of legoPiece.componentLegoPieces) {
-				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+				let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
 				if (componentLegoSetPiece === null) {
-					componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+					componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
 				}
 				if (componentLegoSetPiece === null) {
 					componentLegoSetPiece = await legoSet.minifigPieces.add(
 						legoSet,
-						componentLegoPiece,
+						componentLegoPiece.legoPiece,
 						amountNeeded,
 						amountFound
 					);
@@ -466,9 +468,9 @@ export class LegoSets extends ClassMap {
 					);
 
 					for (let componentLegoPiece of legoPiece.componentLegoPieces) {
-						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece);
+						let componentLegoSetPiece = legoSet.normalPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
 						if (componentLegoSetPiece === null) {
-							componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece);
+							componentLegoSetPiece = legoSet.minifigPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
 						}
 						if (componentLegoSetPiece === null) continue;
 

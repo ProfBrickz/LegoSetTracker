@@ -97,8 +97,24 @@ export class StickeredLegoPiece extends LegoPiece {
 	}
 }
 
+export class ComponentLegoPiece {
+	/** @type {LegoPiece} */
+	legoPiece;
+	/** @type {number} */
+	componentAmount;
+
+	/**
+	 * @param {LegoPiece} legoPiece
+	 * @param {number} componentAmount
+	 */
+	constructor(legoPiece, componentAmount) {
+		this.legoPiece = legoPiece;
+		this.componentAmount = componentAmount;
+	}
+}
+
 export class CompoundLegoPiece extends LegoPiece {
-	/** @type {LegoPiece[]} */
+	/** @type {ComponentLegoPiece[]} */
 	componentLegoPieces;
 
 	/**
@@ -107,7 +123,7 @@ export class CompoundLegoPiece extends LegoPiece {
 	 * @param {string} brickLinkName
 	 * @param {LegoColor | null} color
 	 * @param {string} brickLinkCategory
-	 * @param {LegoPiece[]} componentLegoPieces
+	 * @param {ComponentLegoPiece[]} componentLegoPieces
 	 */
 	constructor(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory, componentLegoPieces = []) {
 		super(databaseId, brickLinkId, brickLinkName, color, brickLinkCategory);
@@ -490,92 +506,96 @@ export class LegoSet extends TypedClass {
 			);
 			if (legoPiece === null) return;
 
-			if (
-				newLegoSetPiece.isCompoundPiece &&
-				(legoSetPieceCategory === "counterpart" || legoSetPieceCategory === "minifig")
-			) {
-				let compoundLegoPiece = new CompoundLegoPiece(
-					legoPiece.databaseId,
-					legoPiece.brickLinkId,
-					legoPiece.brickLinkName,
-					legoPiece.color,
-					legoPiece.brickLinkCategory,
-					[]
-				);
-
-				/** @type {LegoSetPiecesInfo | null} */
-				let componentsInfo = null;
-				if (legoSetPieceCategory === "counterpart") {
-					componentsInfo = await webScraper.getCompositePieceComponents(compoundLegoPiece);
-				} else if (legoSetPieceCategory === "minifig") {
-					componentsInfo = await webScraper.getMinifigPieces(compoundLegoPiece);
-				}
-				if (componentsInfo === null) {
-					return;
-				}
-
-				for (let normalPiece of componentsInfo.normalPieces) {
-					let componentLegoPiece = LegoSet.legoPieces.getByBrickLinkIdAndColor(
-						normalPiece.brickLinkId,
-						normalPiece.color
-					);
-					if (componentLegoPiece === null) componentLegoPiece = LegoSet.legoPieces.getByBrickLinkIdAndColor(
-						normalPiece.brickLinkId,
-						compoundLegoPiece.color
-					);
-					if (componentLegoPiece === null) {
-						componentLegoPiece = await LegoSet.legoPieces.add(
-							normalPiece.brickLinkId,
-							normalPiece.brickLinkName,
-							normalPiece.color,
-							normalPiece.brickLinkCategory,
-							"normal",
-							false
-						);
-					}
-					if (componentLegoPiece === null) {
-						console.log(`Could not find component with id: ${normalPiece.brickLinkId}, and color: ${normalPiece.color?.brickLinkName || "null"}`);
-						continue;
-					}
-
-					compoundLegoPiece.componentLegoPieces.push(componentLegoPiece);
-				}
-
-				LegoSet.legoPieces.set(compoundLegoPiece.databaseId, compoundLegoPiece);
-				await database.addCompoundLegoPiece(compoundLegoPiece);
-
-				if (legoSetPieceCategory === "minifig") {
-					for (let componentLegoPiece of compoundLegoPiece.componentLegoPieces) {
-						let componentInfo = this.getLegoSetPieceInfo(componentsInfo.normalPieces, componentLegoPiece);
-						if (componentInfo === null) continue;
-
-						let componentLegoSetPiece = this.normalPieces.getLegoSetPiece(componentLegoPiece);
-						if (componentLegoSetPiece !== null) {
-							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
-							componentLegoSetPiece.save();
-							continue;
-						}
-
-						componentLegoSetPiece = this.minifigPieces.getLegoSetPiece(componentLegoPiece);
-						if (componentLegoSetPiece !== null) {
-							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
-							componentLegoSetPiece.save();
-							continue;
-						}
-
-						await this.minifigPieces.add(
-							this,
-							componentLegoPiece,
-							componentInfo.amountNeeded,
-							componentInfo.amountFound
-						);
-					}
-				}
-
-				legoPiece = compoundLegoPiece;
-			}
 		} else {
 			legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
+		}
+
+		if (
+			newLegoSetPiece.isCompoundPiece &&
+			(legoSetPieceCategory === "counterpart" || legoSetPieceCategory === "minifig")
+		) {
+			let compoundLegoPiece = new CompoundLegoPiece(
+				legoPiece.databaseId,
+				legoPiece.brickLinkId,
+				legoPiece.brickLinkName,
+				legoPiece.color,
+				legoPiece.brickLinkCategory,
+				[]
+			);
+
+			/** @type {LegoSetPiecesInfo | null} */
+			let componentsInfo = null;
+			if (legoSetPieceCategory === "counterpart") {
+				componentsInfo = await webScraper.getCompositePieceComponents(compoundLegoPiece);
+			} else if (legoSetPieceCategory === "minifig") {
+				componentsInfo = await webScraper.getMinifigPieces(compoundLegoPiece);
+			}
+			if (componentsInfo === null) {
+				return;
+			}
+
+			for (let normalPiece of componentsInfo.normalPieces) {
+				let componentLegoPiece = LegoSet.legoPieces.getByBrickLinkIdAndColor(
+					normalPiece.brickLinkId,
+					normalPiece.color
+				);
+				if (componentLegoPiece === null) componentLegoPiece = LegoSet.legoPieces.getByBrickLinkIdAndColor(
+					normalPiece.brickLinkId,
+					compoundLegoPiece.color
+				);
+				if (componentLegoPiece === null) {
+					componentLegoPiece = await LegoSet.legoPieces.add(
+						normalPiece.brickLinkId,
+						normalPiece.brickLinkName,
+						normalPiece.color,
+						normalPiece.brickLinkCategory,
+						"normal",
+						false
+					);
+				}
+				if (componentLegoPiece === null) {
+					console.log(`Could not find component with id: ${normalPiece.brickLinkId}, and color: ${normalPiece.color?.brickLinkName || "null"}`);
+					continue;
+				}
+
+				compoundLegoPiece.componentLegoPieces.push(
+					new ComponentLegoPiece(componentLegoPiece, normalPiece.amountNeeded)
+				);
+			}
+
+			LegoSet.legoPieces.set(compoundLegoPiece.databaseId, compoundLegoPiece);
+			await database.addCompoundLegoPiece(compoundLegoPiece);
+
+			if (legoSetPieceCategory === "minifig") {
+				for (let componentLegoPiece of compoundLegoPiece.componentLegoPieces) {
+					let componentInfo = this.getLegoSetPieceInfo(componentsInfo.normalPieces, componentLegoPiece.legoPiece);
+					if (componentInfo === null) continue;
+
+					let componentLegoSetPiece = this.normalPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
+					if (componentLegoSetPiece !== null) {
+						componentLegoSetPiece.amountNeeded = componentInfo.amountNeeded;
+						componentLegoSetPiece.save();
+						continue;
+					}
+					if (componentLegoSetPiece == null) {
+						componentLegoSetPiece = this.minifigPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
+						if (componentLegoSetPiece !== null) {
+							componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
+							componentLegoSetPiece.save();
+							continue;
+						}
+					}
+
+					await this.minifigPieces.add(
+						this,
+						componentLegoPiece.legoPiece,
+						componentInfo.amountNeeded,
+						componentInfo.amountFound
+					);
+				}
+			}
+
+			legoPiece = compoundLegoPiece;
 		}
 
 		await legoSetPieces.add(

@@ -1,0 +1,1 @@
+ALTER TABLE "component_lego_pieces" ADD COLUMN "component_amount" integer NOT NULL;

@@ -146,8 +146,9 @@ export async function addCompoundLegoPiece(compoundLegoPiece) {
       await database
          .insert(componentLegoPiecesDBTable)
          .values({
-            componentLegoPieceId: componentLegoPiece.databaseId,
-            compoundLegoPieceId: compoundLegoPiece.databaseId
+            compoundLegoPieceId: compoundLegoPiece.databaseId,
+            componentLegoPieceId: componentLegoPiece.legoPiece.databaseId,
+            componentAmount: componentLegoPiece.componentAmount
          });
    }
 }
@@ -156,7 +157,8 @@ export async function getComponentRelations() {
    return await database
       .select({
          componentLegoPieceId: componentLegoPiecesDBTable.componentLegoPieceId,
-         compoundLegoPieceId: componentLegoPiecesDBTable.compoundLegoPieceId
+         compoundLegoPieceId: componentLegoPiecesDBTable.compoundLegoPieceId,
+         componentAmount: componentLegoPiecesDBTable.componentAmount
       }).from(componentLegoPiecesDBTable);
 }
 

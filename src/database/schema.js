@@ -43,8 +43,9 @@ export const stickeredLegoPiecesDBTable = pgTable("stickered_lego_pieces", {
 });
 
 export const componentLegoPiecesDBTable = pgTable("component_lego_pieces", {
+   compoundLegoPieceId: integer("compound_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
    componentLegoPieceId: integer("component_piece_id").notNull().references(() => legoPiecesDBTable.databaseId),
-   compoundLegoPieceId: integer("compound_piece_id").notNull().references(() => legoPiecesDBTable.databaseId)
+   componentAmount: integer("component_amount").notNull()
 });
 
 export const legoSetsDBTable = pgTable("lego_sets", {
