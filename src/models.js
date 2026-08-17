@@ -485,6 +485,10 @@ export class LegoSet extends TypedClass {
 	 * @param {LegoSetPieceCategory} legoSetPieceCategory
 	 */
 	async addPiece(legoSetPieces, newLegoSetPiece, legoSetPieceCategory) {
+		if (newLegoSetPiece.brickLinkId == "2555" && newLegoSetPiece.color?.brickLinkId != 5) {
+			console.log("a");
+		}
+
 		let legoPieceId = LegoSet.legoPieces.getDatabaseId(
 			newLegoSetPiece.brickLinkId,
 			newLegoSetPiece.brickLinkName,
@@ -505,7 +509,6 @@ export class LegoSet extends TypedClass {
 				newLegoSetPiece.isCompoundPiece
 			);
 			if (legoPiece === null) return;
-
 		} else {
 			legoPiece = /** @type {LegoPiece} */ (LegoSet.legoPieces.get(legoPieceId));
 		}
@@ -573,7 +576,7 @@ export class LegoSet extends TypedClass {
 
 					let componentLegoSetPiece = this.normalPieces.getLegoSetPiece(componentLegoPiece.legoPiece);
 					if (componentLegoSetPiece !== null) {
-						componentLegoSetPiece.amountNeeded = componentInfo.amountNeeded;
+						componentLegoSetPiece.amountNeeded += componentInfo.amountNeeded;
 						componentLegoSetPiece.save();
 						continue;
 					}
