@@ -485,10 +485,6 @@ export class LegoSet extends TypedClass {
 	 * @param {LegoSetPieceCategory} legoSetPieceCategory
 	 */
 	async addPiece(legoSetPieces, newLegoSetPiece, legoSetPieceCategory) {
-		if (newLegoSetPiece.brickLinkId == "2555" && newLegoSetPiece.color?.brickLinkId != 5) {
-			console.log("a");
-		}
-
 		let legoPieceId = LegoSet.legoPieces.getDatabaseId(
 			newLegoSetPiece.brickLinkId,
 			newLegoSetPiece.brickLinkName,

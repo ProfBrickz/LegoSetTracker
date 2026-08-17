@@ -423,16 +423,11 @@ ipcMain.on("addLegoSet", async (event, setNumber) => {
 	);
 
 	await legoSet.addNormalPieces(legoSetPieces.normalPieces);
-	console.log("a");
 	await legoSet.addMinifigs(legoSetPieces.minifigs);
-	console.log("a");
 	await legoSet.addExtraPieces(legoSetPieces.extraPieces);
-	console.log("a");
 	await legoSet.addCounterpartPieces(legoSetPieces.counterparts);
-	console.log("a");
 	legoSet.status = "done";
 	legoSet.save();
-	console.log("a");
 
 	webScraper.downloadLegoSetImages(legoSet);
 
