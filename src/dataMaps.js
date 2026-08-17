@@ -235,7 +235,7 @@ export class LegoPieces extends ClassMap {
 
 		this.set(databaseId, legoPiece);
 
-		if (brickLinkName.includes("(Sticker)")) {
+		if (brickLinkName.includes("(Sticker)") || brickLinkName.includes("(Stickers)")) {
 			let baseLegoPieceId = brickLinkId.split("pb")[0];
 			let baseLegoPiece = this.getByBrickLinkIdAndColor(baseLegoPieceId, color);
 			if (baseLegoPiece === null) return null;
